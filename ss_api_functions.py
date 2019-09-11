@@ -17,6 +17,19 @@ def CSVtoDict(csv_input_file):
 
     return inputDicts
 
+def DicttoCSV(dict):
+    """
+    Reads a list of dictionaries and converts to a results.csv file in the
+    dev_area.
+    """
+    keys = dict[0].keys()
+    with open('dev_area/results.csv', 'w') as results:
+        dict_writer = csv.DictWriter(results, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(dict)
+
+
+
 def formatBqUrl(inputDicts):
     """
     Reads a list of dictionaries containing the the keys "country", "currency",
@@ -40,20 +53,41 @@ def formatBqUrl(inputDicts):
 
 def BrowseQuotes(urlList):
     """
-    Calls BrowseQuotesAPI for each formated URL in a list
+    Calls BrowseQuotesAPI for each formated URL in a list, returns a list of
+    dictionaries.
     """
+    results = []
     for url in urlList:
-        BrowseQuotesAPI(url, headers)
+        quote = BrowseQuotesAPI(url, headers)
+        results.append(quote)
+
+    return results
 
 
 def BrowseQuotesAPI(url, headers):
     """
     Takes an individual string url and calls Browse Quotes in skyscanner API.
-    Returns THIS CURRENTLY CALLS WRONG API
+    Returns a dicionary with min all input data, cheapest price, carrier and
+    quote time.
+    Note, refer to BrowseQuotesAPIresponses.docx for example formatting
     """
+    # Create blank dictionary to store required data
+    results = {}
     response_string = requests.request("GET", url, headers=headers)
     response_json = response_string.json()
-    print(response_json)
+    Quotes_list = response_json["Quotes"]#
+    results['MinPrice'] = Quotes_list[0]['MinPrice']
+    results['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
+    results['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
+    results['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds'][0]
+    results['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
+    print(results)
+    print(results['MinPrice'])
+    print(results.keys())
+
+    return results
+
+
 
 """
 Test area
@@ -66,4 +100,7 @@ csv_input = '.\dev_area\quoteinput_1.csv'
 dict = CSVtoDict(csv_input)
 
 urllist = formatBqUrl(dict)
-BrowseQuotes(urllist)
+resultsdict = BrowseQuotes(urllist)
+print(resultsdict)
+
+DicttoCSV(resultsdict)
