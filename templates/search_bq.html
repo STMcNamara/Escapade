@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Test
+{% endblock %}
+
+{% block main %}
+
+<body>
+WIP for the search function!
+</body>
+<form action="/search_bq" method="post">
+    <div class="form-group">
+        <input autocomplete="off" autofocus class="form-control" name="originplace" placeholder="Origin Place" type="text"/><br/>
+        <input autocomplete="off" name="destinationplace" placeholder="Destination Place" type="text"/><br/>
+        <input autocomplete="off" name="outboundpartialdate" placeholder="Date:yyyy-mm-dd" type="text"/><br/>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+
+{% endblock %}
