@@ -8,8 +8,8 @@ headers = {
 
 def CSVtoDict(csv_input_file):
     """
-    Opens a CSV containing data with a single header row and returns a list of
-    dictionaries for each row
+    GENERAL PURPOSE - Opens a CSV containing data with a single header row and
+    returns a list of dictionaries for each row
     """
     # Open .csv and read each line
     inputFile = open(csv_input_file)
@@ -17,17 +17,17 @@ def CSVtoDict(csv_input_file):
 
     return inputDicts
 
+
 def DicttoCSV(dict):
     """
-    Reads a list of dictionaries and converts to a results.csv file in the
-    dev_area.
+    GENERAL PURPOSE - Reads a list of dictionaries and converts to a
+    results.csv file in the dev_area
     """
     keys = dict[0].keys()
     with open('dev_area/results.csv', 'w') as results:
         dict_writer = csv.DictWriter(results, keys)
         dict_writer.writeheader()
         dict_writer.writerows(dict)
-
 
 
 def formatBqUrl(inputDicts):
@@ -81,9 +81,6 @@ def BrowseQuotesAPI(url, headers):
     results['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
     results['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds'][0]
     results['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
-    print(results)
-    print(results['MinPrice'])
-    print(results.keys())
 
     return results
 
@@ -91,7 +88,7 @@ def BrowseQuotesAPI(url, headers):
 
 """
 Test area
-"""
+
 # url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-01"
 # BrowseQuotes(url,headers)
 # url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-02"
@@ -104,3 +101,4 @@ resultsdict = BrowseQuotes(urllist)
 print(resultsdict)
 
 DicttoCSV(resultsdict)
+"""
