@@ -11,11 +11,31 @@ WIP for the search function!
 </body>
 <form action="/search_bq" method="post">
     <div class="form-group">
-        <input autocomplete="off" autofocus class="form-control" name="originplace" placeholder="Origin Place" type="text"/><br/>
-        <input autocomplete="off" name="destinationplace" placeholder="Destination Place" type="text"/><br/>
-        <input autocomplete="off" name="outboundpartialdate" placeholder="Date:yyyy-mm-dd" type="text"/><br/>
+      <table id="inputTable">
+        <td><input autocomplete="off" name="originplace" placeholder="Origin Place" type="text"/></td>
+        <td><input autocomplete="off" name="destinationplace" placeholder="Destination Place" type="text"/></td>
+        <td><input autocomplete="off" name="outboundpartialdate" placeholder="Date:yyyy-mm-dd" type="text"/></td>
+      </table>
     </div>
     <button class="btn btn-primary" type="submit">Submit</button>
+    <button class="btn btn-secondary" type="button" onclick=addRow()>Add query</button>
 </form>
+
+<script>
+  var rowNo = 1;
+
+  function addRow(rowNo){
+    var id = 23;
+    var table = document.getElementById("inputTable");
+    var row = table.insertRow(rowNo);
+    var originplace = row.insertCell(0);
+    var destinationplace = row.insertCell(1);
+    var outboundpartialdate = row.insertCell(2);
+    originplace.innerHTML = '<input autocomplete="off" name="originplace2' + id + '" placeholder="Origin Place2' + id + '" type="text"/>';
+    destinationplace.innerHTML = "PLACEHOLDER";
+    outboundpartialdate.innerHTML = "PLACEHOLDER";
+    rowNo ++;
+  }
+</script>
 
 {% endblock %}
