@@ -60,7 +60,7 @@ def BrowseQuotes(urlList):
     for url in urlList:
         quote = BrowseQuotesAPI(url, headers)
         results.append(quote)
-
+    print(results)
     return results
 
 

@@ -26,22 +26,22 @@ def search_bq():
     # Reached via POST (form submitted)
     if request.method == "POST":
     # Populate query dictionary with default location and form parameters
-        queryDict = [{'country' : 'US', 'currency': 'USD', 'locale' : 'en-US',
-                    'originplace': request.form.get("originplace"),
-                    'destinationplace': request.form.get("destinationplace"),
-                    'outboundpartialdate': request.form.get("outboundpartialdate")}]
-
+        rows = int(request.form.get("rowNum"))
+        print(rows)
+        queryList = []
+        for i in range(rows+1):
+            queryList.append({'country' : 'US', 'currency': 'USD', 'locale' : 'en-US',
+                        'originplace': request.form.get("originplace_" + str(i)),
+                        'destinationplace': request.form.get("destinationplace_" + str(i)),
+                        'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i))})
+        print(queryList)
         # Produce URL string for BrowseQuotes call
-        query_URL = formatBqUrl(queryDict)
-
+        query_URL = formatBqUrl(queryList)
+        print(query_URL)
         # Call BrowseQuotes and return list of dictionaries - CURRENTLY 1 ITEM
         resultsDict = BrowseQuotes(query_URL)
-
-        return render_template("results_bq.html", outboundpartialdate=queryDict[0]['outboundpartialdate'],
-                                originplace=queryDict[0]['originplace'],
-                                destinationplace=queryDict[0]['destinationplace'],
-                                MinPrice=resultsDict[0]['MinPrice'],
-                                Carrier=resultsDict[0]['Outbound_CarrierID'])
+        print(resultsDict)
+        return render_template("results_bq.html", resultsDict=resultsDict)
 
     # Reached via GET (display form)
     else:

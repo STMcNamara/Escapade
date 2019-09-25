@@ -10,12 +10,23 @@
         WIP for the results!
     </body>
 
-    <p>
-        Departure Date: {{ outboundpartialdate }}<br/>
-        Origin Place: {{ originplace }}<br/>
-        Destination Place: {{ destinationplace }}<br/>
-        Min Price:  ${{ MinPrice }}<br/>
-        Carrier ID: {{ Carrier }}<br/>
-    </p>
+    <table style="width:100%">
+      <tr>
+        <th>Departure Date</th>
+        <th>Origin Place</th>
+        <th>Destination Place</th>
+        <th>Min Price</th>
+        <th>Carrier ID</th>
+      </tr>
+      {% for result in resultsDict %}
+      <tr>
+        <td>{{ result['Outbound_Date'] }}</td>
+        <td>{{ result['Outbound_OriginID'] }}</td>
+        <td>{{ result['Outbound_DestinationID'] }}</td>
+        <td>${{ result['MinPrice'] }}</td>
+        <td>{{ result['Outbound_CarrierID'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
 
 {% endblock %}

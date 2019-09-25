@@ -7,41 +7,45 @@
 {% block main %}
 
 <script>
+  // Inital value for first added table row
   var rowNo = 1;
 
   function addRow(){
+    /* Adds a row with sequentially numbered user inputs to the input table
+    and updates rowNum variable*/
     var id = rowNo;
     var table = document.getElementById("inputTable");
+    // Insert row and create empty cells with labels
     var row = table.insertRow(rowNo);
     var originplace = row.insertCell(0);
     var destinationplace = row.insertCell(1);
     var outboundpartialdate = row.insertCell(2);
-    originplace.innerHTML = '<input autocomplete="off" name="originplace_' + id + '" placeholder="Origin Place_' + id + '" type="text"/>';
-    destinationplace.innerHTML = '<input autocomplete="off" name="destinationplace_' + id + '" placeholder="Destination Place_' + id + '" type="text"/>';
-    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" placeholder="Date:yyyy=mm-dd' + id + '" type="text"/>';
-    //Debug functionality to display row Counter
-    document.getElementById("rowNo").innerHTML = id;
+    // Inject input html code with unique identifiers for the current rowNo
+    originplace.innerHTML = '<input autocomplete="off" name="originplace_' + id + '" placeholder="Origin Place" type="text"/>';
+    destinationplace.innerHTML = '<input autocomplete="off" name="destinationplace_' + id + '" placeholder="Destination Place" type="text"/>';
+    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" placeholder="Date: yyyy=mm-dd" type="text"/>';
+    //Update the rowNum input and increment for next row addition
+    document.getElementById("rowNum").value = id;
     rowNo ++;
   }
 </script>
 
 <body>
-WIP for the search function!
+Prototype for the input to the search_bq function!
 </body>
+<!-- Create a table template with a single row and _0 input names -->
 <form action="/search_bq" method="post">
     <div class="form-group">
-      <table id="inputTable">
+      <table id="inputTable" style="width:100%">
         <td><input autocomplete="off" name="originplace_0" placeholder="Origin Place" type="text"/></td>
         <td><input autocomplete="off" name="destinationplace_0" placeholder="Destination Place" type="text"/></td>
-        <td><input autocomplete="off" name="outboundpartialdate_0" placeholder="Date:yyyy-mm-dd" type="text"/></td>
+        <td><input autocomplete="off" name="outboundpartialdate_0" placeholder="Date: yyyy-mm-dd" type="text"/></td>
       </table>
     </div>
     <button class="btn btn-primary" type="submit">Submit</button>
     <button class="btn btn-secondary" type="button" onclick=addRow()>Add query</button>
+  <input type="hidden" id="rowNum" name="rowNum" value="0">
+
 </form>
-<p> Row Counter: </p>
-<p id="rowNo">0</p>
-
-
 
 {% endblock %}
