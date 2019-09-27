@@ -23,7 +23,7 @@
     // Inject input html code with unique identifiers for the current rowNo
     originplace.innerHTML = '<input autocomplete="off" name="originplace_' + id + '" placeholder="Origin Place" type="text"/>';
     destinationplace.innerHTML = '<input autocomplete="off" name="destinationplace_' + id + '" placeholder="Destination Place" type="text"/>';
-    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" placeholder="Date: yyyy=mm-dd" type="text"/>';
+    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" type="date"/>';
     //Update the rowNum input and increment for next row addition
     document.getElementById("rowNum").value = id;
     rowNo ++;
@@ -39,7 +39,7 @@ Prototype for the input to the search_bq function!
       <table id="inputTable" style="width:100%">
         <td><input autocomplete="off" name="originplace_0" placeholder="Origin Place" type="text"/></td>
         <td><input autocomplete="off" name="destinationplace_0" placeholder="Destination Place" type="text"/></td>
-        <td><input autocomplete="off" name="outboundpartialdate_0" placeholder="Date: yyyy-mm-dd" type="text"/></td>
+        <td><input autocomplete="off" name="outboundpartialdate_0" type="date"/></td>
       </table>
     </div>
     <button class="btn btn-primary" type="submit">Submit</button>

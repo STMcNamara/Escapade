@@ -1,3 +1,261 @@
-MinPrice,Outbound_OriginID,Outbound_DestinationID,Outbound_CarrierID,Outbound_Date
-136.0,81727,60987,851,2019-10-01T00:00:00
-135.0,81727,60987,851,2019-10-03T00:00:00
+CountryId,PlaceName,CountryName,PlaceId,RegionId,CityId
+NL-sky,Amsterdam,Netherlands,AMS-sky,,AMST-sky
+UK-sky,Aberdeen,United Kingdom,ABZ-sky,,ABER-sky
+ES-sky,Alicante,Spain,ALC-sky,,ALIC-sky
+ES-sky,Malaga,Spain,AGP-sky,,MALA-sky
+GR-sky,Athens International,Greece,ATH-sky,,ATHE-sky
+Unknown-sky,Lanzarote,Lanzarote,ACE-sky,,ARRE-sky
+TR-sky,Antalya,Turkey,AYT-sky,,ANTA-sky
+NZ-sky,Auckland International,New Zealand,AKL-sky,,AKLN-sky
+JO-sky,Amman Queen Alia,Jordan,AMM-sky,,AMMA-sky
+SE-sky,Stockholm Arlanda,Sweden,ARN-sky,,STOC-sky
+UK-sky,Birmingham,United Kingdom,BHX-sky,,BIRM-sky
+UK-sky,Bristol,United Kingdom,BRS-sky,,BRIS-sky
+ES-sky,Barcelona,Spain,BCN-sky,,BARC-sky
+RO-sky,Bucharest Otopeni,Romania,OTP-sky,,BUCH-sky
+HU-sky,Budapest,Hungary,BUD-sky,,BUDA-sky
+UK-sky,Bournemouth,United Kingdom,BOH-sky,,BOUR-sky
+UK-sky,Belfast,United Kingdom,BELF-sky,,BELF-sky
+UK-sky,Belfast International,United Kingdom,BFS-sky,,BELF-sky
+UK-sky,Belfast City,United Kingdom,BHD-sky,,BELF-sky
+ID-sky,Bali (Denpasar),Indonesia,DPS-sky,,DPSI-sky
+UK-sky,Cardiff,United Kingdom,CWL-sky,,CARD-sky
+EG-sky,Cairo,Egypt,CAI-sky,,CAIR-sky
+FR-sky,Paris Charles de Gaulle,France,CDG-sky,,PARI-sky
+IN-sky,Chhatrapati Shivaji Maharaj International,India,BOM-sky,,IBOM-sky
+GR-sky,Corfu,Greece,CFU-sky,,CORF-sky
+Unknown-sky,Crete Heraklion,Crete,HER-sky,,CRET-sky
+DE-sky,Cologne,Germany,CGN-sky,,COLO-sky
+DK-sky,Copenhagen,Denmark,CPH-sky,,COPE-sky
+MX-sky,Mexico City Juarez International,Mexico,MEX-sky,,MEXA-sky
+IN-sky,Kochi,India,COK-sky,,ICOK-sky
+IE-sky,Dublin,Ireland,DUB-sky,,DUBL-sky
+UK-sky,Doncaster Sheffield,United Kingdom,DSA-sky,,DONC-sky
+TR-sky,Dalaman,Turkey,DLM-sky,,DALA-sky
+IN-sky,New Delhi,India,DEL-sky,,IDEL-sky
+ID-sky,Bali (Denpasar),Indonesia,DPS-sky,,DPSI-sky
+AE-sky,Dubai,United Arab Emirates,DXBA-sky,,DXBA-sky
+AE-sky,Dubai,United Arab Emirates,DXB-sky,,DXBA-sky
+AE-sky,Dubai Al Maktoum International,United Arab Emirates,DWC-sky,,DXBA-sky
+QA-sky,Hamad International,Qatar,DOH-sky,,DOHA-sky
+HR-sky,Dubrovnik,Croatia,DBV-sky,,DUBR-sky
+UK-sky,Edinburgh,United Kingdom,EDI-sky,,EDIN-sky
+UK-sky,Nottingham,United Kingdom,NOTT-sky,,NOTT-sky
+UK-sky,East Midlands,United Kingdom,EMA-sky,,NOTT-sky
+UK-sky,Nottingham,United Kingdom,NQT-sky,,NOTT-sky
+UK-sky,Exeter,United Kingdom,EXT-sky,,EXET-sky
+NL-sky,Eindhoven,Netherlands,EIN-sky,,EIND-sky
+ES-sky,Barcelona - El Prat,Spain,BCN-sky,,BARC-sky
+US-sky,New York Newark,United States,EWR-sky,NJ,NYCA-sky
+IQ-sky,Erbil,Iraq,EBL-sky,,EBLA-sky
+ES-sky,España,España,ES-sky,,-sky
+PT-sky,Faro,Portugal,FAO-sky,,FARO-sky
+DE-sky,Frankfurt,Germany,FRAN-sky,,FRAN-sky
+DE-sky,Frankfurt am Main,Germany,FRA-sky,,FRAN-sky
+DE-sky,Frankfurt Hahn,Germany,HHN-sky,,FRAN-sky
+IT-sky,Rome Fiumicino,Italy,FCO-sky,,ROME-sky
+ES-sky,Fuerteventura,Spain,FUE-sky,,FUER-sky
+IT-sky,Florence,Italy,FLR-sky,,FLOR-sky
+PT-sky,Madeira,Portugal,FNC-sky,,FUNC-sky
+FR-sky,France,France,FR-sky,,-sky
+US-sky,San Francisco International,United States,SFO-sky,CA,SFOA-sky
+UK-sky,Glasgow,United Kingdom,GLAS-sky,,GLAS-sky
+UK-sky,Glasgow International,United Kingdom,GLA-sky,,GLAS-sky
+UK-sky,Glasgow Prestwick,United Kingdom,PIK-sky,,GLAS-sky
+CH-sky,Geneva,Switzerland,GVA-sky,,GENE-sky
+Unknown-sky,Gran Canaria Las Palmas,Gran Canaria,LPA-sky,,GRAN-sky
+UK-sky,London Gatwick,United Kingdom,LGW-sky,,LOND-sky
+PL-sky,Gdansk,Poland,GDN-sky,,GADA-sky
+IN-sky,Goa,India,GOI-sky,,IGOI-sky
+SE-sky,Gothenburg Landvetter,Sweden,GOT-sky,,GOTH-sky
+ES-sky,Girona,Spain,GRO-sky,,GERO-sky
+DE-sky,Hamburg International,Germany,HAM-sky,,HAMB-sky
+VN-sky,Ho Chi Minh City,Vietnam,SGN-sky,,SGNV-sky
+FI-sky,Helsinki Vantaa,Finland,HEL-sky,,HELS-sky
+QA-sky,Hamad International,Qatar,DOH-sky,,DOHA-sky
+VN-sky,Hanoi,Vietnam,HAN-sky,,HANV-sky
+Unknown-sky,Crete Heraklion,Crete,HER-sky,,CRET-sky
+UK-sky,Humberside,United Kingdom,HUY-sky,,HUMB-sky
+CN-sky,Hong Kong Intl,China,HKG-sky,,HKGA-sky
+Unknown-sky,Phuket,Phuket Island,HKT-sky,,HKTT-sky
+UK-sky,London Heathrow,United Kingdom,LHR-sky,,LOND-sky
+ES-sky,Ibiza,Spain,IBZ-sky,,IBIZ-sky
+UK-sky,Inverness,United Kingdom,INV-sky,,INVE-sky
+PK-sky,Islamabad,Pakistan,ISB-sky,,ISBA-sky
+TR-sky,Istanbul,Turkey,ISTA-sky,,ISTA-sky
+TR-sky,Istanbul,Turkey,IST-sky,,ISTA-sky
+TR-sky,Istanbul Sabiha,Turkey,SAW-sky,,ISTA-sky
+IM-sky,Ronaldsway,Isle of Man,IOM-sky,,CAST-sky
+TR-sky,Izmir,Turkey,ADB-sky,,IZMI-sky
+KR-sky,Seoul Incheon Int'l,South Korea,ICN-sky,,SELA-sky
+UK-sky,Glasgow International,United Kingdom,GLA-sky,,GLAS-sky
+Unknown-sky,Jersey,Jersey,JER-sky,,JERS-sky
+US-sky,New York John F. Kennedy,United States,JFK-sky,NY,NYCA-sky
+SA-sky,Jeddah,Saudi Arabia,JED-sky,,JEDA-sky
+ZA-sky,Johannesburg,South Africa,JNBA-sky,,JNBA-sky
+ZA-sky,Johannesburg O.R. Tambo,South Africa,JNB-sky,,JNBA-sky
+ZA-sky,Lanseria,South Africa,HLA-sky,,JNBA-sky
+GR-sky,Santorini (Thira),Greece,JTR-sky,,THIR-sky
+GR-sky,Mykonos,Greece,JMK-sky,,MIKO-sky
+JP-sky,Japan,Japan,JP-sky,,-sky
+ES-sky,Jerez,Spain,XRY-sky,,JERE-sky
+PL-sky,Krakow,Poland,KRK-sky,,KRAK-sky
+KW-sky,Kuwait,Kuwait,KWI-sky,,KWIA-sky
+DE-sky,Köln,Germany,CGN-sky,,COLO-sky
+MY-sky,Kuala Lumpur,Malaysia,KULM-sky,,KULM-sky
+MY-sky,Kuala Lumpur International,Malaysia,KUL-sky,,KULM-sky
+MY-sky,Kuala Lumpur Sultan Abdul Azziz Shah,Malaysia,SZB-sky,,KULM-sky
+DK-sky,København Kastrup,Denmark,CPH-sky,,COPE-sky
+IN-sky,Kochi,India,COK-sky,,ICOK-sky
+PK-sky,Karachi,Pakistan,KHI-sky,,KHIA-sky
+IN-sky,Kempegowda International,India,BLR-sky,,IBLR-sky
+UK-sky,London,United Kingdom,LOND-sky,,LOND-sky
+UK-sky,London Heathrow,United Kingdom,LHR-sky,,LOND-sky
+UK-sky,London Gatwick,United Kingdom,LGW-sky,,LOND-sky
+UK-sky,London Stansted,United Kingdom,STN-sky,,LOND-sky
+UK-sky,London Luton,United Kingdom,LTN-sky,,LOND-sky
+UK-sky,London City,United Kingdom,LCY-sky,,LOND-sky
+UK-sky,London Southend,United Kingdom,SEN-sky,,LOND-sky
+UK-sky,Liverpool,United Kingdom,LPL-sky,,LIVE-sky
+UK-sky,Leeds Bradford,United Kingdom,LBA-sky,,LEED-sky
+CY-sky,Larnaca,Cyprus,LCA-sky,,LARN-sky
+UK-sky,Manchester,United Kingdom,MAN-sky,,MANC-sky
+ES-sky,Malaga,Spain,AGP-sky,,MALA-sky
+ES-sky,Madrid,Spain,MAD-sky,,MADR-sky
+DE-sky,Munich,Germany,MUC-sky,,MUNI-sky
+PH-sky,Manila Ninoy Aquino,Philippines,MNL-sky,,MNLP-sky
+IN-sky,Mumbai,India,BOM-sky,,IBOM-sky
+MT-sky,Luqa Malta International,Malta,MLA-sky,,LUQA-sky
+UK-sky,Teesside International,United Kingdom,MME-sky,,MMEA-sky
+IT-sky,Milan,Italy,MILA-sky,,MILA-sky
+IT-sky,Milan Malpensa,Italy,MXP-sky,,MILA-sky
+UK-sky,Newcastle,United Kingdom,NCL-sky,,NEWC-sky
+IN-sky,New Delhi,India,DEL-sky,,IDEL-sky
+PH-sky,Manila Ninoy Aquino,Philippines,MNL-sky,,MNLP-sky
+UK-sky,Norwich,United Kingdom,NWI-sky,,NORW-sky
+UK-sky,Newquay,United Kingdom,NQY-sky,,NEWQ-sky
+IT-sky,Naples International,Italy,NAP-sky,,NAPL-sky
+FR-sky,Nice,France,NCE-sky,,NICE-sky
+US-sky,New York,United States,NYCA-sky,NY,NYCA-sky
+US-sky,New York John F. Kennedy,United States,JFK-sky,NY,NYCA-sky
+US-sky,New York Newark,United States,EWR-sky,NJ,NYCA-sky
+RO-sky,Bucharest Otopeni,Romania,OTP-sky,,BUCH-sky
+PT-sky,Porto,Portugal,OPO-sky,,PORT-sky
+IE-sky,Cork,Ireland,ORK-sky,,CORK-sky
+NO-sky,Oslo,Norway,OSLO-sky,,OSLO-sky
+NO-sky,Oslo Gardermoen,Norway,OSL-sky,,OSLO-sky
+NO-sky,Oslo Torp,Norway,TRF-sky,,OSLO-sky
+US-sky,Orlando,United States,ORLB-sky,FL,ORLB-sky
+US-sky,Orlando International,United States,MCO-sky,FL,ORLB-sky
+US-sky,Orlando Sanford,United States,SFB-sky,FL,ORLB-sky
+PL-sky,Warszawa Okecie,Poland,WAW-sky,,WARS-sky
+ES-sky,Palma - Majorca,Spain,PMI-sky,,PALM-sky
+CZ-sky,Prague,Czechia,PRG-sky,,PRAG-sky
+FR-sky,Paris,France,PARI-sky,,PARI-sky
+FR-sky,Paris Charles de Gaulle,France,CDG-sky,,PARI-sky
+FR-sky,Paris Orly,France,ORY-sky,,PARI-sky
+FR-sky,Paris Beauvais,France,BVA-sky,,PARI-sky
+PT-sky,Porto,Portugal,OPO-sky,,PORT-sky
+CY-sky,Paphos,Cyprus,PFO-sky,,PAPH-sky
+UK-sky,Glasgow Prestwick,United Kingdom,PIK-sky,,GLAS-sky
+AU-sky,Perth,Australia,PER-sky,,PERA-sky
+EC-sky,Quito,Ecuador,UIO-sky,,UIOA-sky
+JO-sky,Amman Queen Alia,Jordan,AMM-sky,,AMMA-sky
+QA-sky,Qatar,Qatar,QA-sky,,-sky
+NZ-sky,Queenstown,New Zealand,ZQN-sky,,ZQNN-sky
+CN-sky,Qingdao,China,TAO-sky,,CTAO-sky
+AU-sky,Brisbane,Australia,BNE-sky,,BNEA-sky
+VN-sky,Phu Quoc,Vietnam,PQC-sky,,PQCV-sky
+QA-sky,Hamad International,Qatar,DOH-sky,,DOHA-sky
+VN-sky,Da Nang,Vietnam,DAD-sky,,DADV-sky
+MX-sky,Cancun,Mexico,CUN-sky,,CUNA-sky
+LV-sky,Riga International,Latvia,RIX-sky,,RIGA-sky
+SA-sky,Riyadh,Saudi Arabia,RUH-sky,,RUHA-sky
+IT-sky,Rome,Italy,ROME-sky,,ROME-sky
+IT-sky,Rome Fiumicino,Italy,FCO-sky,,ROME-sky
+IT-sky,Rome Ciampino,Italy,CIA-sky,,ROME-sky
+MA-sky,Marrakech Menara,Morocco,RAK-sky,,MARR-sky
+IM-sky,Ronaldsway,Isle of Man,IOM-sky,,CAST-sky
+GR-sky,Rhodes,Greece,RHO-sky,,RHOD-sky
+ES-sky,Región de Murcia,Spain,RMU-sky,,RMUA-sky
+IN-sky,Rajiv Gandhi International,India,HYD-sky,,IHYD-sky
+UK-sky,London Stansted,United Kingdom,STN-sky,,LOND-sky
+UK-sky,Southampton,United Kingdom,SOU-sky,,SOUT-sky
+AU-sky,Sydney,Australia,SYD-sky,,SYDA-sky
+UK-sky,London Southend,United Kingdom,SEN-sky,,LOND-sky
+BG-sky,Sofia,Bulgaria,SOF-sky,,SOFI-sky
+GR-sky,Thessaloniki,Greece,SKG-sky,,THES-sky
+HR-sky,Split,Croatia,SPU-sky,,SPLI-sky
+VN-sky,Ho Chi Minh City,Vietnam,SGN-sky,,SGNV-sky
+US-sky,San Francisco International,United States,SFO-sky,CA,SFOA-sky
+ES-sky,Seville,Spain,SVQ-sky,,SEVI-sky
+ES-sky,Tenerife,Spain,TENE-sky,,TENE-sky
+ES-sky,Tenerife South,Spain,TFS-sky,,TENE-sky
+ES-sky,Tenerife North,Spain,TFN-sky,,TENE-sky
+GR-sky,Thessaloniki,Greece,SKG-sky,,THES-sky
+UK-sky,Teesside International,United Kingdom,MME-sky,,MMEA-sky
+VN-sky,Thành phố Hồ Chí Minh,Vietnam,SGN-sky,,SGNV-sky
+AL-sky,Tirana,Albania,TIA-sky,,TIRA-sky
+EE-sky,Tallinn,Estonia,TLL-sky,,TALL-sky
+IL-sky,Ben Gurion Intl,Israel,TLV-sky,,TELA-sky
+CA-sky,Toronto,Canada,YTOA-sky,,YTOA-sky
+UK-sky,United Kingdom,United Kingdom,UK-sky,,-sky
+US-sky,United States,United States,US-sky,,-sky
+EC-sky,Quito,Ecuador,UIO-sky,,UIOA-sky
+AE-sky,United Arab Emirates,United Arab Emirates,AE-sky,,-sky
+Unknown-sky,Koh Samui / Samui Island,Koh Samui / Samui Island,USM-sky,,USMT-sky
+UA-sky,Ukraine,Ukraine,UA-sky,,-sky
+TH-sky,Pattaya (Chonburi),Thailand,UTP-sky,,UTPT-sky
+Unknown-sky,Busuanga,Busuanga Island,USU-sky,,USUP-sky
+MN-sky,Ulaanbaatar,Mongolia,ULN-sky,,ULNA-sky
+IN-sky,Udaipur,India,UDR-sky,,IUDR-sky
+AT-sky,Vienna,Austria,VIE-sky,,VIEN-sky
+LT-sky,Vilnius,Lithuania,VNO-sky,,VILN-sky
+ES-sky,Valencia,Spain,VLC-sky,,VALE-sky
+IT-sky,Venice,Italy,VENI-sky,,VENI-sky
+IT-sky,Venice Marco Polo,Italy,VCE-sky,,VENI-sky
+IT-sky,Venice Treviso,Italy,TSF-sky,,VENI-sky
+IT-sky,Verona International,Italy,VRN-sky,,VERO-sky
+BG-sky,Varna,Bulgaria,VAR-sky,,VARN-sky
+FI-sky,Helsinki Vantaa,Finland,HEL-sky,,HELS-sky
+VN-sky,Vietnam,Vietnam,VN-sky,,-sky
+PL-sky,Warsaw Chopin,Poland,WAW-sky,,WARS-sky
+PL-sky,Wroclaw,Poland,WRO-sky,,WROC-sky
+PL-sky,Warsaw Modlin,Poland,WMI-sky,,WMIP-sky
+US-sky,Washington,United States,WASA-sky,DC,WASA-sky
+US-sky,Washington Dulles,United States,IAD-sky,VA,WASA-sky
+US-sky,Washington Ronald Reagan,United States,DCA-sky,VA,WASA-sky
+US-sky,Baltimore Washington International,United States,BWI-sky,MD,WASA-sky
+NZ-sky,Wellington,New Zealand,WLG-sky,,WLGN-sky
+UK-sky,Birmingham,United Kingdom,BHX-sky,,BIRM-sky
+UK-sky,Leeds Bradford,United Kingdom,LBA-sky,,LEED-sky
+ES-sky,Jerez,Spain,XRY-sky,,JERE-sky
+CN-sky,Xi An Xianyang,China,XIY-sky,,XIAN-sky
+GI-sky,Gibraltar,Gibraltar,GIB-sky,,GIBR-sky
+CN-sky,Xiamen,China,XMN-sky,,CXMN-sky
+US-sky,Fayetteville Northwest Arkansas Rgn,United States,XNA-sky,AR,FYVA-sky
+CN-sky,Xining,China,XNN-sky,,CXNN-sky
+SG-sky,Seletar,Singapore,XSP-sky,,SINS-sky
+LA-sky,Xieng Khouang,Laos,XKH-sky,,XKHA-sky
+BR-sky,Chapeco,Brazil,XAP-sky,,XAPA-sky
+FR-sky,Châlons-en-Champagne,France,XCR-sky,,XCRA-sky
+CA-sky,Toronto,Canada,YTOA-sky,,YTOA-sky
+CA-sky,Toronto Pearson International,Canada,YYZ-sky,,YTOA-sky
+CA-sky,Hamilton,Canada,YHM-sky,,YTOA-sky
+CA-sky,Toronto Island,Canada,YTZ-sky,,YTOA-sky
+CA-sky,Kitchener / Waterloo,Canada,YKF-sky,,YTOA-sky
+CA-sky,Toronto Buttonville,Canada,YKZ-sky,,YTOA-sky
+MM-sky,Yangon,Myanmar,RGN-sky,,RGNM-sky
+US-sky,New York,United States,NYCA-sky,NY,NYCA-sky
+US-sky,New York John F. Kennedy,United States,JFK-sky,NY,NYCA-sky
+US-sky,New York Newark,United States,EWR-sky,NJ,NYCA-sky
+HR-sky,Zagreb,Croatia,ZAG-sky,,ZAGR-sky
+CH-sky,Zurich,Switzerland,ZRH-sky,,ZURI-sky
+GR-sky,Zante (Zakynthos),Greece,ZTH-sky,,ZAKI-sky
+HR-sky,Zadar,Croatia,ZAD-sky,,ZADA-sky
+ZA-sky,South Africa,South Africa,ZA-sky,,-sky
+NZ-sky,Queenstown,New Zealand,ZQN-sky,,ZQNN-sky
+TZ-sky,Zanzibar,Tanzania,ZNZ-sky,,ZNZA-sky
+NZ-sky,New Zealand,New Zealand,NZ-sky,,-sky
+ZW-sky,Zimbabwe,Zimbabwe,ZW-sky,,-sky
+BD-sky,Sylhet,Bangladesh,ZYL-sky,,ZYLA-sky

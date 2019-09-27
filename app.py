@@ -4,6 +4,11 @@ from ss_api_functions import formatBqUrl, BrowseQuotes
 # Configure application
 app = Flask(__name__)
 
+# Define default values - TODO to be replaced by database and/or user defined parameters
+country = 'US' # User's skyscanner home country
+currency = "USD" # User's skyscanner currency
+locale = 'en-US' # User's skyscanner locale
+
 @app.after_request
 def after_request(response):
     """Disable caching"""
@@ -20,8 +25,10 @@ def index():
 @app.route("/search_bq", methods=["GET", "POST"])
 def search_bq():
     """
-    Input a BrowseQuotes query (list of dictionaries and get a response)
-    CURRENTLY ONLY TAKES A SINGLE TRIP NEED TO FIGURE OUT BEST FORMAT FOR MULTIPLE
+    GET: Presents search_bq.html to allow user to input queries.
+    POST: Reads user inputs and number of queries requested. Formats URL and passes
+    to BrowseQuotes. Returns results as results_bq.html, providing the single
+    cheapest matching result for each individual query.
     """
     # Reached via POST (form submitted)
     if request.method == "POST":
@@ -30,7 +37,7 @@ def search_bq():
         print(rows)
         queryList = []
         for i in range(rows+1):
-            queryList.append({'country' : 'US', 'currency': 'USD', 'locale' : 'en-US',
+            queryList.append({'country' : country, 'currency': currency, 'locale' : locale,
                         'originplace': request.form.get("originplace_" + str(i)),
                         'destinationplace': request.form.get("destinationplace_" + str(i)),
                         'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i))})

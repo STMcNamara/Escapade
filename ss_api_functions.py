@@ -1,4 +1,4 @@
-import requests, json, csv
+import requests, json, csv, string
 
 # Define API header information
 headers = {
@@ -84,7 +84,31 @@ def BrowseQuotesAPI(url, headers):
 
     return results
 
+def getLocationsAll():
+    """
+    Generates a list of dictionaries for all airports, by querying List Places
+    endpoint one letter at a time.
+    Note: This is unnessary on a partner API, as there is an additional endpoint
+    for all. Also currently unsure if this will provide ALL places.
+    """
+    # Create empty list for places
+    places = []
+    # Iterate for each letter in alphabet
+    for letter in string.ascii_lowercase:
+        # Define fixed URL and query parameters
+        url =  "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/UK/GBP/en-GB/"
+        querystring = {"query":letter}
+        # Call API and receive string response. Example format in ./dev_area/results_places.txt
+        response_string = requests.request("GET", url, headers=headers, params=querystring)
+        # Convert to JSON / dictionary
+        response_json = response_string.json()
+        # Retreive places as list of dictionaries, and append to full list
+        places_list_letter = response_json["Places"]
+        places += places_list_letter
 
+    # TODO - currently returns duplicates!!!    
+    print(places)
+    return places
 
 """
 Test area
@@ -102,3 +126,6 @@ print(resultsdict)
 
 DicttoCSV(resultsdict)
 """
+
+places = getLocationsAll()
+DicttoCSV(places)
