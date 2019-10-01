@@ -160,8 +160,6 @@ def BrowseQuotesAPI(url, headers):
         if carrier['CarrierId'] in results['Outbound_CarrierID']:
             results['Outbound_CarrierNames'].append(carrier['Name'])
 
-
-
     return results
 
 def getLocationsAll():
@@ -201,7 +199,7 @@ def getLocationsAll():
     # TODO - currently returns duplicates!!!
     return places
 
-"""Test Area"""
+"""Test Area
 # url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-01"
 # BrowseQuotes(url,headers)
 # url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-02"
@@ -212,3 +210,4 @@ urllist = formatBqUrl(dict)
 resultsdict = BrowseQuotes(urllist)
 print(resultsdict)
 DicttoCSV(resultsdict)
+"""

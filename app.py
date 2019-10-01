@@ -5,9 +5,9 @@ from ss_api_functions import formatBqUrl, BrowseQuotes
 app = Flask(__name__)
 
 # Define default values - TODO to be replaced by database and/or user defined parameters
-country = 'US' # User's skyscanner home country
-currency = "USD" # User's skyscanner currency
-locale = 'en-US' # User's skyscanner locale
+country = 'UK' # User's skyscanner home country
+currency = "GBP" # User's skyscanner currency
+locale = 'en-GB' # User's skyscanner locale
 
 @app.after_request
 def after_request(response):
