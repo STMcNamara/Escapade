@@ -21,10 +21,10 @@
       {% for result in resultsDict %}
       <tr>
         <td>{{ result['Outbound_Date'] }}</td>
-        <td>{{ result['Outbound_OriginID'] }}</td>
-        <td>{{ result['Outbound_DestinationID'] }}</td>
+        <td>{{ result['Outbound_OriginPlace'] }}</td>
+        <td>{{ result['Outbound_DestinationPlace'] }}</td>
         <td>${{ result['MinPrice'] }}</td>
-        <td>{{ result['Outbound_CarrierID'] }}</td>
+        <td>{{ result['Outbound_CarrierNames'] }}</td>
       </tr>
       {% endfor %}
     </table>

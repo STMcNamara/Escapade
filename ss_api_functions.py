@@ -138,12 +138,29 @@ def BrowseQuotesAPI(url, headers):
     # Convert .json into Python lists and dictionaries
     response_json = response_string.json()
     # Extract required data into a single dictionary.
-    Quotes_list = response_json["Quotes"]#
+    Quotes_list = response_json["Quotes"]
+    Places_list = response_json["Places"]
+    Carriers_list = response_json["Carriers"]
     results['MinPrice'] = Quotes_list[0]['MinPrice']
     results['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
     results['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
-    results['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds'][0]
+    results['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds']
     results['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
+
+    for place in Places_list:
+        if place['PlaceId'] == results['Outbound_OriginID']:
+            results['Outbound_OriginPlace'] = place['Name']
+        elif place['PlaceId'] == results['Outbound_DestinationID']:
+            results['Outbound_DestinationPlace'] = place['Name']
+
+
+    # There may be multiple carriers so requires a lists
+    results['Outbound_CarrierNames'] = []
+    for carrier in Carriers_list:
+        if carrier['CarrierId'] in results['Outbound_CarrierID']:
+            results['Outbound_CarrierNames'].append(carrier['Name'])
+
+
 
     return results
 
@@ -183,3 +200,15 @@ def getLocationsAll():
 
     # TODO - currently returns duplicates!!!
     return places
+
+"""Test Area"""
+# url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-01"
+# BrowseQuotes(url,headers)
+# url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-02"
+# BrowseQuotes(url,headers)
+csv_input = "/home/stmcnamara26/GITS/Escapade/dev_area/quoteinput_1.csv"
+dict = CSVtoDict(csv_input)
+urllist = formatBqUrl(dict)
+resultsdict = BrowseQuotes(urllist)
+print(resultsdict)
+DicttoCSV(resultsdict)
