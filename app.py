@@ -19,16 +19,30 @@ def after_request(response):
 
 @app.route("/")
 def index():
-    """Placeholder for home page)"""
+    """Placeholder for home page"""
     return render_template("index.html")
 
 @app.route("/search_bq", methods=["GET", "POST"])
 def search_bq():
     """
-    GET: Presents search_bq.html to allow user to input queries.
-    POST: Reads user inputs and number of queries requested. Formats URL and passes
-    to BrowseQuotes. Returns results as results_bq.html, providing the single
-    cheapest matching result for each individual query.
+    GET:
+        Presents search_bq.html to allow user to input queries.
+
+    POST:
+        INPUTS:
+            Reads user inputs from search_bq.html via request.form.get (where N
+            is the number of query roms):
+                originplace_[0-N] (string): In the format Skyscanner PlaceId
+                destination_[0-N] (string): In the format Skyscanner PlaceId
+                outboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
+            TODO - placeholder - uses the globals country, currency and locale
+
+        CALLS:
+            Passes data to formatBqUrl and BrowseQuotes in ss_api_functions.py
+
+        RETURNS:
+            results_bq.html with:
+                resultsDict (list(of dictionaries)): From BrowseQuotes
     """
     # Reached via POST (form submitted)
     if request.method == "POST":
@@ -41,13 +55,11 @@ def search_bq():
                         'originplace': request.form.get("originplace_" + str(i)),
                         'destinationplace': request.form.get("destinationplace_" + str(i)),
                         'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i))})
-        print(queryList)
+
         # Produce URL string for BrowseQuotes call
         query_URL = formatBqUrl(queryList)
-        print(query_URL)
         # Call BrowseQuotes and return list of dictionaries - CURRENTLY 1 ITEM
         resultsDict = BrowseQuotes(query_URL)
-        print(resultsDict)
         return render_template("results_bq.html", resultsDict=resultsDict)
 
     # Reached via GET (display form)
