@@ -39,6 +39,18 @@ def DicttoCSV(dict):
     """
     GENERAL PURPOSE - Reads a list of dictionaries and converts to a
     results.csv file in the dev_area
+
+    Args:
+        dict(list(of dictionaries)): A list of dictionaries, each of which must
+        have keys that are the same as the list dictionary in the list.
+
+    Returns:
+        Creates a .csv file named results.csv in which the first row is the
+        dictionary keys, and each following row is the associated values for each
+        dictionary in the list.
+
+    Exceptions:
+        TODO
     """
     keys = dict[0].keys()
     with open('dev_area/results.csv', 'w') as results:
@@ -126,7 +138,19 @@ def BrowseQuotesAPI(url, headers):
         file.
 
     Returns:
-        results (dictionary): TODO - values to be decided format not finalised.
+        results (dictionary): Revalant items from the returned .json, formatted
+        as a single dictionary with the following keys:
+            MinPrice (string): The price of the trip in the requested currency
+            Outbound_OriginID (string): Numeric location identifer for origin
+            Outbound_DestinationID (string): Numeric location identifer for
+                destination
+            Outbound_CarrierID (list): A list of numeric identifiers for the
+                carrier(s) for the trip
+            Outbound_Date (string): Date of the trip
+            Outbound_OriginPlace (string): Name of the origin place
+            Outbound_DestinationPlace (string): Name of the destination place
+            Outbound_CarrierNames (list): A list of the names of the Carriers
+                for the trip
 
     Exceptions:
         TODO
@@ -199,7 +223,7 @@ def getLocationsAll():
     # TODO - currently returns duplicates!!!
     return places
 
-"""Test Area
+# Test Area
 # url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-01"
 # BrowseQuotes(url,headers)
 # url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-02"
@@ -210,4 +234,3 @@ urllist = formatBqUrl(dict)
 resultsdict = BrowseQuotes(urllist)
 print(resultsdict)
 DicttoCSV(resultsdict)
-"""

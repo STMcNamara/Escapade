@@ -1,3 +1,10 @@
+"""
+This file manages the hosting and navigation of the Escapade webpage via
+the flask framework. In also conducts intermediary formatting and information
+transfer between the html/js front end, helper functions backend, and the
+Escapade database.
+"""
+
 from flask import Flask, abort, redirect, render_template, request
 from ss_api_functions import formatBqUrl, BrowseQuotes
 
@@ -31,7 +38,7 @@ def search_bq():
     POST:
         INPUTS:
             Reads user inputs from search_bq.html via request.form.get (where N
-            is the number of query roms):
+            is the number of query rows):
                 originplace_[0-N] (string): In the format Skyscanner PlaceId
                 destination_[0-N] (string): In the format Skyscanner PlaceId
                 outboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
@@ -41,7 +48,8 @@ def search_bq():
             Passes data to formatBqUrl and BrowseQuotes in ss_api_functions.py
 
         RETURNS:
-            results_bq.html with:
+            results_bq.html consisting of an automatically generated table
+            that contains the query results from where:
                 resultsDict (list(of dictionaries)): From BrowseQuotes
     """
     # Reached via POST (form submitted)
