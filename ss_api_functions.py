@@ -15,7 +15,7 @@ headers = {
 def CSVtoDict(csv_input_file):
     """
     GENERAL PURPOSE - Opens a CSV containing data with a single header row and
-    returns a list of dictionaries for each row
+    returns a list of dictionaries for each row containing data
 
     Args:
         csv_input_file (.csv file): A .csv file formated with a single header
@@ -45,7 +45,7 @@ def DicttoCSV(dict):
 
     Args:
         dict(list(of dictionaries)): A list of dictionaries, each of which must
-        have keys that are the same as the list dictionary in the list.
+        have keys that are the same as the first dictionary in the list.
 
     Returns:
         Creates a .csv file named results.csv in which the first row is the
@@ -74,7 +74,7 @@ def formatBqUrl(inputDicts):
 
     Args:
         inputDicts (list(of dictionaries)): A list of dictionaries, each containing keys
-        required to contruct an URL for the BrowseQuotes API endpoint.
+        required to construct an URL for the BrowseQuotes API endpoint.
 
     Returns:
         urlListBq (list(of strings)): A list of strings in the correct URL format to make
@@ -110,8 +110,8 @@ def BrowseQuotes(urlList):
         for details).
 
     Returns:
-        results (list(of dictionaries)): A list of dictionaries, each with key value
-        pairs as a minimum of: TODO - this may change.
+        results (list(of dictionaries)): A list of dictionaries, the format of
+        which is defined within BrowseQuotesAPI function.
 
     Exceptions:
         TODO
@@ -225,19 +225,3 @@ def getLocationsAll():
 
     # TODO - currently returns duplicates!!!
     return places
-
-# Test Area
-# url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-01"
-# BrowseQuotes(url,headers)
-# url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-02"
-# BrowseQuotes(url,headers)
-#csv_input = "/home/stmcnamara26/GITS/Escapade/dev_area/quoteinput_1.csv"
-#dict = CSVtoDict(csv_input)
-#print(dict[0])
-#urllist = formatBqUrl(dict)
-#resultsdict = BrowseQuotes(urllist)
-#print(resultsdict)
-# DicttoCSV(resultsdict)
-# print (url)
-# results = BrowseQuotesAPI(url,headers)
-# print(results)

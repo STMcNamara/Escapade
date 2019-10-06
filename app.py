@@ -1,6 +1,6 @@
 """
 This file manages the hosting and navigation of the Escapade webpage via
-the flask framework. In also conducts intermediary formatting and information
+the flask framework. It also conducts intermediary formatting and information
 transfer between the html/js front end, helper functions backend, and the
 Escapade database.
 """
@@ -92,7 +92,7 @@ def logout():
 
 @app.route("/register")
 def register():
-    """TODO - Placeholder for accounts functionality - Log Out"""
+    """TODO - Placeholder for accounts functionality - Register"""
     return render_template("todo.html")
 
 @app.route("/login")
