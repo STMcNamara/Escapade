@@ -31,8 +31,11 @@ def CSVtoDict(csv_input_file):
     # Open .csv and read each line
     inputFile = open(csv_input_file)
     inputDicts = csv.DictReader(inputFile)
-
-    return inputDicts
+    # Convert DictRead object to list
+    results_list = []
+    for row in inputDicts:
+        results_list.append(row)
+    return results_list
 
 
 def DicttoCSV(dict):
@@ -228,9 +231,13 @@ def getLocationsAll():
 # BrowseQuotes(url,headers)
 # url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/SFO-sky/JFK-sky/2019-12-02"
 # BrowseQuotes(url,headers)
-csv_input = "/home/stmcnamara26/GITS/Escapade/dev_area/quoteinput_1.csv"
-dict = CSVtoDict(csv_input)
-urllist = formatBqUrl(dict)
-resultsdict = BrowseQuotes(urllist)
-print(resultsdict)
-DicttoCSV(resultsdict)
+#csv_input = "/home/stmcnamara26/GITS/Escapade/dev_area/quoteinput_1.csv"
+#dict = CSVtoDict(csv_input)
+#print(dict[0])
+#urllist = formatBqUrl(dict)
+#resultsdict = BrowseQuotes(urllist)
+#print(resultsdict)
+# DicttoCSV(resultsdict)
+# print (url)
+# results = BrowseQuotesAPI(url,headers)
+# print(results)

@@ -6,7 +6,8 @@ Escapade database.
 """
 
 from flask import Flask, abort, redirect, render_template, request
-from ss_api_functions import formatBqUrl, BrowseQuotes
+from pathlib import Path
+from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict
 
 # Configure application
 app = Flask(__name__)
@@ -15,6 +16,11 @@ app = Flask(__name__)
 country = 'UK' # User's skyscanner home country
 currency = "GBP" # User's skyscanner currency
 locale = 'en-GB' # User's skyscanner locale
+
+# PLACEHOLDER - Load SKyscanner places into dictionary for use in html forms
+ss_places_csv = './data/results_places.csv'
+ss_places = CSVtoDict(ss_places_csv)
+
 
 @app.after_request
 def after_request(response):
@@ -72,7 +78,7 @@ def search_bq():
 
     # Reached via GET (display form)
     else:
-        return render_template("search_bq.html")
+        return render_template("search_bq.html", ss_places=ss_places)
 
 @app.route("/password")
 def password():

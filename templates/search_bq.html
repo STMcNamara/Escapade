@@ -37,14 +37,24 @@ Prototype for the input to the search_bq function!
 <form action="/search_bq" method="post">
     <div class="form-group">
       <table id="inputTable" style="width:100%">
-        <td><input autocomplete="off" name="originplace_0" placeholder="Origin Place" type="text"/></td>
-        <td><input autocomplete="off" name="destinationplace_0" placeholder="Destination Place" type="text"/></td>
+        <td><select name="originplace_0">
+          {% for row in ss_places %}
+            <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
+          {% endfor %}
+        </td>
+        <td><select name="destinationplace_0">
+          {% for row in ss_places %}
+            <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
+          {% endfor %}
+        </td>
         <td><input autocomplete="off" name="outboundpartialdate_0" type="date"/></td>
       </table>
     </div>
     <button class="btn btn-primary" type="submit">Submit</button>
     <button class="btn btn-secondary" type="button" onclick=addRow()>Add query</button>
   <input type="hidden" id="rowNum" name="rowNum" value="0">
+
+  <p>{{ ss_places[0] }}
 
 </form>
 
