@@ -21,8 +21,16 @@
     var destinationplace = row.insertCell(1);
     var outboundpartialdate = row.insertCell(2);
     // Inject input html code with unique identifiers for the current rowNo
-    originplace.innerHTML = '<input autocomplete="off" name="originplace_' + id + '" placeholder="Origin Place" type="text"/>';
-    destinationplace.innerHTML = '<input autocomplete="off" name="destinationplace_' + id + '" placeholder="Destination Place" type="text"/>';
+    originplace.innerHTML = '<select name="originplace_' + id + '">\
+                              {% for row in ss_places %}\
+                                <option value={{ row["PlaceId"] }}> {{ row["PlaceName"] }}</option>\
+                              {% endfor %}\
+                            </select>';
+    destinationplace.innerHTML = '<select name="destinationplace_' + id + '">\
+                              {% for row in ss_places %}\
+                                <option value={{ row["PlaceId"] }}> {{ row["PlaceName"] }}</option>\
+                              {% endfor %}\
+                            </select>';
     outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" type="date"/>';
     //Update the rowNum input and increment for next row addition
     document.getElementById("rowNum").value = id;
@@ -41,11 +49,13 @@ Prototype for the input to the search_bq function!
           {% for row in ss_places %}
             <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
           {% endfor %}
+          </select>
         </td>
         <td><select name="destinationplace_0">
           {% for row in ss_places %}
             <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
           {% endfor %}
+          </select>
         </td>
         <td><input autocomplete="off" name="outboundpartialdate_0" type="date"/></td>
       </table>
