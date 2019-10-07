@@ -189,6 +189,69 @@ def BrowseQuotesAPI(url, headers):
 
     return results
 
+def formatLsData(inputDicts):
+    '''
+    Formats a query list (of dictionaries) into a list of strings to be used
+    as an arguement for the liveSearchCreateSession function. Key value pairs
+    are: "country", "currency", "locale","originplace","destinationplace",
+    "outboundpartialdate","adults".
+
+    Refer to:
+    https://skyscanner.github.io/slate/#flights-live-prices
+
+    Args:
+        inputDicts (list(of dictionaries)): A list of dictionaries, each containing keys
+        required to construct an URL for the Live Flight Search API endpoint.
+
+    Returns:
+        queryStringList (list(of strings): A string formated with query data to provide to
+        the API endpoint.
+
+    Exceptions:
+        TODO
+    '''
+    # TODO - prototype assumes dictionary contains only required parameters (no
+    # optional parameters)
+    queryStringList = []
+    for query in inputDicts:
+        # Create string and provide first values
+        queryString = ('country=' + query['country'] +
+                      '&' + 'currency=' + query['currency'] +
+                      '&' + 'locale=' + query['locale'] +
+                      '&' + 'originPlace=' + query['originplace'] +
+                      '&' + 'destinationPlace=' + query['destinationplace'] +
+                      '&' + 'outboundDate=' + query['outboundpartialdate'] +
+                      '&' + 'adults=' + query['adults'])
+
+        queryStringList.append(queryString)
+
+    return queryStringList
+
+
+def liveSearchCreateSession(query, headers):
+    '''
+    The first of two functions required to obtain flight results from the
+    Skyscanner API Live Flight Search Endpoint. This function takes flight
+    query data and returns a session key, used in TODO to retrieve filtered
+    query information.
+
+    Args:
+        data - TODO
+
+        headers (dictionary): A dictionary containing the html headers required
+        to be submitted with the API call. This is a global variable within this
+        file.
+
+    Returns:
+        session key (string) - TODO
+    '''
+    url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0"
+    print(url)
+    print(query)
+    print(headers)
+    response = requests.request("POST", url, data=query, headers=headers)
+    print(response.text)
+
 def getLocationsAll():
     """
     This is a WIP tool to gather all place names and codes supported by the
@@ -225,3 +288,10 @@ def getLocationsAll():
 
     # TODO - currently returns duplicates!!!
     return places
+
+# Test Area:
+testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
+list = formatLsData(testDict)
+testquery = list[0]
+print(testquery)
+liveSearchCreateSession(testquery,headers)
