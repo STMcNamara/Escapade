@@ -9,7 +9,8 @@ import requests, json, csv, string
 # Define API header information
 headers = {
     'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com",
-    'x-rapidapi-key': "4011c6f5a6mshcd5d2ca5e8bab38p1eb8bcjsn5241ab378907"
+    'x-rapidapi-key': "4011c6f5a6mshcd5d2ca5e8bab38p1eb8bcjsn5241ab378907",
+    'content-type': "application/x-www-form-urlencoded"
     }
 
 def CSVtoDict(csv_input_file):
@@ -250,7 +251,9 @@ def liveSearchCreateSession(query, headers):
     print(query)
     print(headers)
     response = requests.request("POST", url, data=query, headers=headers)
+    print(response.headers)
     print(response.text)
+    # TODO - extract session key from location
 
 def getLocationsAll():
     """
