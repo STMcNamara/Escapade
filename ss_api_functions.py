@@ -275,6 +275,9 @@ def LiveSearchGetData(key, headers=headers):
     Retreives all data from Live Flight Search poll session results using a
     session key. Continues to refresh while results are generated until query
     status becomes "UpdatesComplete"
+
+    TODO - review pagination and sorting options - only retreives 10, not
+    sure in what order.
     '''
     # Append key to API enpoint URL:
     url = ("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/uk2/v1.0/" +
@@ -298,9 +301,22 @@ def LiveSearchGetData(key, headers=headers):
 
 def liveSearchFormatResult(liveQuotes):
     '''
+    Formats the dictionary of dictionaries into a list of dictionaries for display
     TODO - placeholder
     '''
+    lQuoteList = []
+    itinariesList = liveQuotes["Itineraries"]
+    legList = liveQuotes["Legs"]
 
+    # Populate list with OutboundLegId
+    for row in itinariesList:
+        lQuoteList.append({"OutboundLegId":row["OutboundLegId"]})
+
+    print(lQuoteList)
+
+    # TODO - populate required data for each ID
+
+    return lQuoteList
 
 def getLocationsAll():
     """
@@ -347,5 +363,4 @@ testquery = list[0]
 key = liveSearchCreateSession(testquery,headers)
 print(key)
 quotes = LiveSearchGetData(key)
-list =[quotes]
-DicttoCSV(list)
+IDs = liveSearchFormatResult(quotes)
