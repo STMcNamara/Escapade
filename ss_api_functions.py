@@ -161,7 +161,7 @@ def BrowseQuotesAPI(url, headers):
     """
     # Create blank dictionary to store required data
     results = {}
-    # Make the API call and receive .json string
+    # Make the API call and receive .json formatted string
     response_string = requests.request("GET", url, headers=headers)
     # Convert .json into Python lists and dictionaries
     response_json = response_string.json()
@@ -244,15 +244,32 @@ def liveSearchCreateSession(query, headers):
         file.
 
     Returns:
-        session key (string) - TODO
+        session key (string): A session key to make flight data queries via
+        GET requests
+
+    Exceptions:
+        TODO - this is definately neccessary particulary to handle rate
+        limit issues
     '''
     url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0"
-    print(url)
-    print(query)
-    print(headers)
+    # Make the API call and receive .json formatted string
     response = requests.request("POST", url, data=query, headers=headers)
-    print(response.headers)
-    print(response.text)
+    # For a successful response
+    if response.status_code == 200 or 201:
+        responseHead = response.headers
+        responseBody= response.text
+        print("Code:" + str(response.status_code))
+        print("Headers:" + str(responseHead))
+        print("Body:" + responseBody)
+        location = responseHead['Location']
+        sessionKey = location.rsplit('/',1)[-1]
+
+
+    else:
+        print("An error has occurred:" + str(response.status_code))
+        sessionKey = 0
+
+    return sessionKey
     # TODO - extract session key from location
 
 def getLocationsAll():
@@ -296,5 +313,6 @@ def getLocationsAll():
 testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
 list = formatLsData(testDict)
 testquery = list[0]
-print(testquery)
-liveSearchCreateSession(testquery,headers)
+# print(testquery)
+key = liveSearchCreateSession(testquery,headers)
+print(key)
