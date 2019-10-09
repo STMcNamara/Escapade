@@ -4,7 +4,7 @@ data received from the RapidAPI skyscanner API. Refer to:
 https://rapidapi.com/skyscanner/api/skyscanner-flight-search
 """
 
-import requests, json, csv, string
+import requests, json, csv, string, time
 
 # Define API header information
 headers = {
@@ -61,7 +61,6 @@ def DicttoCSV(dict):
         dict_writer = csv.DictWriter(results, keys)
         dict_writer.writeheader()
         dict_writer.writerows(dict)
-
 
 def formatBqUrl(inputDicts):
     """
@@ -264,13 +263,44 @@ def liveSearchCreateSession(query, headers):
         location = responseHead['Location']
         sessionKey = location.rsplit('/',1)[-1]
 
-
+    # TODO need to think about behaviour if can't get key
     else:
         print("An error has occurred:" + str(response.status_code))
         sessionKey = 0
 
     return sessionKey
-    # TODO - extract session key from location
+
+def LiveSearchGetData(key, headers=headers):
+    '''
+    Retreives all data from Live Flight Search poll session results using a
+    session key. Continues to refresh while results are generated until query
+    status becomes "UpdatesComplete"
+    '''
+    # Append key to API enpoint URL:
+    url = ("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/uk2/v1.0/" +
+            key)
+    pagination = {"pageIndex":"0","pageSize":"10"}
+    # Make an inital API request and receive .json formatted strings
+    response_string = requests.request("GET",url,headers=headers,params=pagination)
+    # Convert .json into Python lists and dictionaries
+    response_json = response_string.json()
+    # Keep requesting results until
+    status = response_json["Status"]
+    # Repeat @ 1s interval while status not equal to "UpdatesComplete"
+    while status != "UpdatesComplete":
+            time.sleep(1)
+            response_string = requests.request("GET",url,headers=headers,params=pagination)
+            response_json = response_string.json()
+            status = response_json["Status"]
+            print(status)
+
+    return response_json
+
+def liveSearchFormatResult(liveQuotes):
+    '''
+    TODO - placeholder
+    '''
+
 
 def getLocationsAll():
     """
@@ -316,3 +346,6 @@ testquery = list[0]
 # print(testquery)
 key = liveSearchCreateSession(testquery,headers)
 print(key)
+quotes = LiveSearchGetData(key)
+list =[quotes]
+DicttoCSV(list)
