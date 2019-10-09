@@ -254,11 +254,11 @@ def liveSearchCreateSession(query, headers):
     url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0"
     # Make the API call and receive .json formatted string
     response = requests.request("POST", url, data=query, headers=headers)
+    print("Code:" + str(response.status_code))
     # For a successful response
-    if response.status_code == 200 or 201:
+    if response.status_code in (200,201):
         responseHead = response.headers
         responseBody= response.text
-        print("Code:" + str(response.status_code))
         print("Headers:" + str(responseHead))
         print("Body:" + responseBody)
         location = responseHead['Location']
