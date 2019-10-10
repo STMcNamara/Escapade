@@ -308,10 +308,36 @@ def liveSearchFormatResult(liveQuotes):
     itinariesList = liveQuotes["Itineraries"]
     legList = liveQuotes["Legs"]
 
-    # Populate list with OutboundLegId
-    for row in itinariesList:
-        lQuoteList.append({"OutboundLegId":row["OutboundLegId"]})
+    # Populate list with Itineraies data, and leg data
 
+    for row in itinariesList:
+        # Construct a dictionary with the required values
+        itinaryDict = {}
+        itinaryDict["OutboundLegId"] = row["OutboundLegId"]
+        itinaryDict["Price"] = row["PricingOptions"][0]["Price"]
+        itinaryDict["QuoteAge"] = row["PricingOptions"][0]["QuoteAgeInMinutes"]
+        itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
+        # Append dictionary to the quote list
+        lQuoteList.append(itinaryDict)
+
+    #Populate list with Leg data
+    #Assumes Itineraies and Legs are in same list order
+    #TODO - implement key check to confirm list is in the same order - this
+    # CHANGE - USE DICTIONARY OF DICTIONAIES
+    listPos = 0
+    for row in legList:
+        legDict = {}
+        legDict["Origin"]
+
+
+
+
+
+
+    # Extract ItinerariesPopulate each leg using OutboundLegId
+    #for row in itinariesList:
+        #id = row["OutboundLegId"]
+        #row[""]
     print(lQuoteList)
 
     # TODO - populate required data for each ID
