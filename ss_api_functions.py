@@ -230,13 +230,16 @@ def formatLsData(inputDicts):
 
 def liveSearchCreateSession(query, headers):
     '''
-    The first of two functions required to obtain flight results from the
+    The first of three functions required to obtain flight results from the
     Skyscanner API Live Flight Search Endpoint. This function takes flight
-    query data and returns a session key, used in TODO to retrieve filtered
-    query information.
+    query data and returns a session key, which is used in liveSearchGetData
+    to retrieve filtered query information.
+
+    Refer to:
+        https://skyscanner.github.io/slate/#flights-live-prices
 
     Args:
-        data - TODO
+        query (string)- A string in the format output from formatLsData
 
         headers (dictionary): A dictionary containing the html headers required
         to be submitted with the API call. This is a global variable within this
@@ -244,33 +247,39 @@ def liveSearchCreateSession(query, headers):
 
     Returns:
         session key (string): A session key to make flight data queries via
-        GET requests
+        GET requests. Value is none if no key received within retry limit
 
     Exceptions:
-        TODO - this is definately neccessary particulary to handle rate
-        limit issues
+        Raises a standard exception if a correct status_code is not received
+        within the permitted number of attempts
     '''
+    retryLimit = 10
+    tries = 0
     url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0"
     # Make the API call and receive .json formatted string
     response = requests.request("POST", url, data=query, headers=headers)
-    print("Code:" + str(response.status_code))
-    # For a successful response
+    # Retry if a success code is not returned
+    while response.status_code not in (200,201) and tries < retryLimit:
+        print("Code:" + str(response.status_code) + "-> retrying")
+        response = requests.request("POST", url, data=query, headers=headers)
+        tries += 1
+
+    # If successful response received return the sessionKey which is the last
+    # element of the location header
     if response.status_code in (200,201):
         responseHead = response.headers
-        responseBody= response.text
-        print("Headers:" + str(responseHead))
-        print("Body:" + responseBody)
         location = responseHead['Location']
         sessionKey = location.rsplit('/',1)[-1]
+        print("Session key received: " + sessionKey)
+        return sessionKey
 
-    # TODO need to think about behaviour if can't get key
+    # If maximum retries exceeded raise an exception and return None
     else:
-        print("An error has occurred:" + str(response.status_code))
-        sessionKey = 0
+        raise Exception ("An error has occurred:" + str(response.status_code))
+        return None
 
-    return sessionKey
 
-def LiveSearchGetData(key, headers=headers):
+def liveSearchGetData(key, headers=headers):
     '''
     Retreives all data from Live Flight Search poll session results using a
     session key. Continues to refresh while results are generated until query
@@ -278,8 +287,22 @@ def LiveSearchGetData(key, headers=headers):
 
     TODO - review pagination and sorting options - only retreives 10, not
     sure in what order.
+
+    Refer to:
+        https://skyscanner.github.io/slate/#flights-live-prices
+
+    Args:
+        key (string): The session key, as returned from liveSearchCreateSession
+
+        headers (dictionary): A dictionary containing the html headers required
+        to be submitted with the API call. This is a global variable within this
+        file.
+
+    Returns:
+        response_json (List(of dictionaries): A Python formatted json containing
+        multiple lists and dictionaries, as recevied from the API endpoint
     '''
-    # Append key to API enpoint URL:
+    # Append key to API enpoint URL
     url = ("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/uk2/v1.0/" +
             key)
     pagination = {"pageIndex":"0","pageSize":"10"}
@@ -288,8 +311,9 @@ def LiveSearchGetData(key, headers=headers):
     # Convert .json into Python lists and dictionaries
     response_json = response_string.json()
     # Keep requesting results until
-    status = response_json["Status"]
     # Repeat @ 1s interval while status not equal to "UpdatesComplete"
+    status = response_json["Status"]
+
     while status != "UpdatesComplete":
             time.sleep(1)
             response_string = requests.request("GET",url,headers=headers,params=pagination)
@@ -427,6 +451,5 @@ list = formatLsData(testDict)
 testquery = list[0]
 # print(testquery)
 key = liveSearchCreateSession(testquery,headers)
-print(key)
-quotes = LiveSearchGetData(key)
+quotes = liveSearchGetData(key)
 IDs = liveSearchFormatResult(quotes)
