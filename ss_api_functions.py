@@ -427,7 +427,7 @@ def liveSearchRequestQuotes(inputDicts):
         response_json = liveSearchGetData(sessionKey)
         # Format the results into intinaries and append to results
         itinariesList = liveSearchFormatResult(response_json)
-        resultsDict.append(itinariesList)
+        resultsDicts += itinariesList
 
     return resultsDicts
 
@@ -470,10 +470,5 @@ def getLocationsAll():
 
 # Test Area:
 testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
-list = formatLsData(testDict)
-testquery = list[0]
-# print(testquery)
-key = liveSearchCreateSession(testquery)
-quotes = liveSearchGetData(key)
-IDs = liveSearchFormatResult(quotes)
-print(IDs)
+results = liveSearchRequestQuotes(testDict)
+print(results)
