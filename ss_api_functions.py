@@ -292,15 +292,15 @@ def liveSearchGetData(key, headers=headers):
         https://skyscanner.github.io/slate/#flights-live-prices
 
     Args:
-        key (string): The session key, as returned from liveSearchCreateSession
+        key (string): The session key, as returned from liveSearchCreateSession.
 
         headers (dictionary): A dictionary containing the html headers required
         to be submitted with the API call. This is a global variable within this
         file.
 
     Returns:
-        response_json (List(of dictionaries): A Python formatted json containing
-        multiple lists and dictionaries, as recevied from the API endpoint
+        response_json (dictionary): A Python formatted json containing
+        multiple lists and dictionaries, as recevied from the API endpoint.
     '''
     # Append key to API enpoint URL
     url = ("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/uk2/v1.0/" +
@@ -313,7 +313,6 @@ def liveSearchGetData(key, headers=headers):
     # Keep requesting results until
     # Repeat @ 1s interval while status not equal to "UpdatesComplete"
     status = response_json["Status"]
-
     while status != "UpdatesComplete":
             time.sleep(1)
             response_string = requests.request("GET",url,headers=headers,params=pagination)
@@ -321,12 +320,34 @@ def liveSearchGetData(key, headers=headers):
             status = response_json["Status"]
             print(status)
 
+    # Make one final request with pagination limits removed
+    pagination["pageSize"] = 1000
+    response_string = requests.request("GET",url,headers=headers,params=pagination)
+    response_json = response_string.json()
     return response_json
 
 def liveSearchFormatResult(liveQuotes):
     '''
-    Formats the dictionary of dictionaries into a list of dictionaries for display
-    TODO - placeholder
+    Formats the dictionary created from the API .json response liveSearchGetData
+    into a list of dictionaries, in which each dictionary is an API Itinary with
+    all required information. Currently this is: "OutboundLegId", "Price",
+    "QuoteAge", "OriginStation", "DestinationStation", "Departure", "Arrival",
+    "Duration", "Stops", "Carriers", "Directionality", "OriginStationName",
+    "DestinationStationName", "stopsList", "carriersList".
+
+    Refer to:
+        https://skyscanner.github.io/slate/#flights-live-prices
+
+    Args:
+        liveQuotes (dictionary): A dictionary containing the API response .json.
+        Refer to API documentation for structure.
+
+    Returns:
+        lQuoteList (list(of dictionaries)): List of dictionaries containing the
+        itinary data described above
+
+    Exceptions:
+        TODO
     '''
     #lQoteDict will be a dictionary of dictaries:
     #L1 -> keys are Itinariary IDs
@@ -375,36 +396,8 @@ def liveSearchFormatResult(liveQuotes):
             if carrier["Id"] in itinaryDict["Carriers"]:
                 itinaryDict["carriersList"].append(carrier['Name'])
 
-
-
-
-
-
-
         # Append dictionary to the quote list
         lQuoteList.append(itinaryDict)
-
-    #Populate list with Leg data
-    #Assumes Itineraies and Legs are in same list order
-    #TODO - implement key check to confirm list is in the same order - this
-    # CHANGE - USE DICTIONARY OF DICTIONAIES
-    #listPos = 0
-    #for row in legList:
-        #legDict = {}
-        #legDict["Origin"]
-
-
-
-
-
-
-    # Extract ItinerariesPopulate each leg using OutboundLegId
-    #for row in itinariesList:
-        #id = row["OutboundLegId"]
-        #row[""]
-    print(lQuoteList)
-
-    # TODO - populate required data for each ID
 
     return lQuoteList
 
@@ -453,3 +446,4 @@ testquery = list[0]
 key = liveSearchCreateSession(testquery,headers)
 quotes = liveSearchGetData(key)
 IDs = liveSearchFormatResult(quotes)
+print(IDs)
