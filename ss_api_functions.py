@@ -304,19 +304,59 @@ def liveSearchFormatResult(liveQuotes):
     Formats the dictionary of dictionaries into a list of dictionaries for display
     TODO - placeholder
     '''
+    #lQoteDict will be a dictionary of dictaries:
+    #L1 -> keys are Itinariary IDs
+    #L2 -> keys are parameters for that Itinary
     lQuoteList = []
     itinariesList = liveQuotes["Itineraries"]
     legList = liveQuotes["Legs"]
+    placesList = liveQuotes["Places"]
+    carriersList = liveQuotes["Carriers"]
 
-    # Populate list with Itineraies data, and leg data
-
+    # Populate dictionary with Itineraies data, and leg data
     for row in itinariesList:
         # Construct a dictionary with the required values
         itinaryDict = {}
+        # From itinaryList
         itinaryDict["OutboundLegId"] = row["OutboundLegId"]
         itinaryDict["Price"] = row["PricingOptions"][0]["Price"]
         itinaryDict["QuoteAge"] = row["PricingOptions"][0]["QuoteAgeInMinutes"]
-        itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
+        # itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
+        # From legList
+        # Search through list looking for OutboundLegId (TODO - and Inbound)
+        for leg in legList:
+            if leg["Id"] == itinaryDict["OutboundLegId"]:
+                itinaryDict["OriginStation"] = leg["OriginStation"]
+                itinaryDict["DestinationStation"] = leg["DestinationStation"]
+                itinaryDict["Departure"] = leg["Departure"]
+                itinaryDict["Arrival"] = leg["Arrival"]
+                itinaryDict["Duration"] = leg["Duration"]
+                itinaryDict["Stops"] = leg["Stops"]
+                itinaryDict["Carriers"] = leg["Carriers"]
+                itinaryDict["Directionality"] = leg["Directionality"]
+                # Break out as should only be one match
+                break
+        # Add in carrier and location names
+        itinaryDict["stopsList"] = []
+        itinaryDict["carriersList"] = []
+        for place in placesList:
+            if itinaryDict["OriginStation"] == place["Id"]:
+                itinaryDict["OriginStationName"] = place["Name"]
+            elif itinaryDict["DestinationStation"] == place["Id"]:
+                itinaryDict["DestinationStationName"] = place["Name"]
+            elif place["Id"] in itinaryDict["Stops"]:
+                itinaryDict["stopsList"].append(place["Name"])
+
+        for carrier in carriersList:
+            if carrier["Id"] in itinaryDict["Carriers"]:
+                itinaryDict["carriersList"].append(carrier['Name'])
+
+
+
+
+
+
+
         # Append dictionary to the quote list
         lQuoteList.append(itinaryDict)
 
@@ -324,10 +364,10 @@ def liveSearchFormatResult(liveQuotes):
     #Assumes Itineraies and Legs are in same list order
     #TODO - implement key check to confirm list is in the same order - this
     # CHANGE - USE DICTIONARY OF DICTIONAIES
-    listPos = 0
-    for row in legList:
-        legDict = {}
-        legDict["Origin"]
+    #listPos = 0
+    #for row in legList:
+        #legDict = {}
+        #legDict["Origin"]
 
 
 
