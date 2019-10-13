@@ -19,6 +19,7 @@
         <th>Destination Place</th>
         <th>Price</th>
         <th>Carrier ID</th>
+        <th>Link</th>
       </tr>
       {% for result in resultsDict %}
       <tr>
@@ -29,6 +30,7 @@
         <td>{{ result['DestinationStationName'] }}</td>
         <td>£{{ result['Price'] }}</td>
         <td>{{ result['carriersList'] }}</td>
+        <td><a href="{{ result['linkURL'] }}">Link</a>
       </tr>
       {% endfor %}
     </table>
