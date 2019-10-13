@@ -228,7 +228,7 @@ def formatLsData(inputDicts):
     return queryStringList
 
 
-def liveSearchCreateSession(query, headers):
+def liveSearchCreateSession(query, headers=headers):
     '''
     The first of three functions required to obtain flight results from the
     Skyscanner API Live Flight Search Endpoint. This function takes flight
@@ -349,9 +349,6 @@ def liveSearchFormatResult(liveQuotes):
     Exceptions:
         TODO
     '''
-    #lQoteDict will be a dictionary of dictaries:
-    #L1 -> keys are Itinariary IDs
-    #L2 -> keys are parameters for that Itinary
     lQuoteList = []
     itinariesList = liveQuotes["Itineraries"]
     legList = liveQuotes["Legs"]
@@ -401,6 +398,39 @@ def liveSearchFormatResult(liveQuotes):
 
     return lQuoteList
 
+def liveSearchRequestQuotes(inputDicts):
+    """
+    Handles the calling of liveSearch functions to allow for multiple user
+    queries to be handled.
+
+    Args:
+        inputDicts (list(of dictionaries)): A list of dictionaries, each
+        containing keys required to construct an URL for the Live Flight
+        Search API endpoint.
+
+    Returns:
+        resultsDicts (list(of dictionaries)): A list of dictionaries, each
+        containing keys defined within liveSearchFormatResult which provide
+        provide the itinary data for multiple user queries.
+
+    Exceptions:
+        TODO
+    """
+    resultsDicts = []
+    # Format the query query strings
+    queryStringList = formatLsData(inputDicts)
+    # For each query
+    for query in queryStringList:
+        # Request a sessionKey
+        sessionKey = liveSearchCreateSession(query)
+        # Poll the results
+        response_json = liveSearchGetData(sessionKey)
+        # Format the results into intinaries and append to results
+        itinariesList = liveSearchFormatResult(response_json)
+        resultsDict.append(itinariesList)
+
+    return resultsDicts
+
 def getLocationsAll():
     """
     This is a WIP tool to gather all place names and codes supported by the
@@ -443,7 +473,7 @@ testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
 list = formatLsData(testDict)
 testquery = list[0]
 # print(testquery)
-key = liveSearchCreateSession(testquery,headers)
+key = liveSearchCreateSession(testquery)
 quotes = liveSearchGetData(key)
 IDs = liveSearchFormatResult(quotes)
 print(IDs)
