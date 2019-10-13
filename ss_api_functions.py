@@ -363,7 +363,7 @@ def liveSearchFormatResult(liveQuotes):
         itinaryDict["OutboundLegId"] = row["OutboundLegId"]
         itinaryDict["Price"] = row["PricingOptions"][0]["Price"]
         itinaryDict["QuoteAge"] = row["PricingOptions"][0]["QuoteAgeInMinutes"]
-        # itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
+        itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
         # From legList
         # Search through list looking for OutboundLegId (TODO - and Inbound)
         for leg in legList:
@@ -373,9 +373,10 @@ def liveSearchFormatResult(liveQuotes):
                 itinaryDict["Departure"] = leg["Departure"]
                 itinaryDict["Arrival"] = leg["Arrival"]
                 itinaryDict["Duration"] = leg["Duration"]
-                itinaryDict["Stops"] = leg["Stops"]
                 itinaryDict["Carriers"] = leg["Carriers"]
                 itinaryDict["Directionality"] = leg["Directionality"]
+                itinaryDict["Stops"] = leg["Stops"]
+
                 # Break out as should only be one match
                 break
         # Add in carrier and location names
