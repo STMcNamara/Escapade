@@ -7,7 +7,7 @@ Escapade database.
 
 from flask import Flask, abort, redirect, render_template, request
 from pathlib import Path
-from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict
+from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes
 
 # Configure application
 app = Flask(__name__)
@@ -16,6 +16,7 @@ app = Flask(__name__)
 country = 'UK' # User's skyscanner home country
 currency = "GBP" # User's skyscanner currency
 locale = 'en-GB' # User's skyscanner locale
+adults = '1' # Number of adults to search for
 
 # PLACEHOLDER - Load SKyscanner places into dictionary for use in html forms
 ss_places_csv = './data/results_places.csv'
@@ -55,14 +56,13 @@ def search_bq():
 
         RETURNS:
             results_bq.html consisting of an automatically generated table
-            that contains the query results from where:
+            that contains the query results where:
                 resultsDict (list(of dictionaries)): From BrowseQuotes
     """
     # Reached via POST (form submitted)
     if request.method == "POST":
     # Populate query dictionary with default location and form parameters
         rows = int(request.form.get("rowNum"))
-        print(rows)
         queryList = []
         for i in range(rows+1):
             queryList.append({'country' : country, 'currency': currency, 'locale' : locale,
@@ -79,6 +79,41 @@ def search_bq():
     # Reached via GET (display form)
     else:
         return render_template("search_bq.html", ss_places=ss_places)
+
+@app.route("/search_live", methods=["GET", "POST"])
+def search_live():
+    """
+    GET:
+        Presents search_live.html to allow user to input queries.
+
+    POST:
+        INPUTS:
+            Reads user inputs from search_bq.html via request.form.get (where N
+            is the number of query rows):
+                originplace_[0-N] (string): In the format Skyscanner PlaceId
+                destination_[0-N] (string): In the format Skyscanner PlaceId
+                outboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
+            TODO - placeholder - uses the globals country, currency, locale and adults
+    """
+    # Reached via POST (form submitted)
+    if request.method == "POST":
+    # Populate query dictionary with default location and form parameters
+        rows = int(request.form.get("rowNum"))
+        queryList = []
+        for i in range(rows+1):
+            queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
+                        'originplace': request.form.get("originplace_" + str(i)),
+                        'destinationplace': request.form.get("destinationplace_" + str(i)),
+                        'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i))})
+
+        # Make the live search request
+        resultsDict = liveSearchRequestQuotes(queryList)
+        return render_template("results_live.html", resultsDict=resultsDict)
+
+    # Reached via GET (display form)
+    else:
+        return render_template("search_live.html", ss_places=ss_places)
+
 
 @app.route("/password")
 def password():

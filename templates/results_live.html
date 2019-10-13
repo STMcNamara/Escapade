@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Test
+{% endblock %}
+
+{% block main %}
+
+    <body>
+        WIP for the Live Search results!
+    </body>
+
+    <table style="width:100%">
+      <tr>
+        <th>Departure</th>
+        <th>Origin Place</th>
+        <th>Destination Place</th>
+        <th>Min Price</th>
+        <th>Carrier ID</th>
+      </tr>
+      {% for result in resultsDict %}
+      <tr>
+        <td>{{ result['Departure'] }}</td>
+        <td>{{ result['OriginStationName'] }}</td>
+        <td>{{ result['DestinationStationName'] }}</td>
+        <td>£{{ result['Price'] }}</td>
+        <td>{{ result['carriersList'] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+{% endblock %}

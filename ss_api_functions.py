@@ -250,7 +250,7 @@ def liveSearchCreateSession(query, headers=headers):
         GET requests. Value is none if no key received within retry limit
 
     Exceptions:
-        Raises a standard exception if a correct status_code is not received
+        Raises a print statement if a correct status_code is not received
         within the permitted number of attempts
     '''
     retryLimit = 10
@@ -275,7 +275,7 @@ def liveSearchCreateSession(query, headers=headers):
 
     # If maximum retries exceeded raise an exception and return None
     else:
-        raise Exception ("An error has occurred:" + str(response.status_code))
+        print ("An error has occurred:" + str(response.status_code))
         return None
 
 
@@ -406,7 +406,8 @@ def liveSearchRequestQuotes(inputDicts):
     Args:
         inputDicts (list(of dictionaries)): A list of dictionaries, each
         containing keys required to construct an URL for the Live Flight
-        Search API endpoint.
+        Search API endpoint. Key value pairs are: "country", "currency",
+        "locale","originplace","destinationplace", "outboundpartialdate","adults".
 
     Returns:
         resultsDicts (list(of dictionaries)): A list of dictionaries, each
@@ -469,6 +470,6 @@ def getLocationsAll():
     return places
 
 # Test Area:
-testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
+'''testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
 results = liveSearchRequestQuotes(testDict)
-print(results)
+print(results)'''
