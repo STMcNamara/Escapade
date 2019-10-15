@@ -94,6 +94,14 @@ def search_live():
                 destination_[0-N] (string): In the format Skyscanner PlaceId
                 outboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
             TODO - placeholder - uses the globals country, currency, locale and adults
+
+            CALLS:
+                Passes data to liveSearchRequestQuotes in ss_api_functions.py
+
+            RETURNS:
+                results_live.html consisting of an automatically generated table
+                that contains the query results where:
+                    resultsDict (list(of dictionaries)): From Live Search
     """
     # Reached via POST (form submitted)
     if request.method == "POST":

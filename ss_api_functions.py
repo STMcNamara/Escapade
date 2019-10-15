@@ -472,9 +472,3 @@ def getLocationsAll():
 
     # TODO - currently returns duplicates!!!
     return places
-
-# Test Area:
-testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
-results = liveSearchRequestQuotes(testDict)
-print(results)
-DicttoCSV(results,'dev_area/test1.csv')
