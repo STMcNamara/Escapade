@@ -39,7 +39,7 @@ def CSVtoDict(csv_input_file):
     return results_list
 
 
-def DicttoCSV(dict):
+def DicttoCSV(dict,resultsPath):
     """
     GENERAL PURPOSE - Reads a list of dictionaries and converts to a
     results.csv file in the dev_area
@@ -48,8 +48,11 @@ def DicttoCSV(dict):
         dict(list(of dictionaries)): A list of dictionaries, each of which must
         have keys that are the same as the first dictionary in the list.
 
+        resultsPath(string): Filepath and file name for the file to be created
+        in the fomrat "path/file.csv"
+
     Returns:
-        Creates a .csv file named results.csv in which the first row is the
+        Creates a .csv file in which the first row is the
         dictionary keys, and each following row is the associated values for each
         dictionary in the list.
 
@@ -57,7 +60,7 @@ def DicttoCSV(dict):
         TODO
     """
     keys = dict[0].keys()
-    with open('dev_area/results.csv', 'w') as results:
+    with open(resultsPath, 'w') as results:
         dict_writer = csv.DictWriter(results, keys)
         dict_writer.writeheader()
         dict_writer.writerows(dict)
@@ -471,6 +474,7 @@ def getLocationsAll():
     return places
 
 # Test Area:
-'''testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
+testDict = CSVtoDict("./dev_area/quoteinput_1.csv")
 results = liveSearchRequestQuotes(testDict)
-print(results)'''
+print(results)
+DicttoCSV(results,'dev_area/test1.csv')
