@@ -5,6 +5,7 @@ https://rapidapi.com/skyscanner/api/skyscanner-flight-search
 """
 
 import requests, json, csv, string, time
+from threading import Thread
 
 # Define API header information
 headers = {
@@ -402,10 +403,36 @@ def liveSearchFormatResult(liveQuotes):
 
     return lQuoteList
 
+def liveSearchRequestQuote(query):
+    """
+    Handles the calling of liveSearch functions in series for a single user
+    query.
+
+    Args:
+        query(string): A string formated with query data to provide to
+        the API endpoint.
+
+    Returns:
+        resutsDict(dictionary):  List of dictionaries containing the
+        itinary data for a single query. Refer to liveSearchFormatResult
+        output.
+
+    Excptions:
+        TODO
+    """
+    # Request a session key
+    sessionKey = liveSearchCreateSession(query)
+    # Poll the results
+    response_json = liveSearchGetData(sessionKey)
+    # Format the response itinary into a dictionary
+    resultsDict = liveSearchFormatResult(response_json)
+
+    return resultsDict
+
 def liveSearchRequestQuotes(inputDicts):
     """
     Handles the calling of liveSearch functions to allow for multiple user
-    queries to be handled.
+    queries to be handled simultaneously using multithreading.
 
     Args:
         inputDicts (list(of dictionaries)): A list of dictionaries, each
@@ -472,3 +499,12 @@ def getLocationsAll():
 
     # TODO - currently returns duplicates!!!
     return places
+
+'''
+Test area
+'''
+input = [CSVtoDict("./dev_area/quoteinput_1.csv")[0]]
+query = formatLsData(input)
+resultsDict = liveSearchRequestQuote(query)
+
+print(resultsDict)
