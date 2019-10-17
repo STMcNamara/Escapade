@@ -257,7 +257,7 @@ def liveSearchCreateSession(query, headers=headers):
         Raises a print statement if a correct status_code is not received
         within the permitted number of attempts
     '''
-    retryLimit = 10
+    retryLimit = 20
     tries = 0
     url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0"
     # Make the API call and receive .json formatted string
