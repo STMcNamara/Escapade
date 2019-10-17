@@ -7,7 +7,7 @@ Escapade database.
 
 from flask import Flask, abort, redirect, render_template, request
 from pathlib import Path
-from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_S
+from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
 
 # Configure application
 app = Flask(__name__)
@@ -115,7 +115,7 @@ def search_live():
                         'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i))})
 
         # Make the live search request
-        resultsDict = liveSearchRequestQuotes_S(queryList)
+        resultsDict = liveSearchRequestQuotes_T(queryList)
         return render_template("results_live.html", resultsDict=resultsDict)
 
     # Reached via GET (display form)

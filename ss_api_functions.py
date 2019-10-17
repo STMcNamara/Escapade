@@ -449,14 +449,66 @@ def liveSearchRequestQuotes_S(inputDicts):
         TODO
     """
     resultsDicts = []
-    # Format the query query strings
-    queryStringList = formatLsData(inputDicts)
+
     # For each query
     for query in queryStringList:
         # Request data from the API for each queryString
         itinariesList = liveSearchRequestQuote(query)
         # Append the returned itinary to the results
         resultsDicts += itinariesList
+
+    return resultsDicts
+
+
+def liveSearchRequestQuotes_T(inputDicts):
+    """
+    Handles the calling of liveSearch functions to allow for multiple user
+    queries to be handled in parrellel, using Python multithreading.  Behaves
+    exactly the same as liveSearchRequestQuotes_S but is faster.
+
+    Args:
+        inputDicts (list(of dictionaries)): A list of dictionaries, each
+        containing keys required to construct an URL for the Live Flight
+        Search API endpoint. Key value pairs are: "country", "currency",
+        "locale","originplace","destinationplace", "outboundpartialdate","adults".
+
+    Returns:
+        resultsDicts (list(of dictionaries)): A list of dictionaries, each
+        containing keys defined within liveSearchFormatResult which provide
+        provide the itinary data for multiple user queries.
+
+    Exceptions:
+        TODO
+    """
+    # Define a global list of length equal to the number of queries
+    queryDicts = [[] for x in inputDicts]
+
+    # Define a wrapper for the thread process
+    def threadWrapper(query, resultDict, index):
+        queryDicts[index] = liveSearchRequestQuote(query)
+        return True
+
+    # Format the query query strings
+    queryStringList = formatLsData(inputDicts)
+
+    # Create a list of threads
+    threads = []
+
+    # Create a thread for each query in queryList
+    for index in range(len(queryStringList)):
+        process = Thread(target=threadWrapper,
+                        args=[queryStringList[index],queryDicts,index])
+        process.start()
+        threads.append(process)
+
+
+    for process in threads:
+        process.join()
+
+    # Consolidate individual lists into a single list
+    resultsDicts = []
+    for list in queryDicts:
+        resultsDicts += list
 
     return resultsDicts
 
@@ -497,12 +549,11 @@ def getLocationsAll():
     # TODO - currently returns duplicates!!!
     return places
 
-'''
-Test area
 
+'''Test Area
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-resultsDicts = liveSearchRequestQuotes_S(inputDicts)
+resultsDicts = liveSearchRequestQuotes_T(inputDicts)
 
 print(resultsDicts)
-'''
-#print(resultsDict)
+
+#print(resultsDict)'''
