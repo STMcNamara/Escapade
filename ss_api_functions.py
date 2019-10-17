@@ -196,9 +196,12 @@ def BrowseQuotesAPI(url, headers):
 def formatLsData(inputDicts):
     '''
     Formats a query list (of dictionaries) into a list of strings to be used
-    as an arguement for the liveSearchCreateSession function. Key value pairs
-    are: "country", "currency", "locale","originplace","destinationplace",
-    "outboundpartialdate","adults".
+    as an arguement for the liveSearchCreateSession function. Required Key value
+    pairs for one way trip are:
+        "country", "currency", "locale","originplace","destinationplace",
+        "outboundpartialdate","adults".
+    Optional Key Value pairs are:
+
 
     Refer to:
     https://skyscanner.github.io/slate/#flights-live-prices
@@ -218,7 +221,7 @@ def formatLsData(inputDicts):
     # optional parameters)
     queryStringList = []
     for query in inputDicts:
-        # Create string and provide first values
+        # Create string for each query outbound data
         queryString = ('country=' + query['country'] +
                       '&' + 'currency=' + query['currency'] +
                       '&' + 'locale=' + query['locale'] +
@@ -227,6 +230,12 @@ def formatLsData(inputDicts):
                       '&' + 'outboundDate=' + query['outboundpartialdate'] +
                       '&' + 'adults=' + query['adults'])
 
+        # Add a return date, if present
+        try:
+            queryString += '&' + 'inboundDate=' + query['inboundDate']
+        except:
+            pass
+        # Add formatted query to the list
         queryStringList.append(queryString)
 
     return queryStringList
@@ -552,8 +561,6 @@ def getLocationsAll():
 
 '''Test Area
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-resultsDicts = liveSearchRequestQuotes_T(inputDicts)
-
-print(resultsDicts)
-
-#print(resultsDict)'''
+querystring = formatLsData(inputDicts)
+print(querystring)
+'''

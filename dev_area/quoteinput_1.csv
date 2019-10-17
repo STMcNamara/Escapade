@@ -1,3 +1,3 @@
-country,currency,locale,originplace,destinationplace,outboundpartialdate,adults
-US,USD,en-US,SFO-sky,JFK-sky,2019-12-01,1
-US,USD,en-US,SFO-sky,JFK-sky,2019-12-02,1
+country,currency,locale,originplace,destinationplace,outboundpartialdate,adults,inboundDate
+US,USD,en-US,SFO-sky,JFK-sky,2019-12-01,1,2019-12-04
+US,USD,en-US,SFO-sky,JFK-sky,2019-12-02,1,2019-12-05
