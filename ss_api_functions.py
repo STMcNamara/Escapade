@@ -429,10 +429,10 @@ def liveSearchRequestQuote(query):
 
     return resultsDict
 
-def liveSearchRequestQuotes(inputDicts):
+def liveSearchRequestQuotes_S(inputDicts):
     """
     Handles the calling of liveSearch functions to allow for multiple user
-    queries to be handled simultaneously using multithreading.
+    queries to be handled in sequence.
 
     Args:
         inputDicts (list(of dictionaries)): A list of dictionaries, each
@@ -453,12 +453,9 @@ def liveSearchRequestQuotes(inputDicts):
     queryStringList = formatLsData(inputDicts)
     # For each query
     for query in queryStringList:
-        # Request a sessionKey
-        sessionKey = liveSearchCreateSession(query)
-        # Poll the results
-        response_json = liveSearchGetData(sessionKey)
-        # Format the results into intinaries and append to results
-        itinariesList = liveSearchFormatResult(response_json)
+        # Request data from the API for each queryString
+        itinariesList = liveSearchRequestQuote(query)
+        # Append the returned itinary to the results
         resultsDicts += itinariesList
 
     return resultsDicts
@@ -502,9 +499,10 @@ def getLocationsAll():
 
 '''
 Test area
-'''
-input = [CSVtoDict("./dev_area/quoteinput_1.csv")[0]]
-query = formatLsData(input)
-resultsDict = liveSearchRequestQuote(query)
 
-print(resultsDict)
+inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
+resultsDicts = liveSearchRequestQuotes_S(inputDicts)
+
+print(resultsDicts)
+'''
+#print(resultsDict)
