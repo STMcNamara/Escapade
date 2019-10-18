@@ -368,7 +368,7 @@ def liveSearchFormatResult(liveQuotes):
     placesList = liveQuotes["Places"]
     carriersList = liveQuotes["Carriers"]
 
-    # Populate dictionary with Itineraies data, and leg data
+    # Populate dictionary with Itineraies data, and outbound leg data
     for row in itinariesList:
         # Construct a dictionary with the required values
         itinaryDict = {}
@@ -376,36 +376,77 @@ def liveSearchFormatResult(liveQuotes):
         itinaryDict["OutboundLegId"] = row["OutboundLegId"]
         itinaryDict["Price"] = row["PricingOptions"][0]["Price"]
         itinaryDict["QuoteAge"] = row["PricingOptions"][0]["QuoteAgeInMinutes"]
-        itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
+        try:
+            itinaryDict["InboundLegId"] = row["InboundLegId"]
+        except:
+            pass
+        # itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
         # From legList
-        # Search through list looking for OutboundLegId (TODO - and Inbound)
+        # Search through list looking for OutboundLegId
         for leg in legList:
             if leg["Id"] == itinaryDict["OutboundLegId"]:
-                itinaryDict["OriginStation"] = leg["OriginStation"]
-                itinaryDict["DestinationStation"] = leg["DestinationStation"]
-                itinaryDict["Departure"] = leg["Departure"]
-                itinaryDict["Arrival"] = leg["Arrival"]
-                itinaryDict["Duration"] = leg["Duration"]
-                itinaryDict["Carriers"] = leg["Carriers"]
-                itinaryDict["Directionality"] = leg["Directionality"]
-                itinaryDict["Stops"] = leg["Stops"]
+                itinaryDict["OriginStationOB"] = leg["OriginStation"]
+                itinaryDict["DestinationStationOB"] = leg["DestinationStation"]
+                itinaryDict["DepartureOB"] = leg["Departure"]
+                itinaryDict["ArrivalOB"] = leg["Arrival"]
+                itinaryDict["DurationOB"] = leg["Duration"]
+                itinaryDict["CarriersOB"] = leg["Carriers"]
+                itinaryDict["DirectionalityOB"] = leg["Directionality"]
+                itinaryDict["StopsOB"] = leg["Stops"]
 
                 # Break out as should only be one match
                 break
+
+        # Try to search through list looing for InboundLegId
+        try:
+            for leg in legList:
+                if leg["Id"] == itinaryDict["InboundLegId"]:
+                    itinaryDict["OriginStationIB"] = leg["OriginStation"]
+                    itinaryDict["DestinationStationIB"] = leg["DestinationStation"]
+                    itinaryDict["DepartureIB"] = leg["Departure"]
+                    itinaryDict["ArrivalIB"] = leg["Arrival"]
+                    itinaryDict["DurationIB"] = leg["Duration"]
+                    itinaryDict["CarriersIB"] = leg["Carriers"]
+                    itinaryDict["DirectionalityIB"] = leg["Directionality"]
+                    itinaryDict["StopsIB"] = leg["Stops"]
+
+                    # Break out as should only be one match
+                    break
+        except:
+            pass
+
         # Add in carrier and location names
-        itinaryDict["stopsList"] = []
-        itinaryDict["carriersList"] = []
+        itinaryDict["stopsListOB"] = []
+        itinaryDict["carriersListOB"] = []
+        itinaryDict["stopsListIB"] = []
+        itinaryDict["carriersListIB"] = []
+
         for place in placesList:
-            if itinaryDict["OriginStation"] == place["Id"]:
-                itinaryDict["OriginStationName"] = place["Name"]
-            elif itinaryDict["DestinationStation"] == place["Id"]:
-                itinaryDict["DestinationStationName"] = place["Name"]
-            elif place["Id"] in itinaryDict["Stops"]:
-                itinaryDict["stopsList"].append(place["Name"])
+            if itinaryDict["OriginStationOB"] == place["Id"]:
+                itinaryDict["OriginStationNameOB"] = place["Name"]
+            elif itinaryDict["DestinationStationOB"] == place["Id"]:
+                itinaryDict["DestinationStationNameOB"] = place["Name"]
+            elif place["Id"] in itinaryDict["StopsOB"]:
+                itinaryDict["stopsListOB"].append(place["Name"])
+
+            try:
+                if itinaryDict["OriginStationIB"] == place["Id"]:
+                    itinaryDict["OriginStationNameIB"] = place["Name"]
+                elif itinaryDict["DestinationStationIB"] == place["Id"]:
+                    itinaryDict["DestinationStationNameIB"] = place["Name"]
+                elif place["Id"] in itinaryDict["StopsIB"]:
+                    itinaryDict["stopsListIB"].append(place["Name"])
+            except:
+                pass
 
         for carrier in carriersList:
-            if carrier["Id"] in itinaryDict["Carriers"]:
-                itinaryDict["carriersList"].append(carrier['Name'])
+            if carrier["Id"] in itinaryDict["CarriersOB"]:
+                itinaryDict["carriersListOB"].append(carrier['Name'])
+            try:
+                if carrier["Id"] in itinaryDict["CarriersIB"]:
+                    itinaryDict["carriersListOB"].append(carrier['Name'])
+            except:
+                pass
 
         # Append dictionary to the quote list
         lQuoteList.append(itinaryDict)
@@ -561,6 +602,5 @@ def getLocationsAll():
 
 '''Test Area
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-querystring = formatLsData(inputDicts)
-print(querystring)
-'''
+resultsDict = liveSearchRequestQuotes_T(inputDicts)[0]
+print(resultsDict)'''

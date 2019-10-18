@@ -23,13 +23,13 @@
       </tr>
       {% for result in resultsDict %}
       <tr>
-        <td>{{ result['Departure'] }}</td>
-        <td>{{ result['OriginStationName'] }}</td>
-        <td>{{ result['Duration'] }}</td>
-        <td>{{ result['stopsList'] }}
-        <td>{{ result['DestinationStationName'] }}</td>
+        <td>{{ result['DepartureOB'] }}</td>
+        <td>{{ result['OriginStationNameOB'] }}</td>
+        <td>{{ result['DurationOB'] }}</td>
+        <td>{{ result['stopsListOB'] }}
+        <td>{{ result['DestinationStationNameOB'] }}</td>
         <td>£{{ result['Price'] }}</td>
-        <td>{{ result['carriersList'] }}</td>
+        <td>{{ result['carriersListOB'] }}</td>
         <td><a href="{{ result['linkURL'] }}">Link</a>
       </tr>
       {% endfor %}
