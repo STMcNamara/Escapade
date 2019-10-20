@@ -232,7 +232,7 @@ def formatLsData(inputDicts):
 
         # Add a return date, if present
         try:
-            queryString += '&' + 'inboundDate=' + query['inboundDate']
+            queryString += '&' + 'inboundDate=' + query['inbounddate']
         except:
             pass
         # Add formatted query to the list
@@ -380,7 +380,7 @@ def liveSearchFormatResult(liveQuotes):
             itinaryDict["InboundLegId"] = row["InboundLegId"]
         except:
             pass
-        # itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
+        itinaryDict["linkURL"] = row["PricingOptions"][0]["DeeplinkUrl"]
         # From legList
         # Search through list looking for OutboundLegId
         for leg in legList:
@@ -444,7 +444,7 @@ def liveSearchFormatResult(liveQuotes):
                 itinaryDict["carriersListOB"].append(carrier['Name'])
             try:
                 if carrier["Id"] in itinaryDict["CarriersIB"]:
-                    itinaryDict["carriersListOB"].append(carrier['Name'])
+                    itinaryDict["carriersListIB"].append(carrier['Name'])
             except:
                 pass
 

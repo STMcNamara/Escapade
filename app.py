@@ -93,6 +93,7 @@ def search_live():
                 originplace_[0-N] (string): In the format Skyscanner PlaceId
                 destination_[0-N] (string): In the format Skyscanner PlaceId
                 outboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
+                inbounddate_[0-N] (string): Optional, yyyy-mm-dd
             TODO - placeholder - uses the globals country, currency, locale and adults
 
             CALLS:
@@ -112,7 +113,8 @@ def search_live():
             queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
                         'originplace': request.form.get("originplace_" + str(i)),
                         'destinationplace': request.form.get("destinationplace_" + str(i)),
-                        'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i))})
+                        'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i)),
+                        'inbounddate': request.form.get("inbounddate_" + str(i))})
 
         # Make the live search request
         resultsDict = liveSearchRequestQuotes_T(queryList)

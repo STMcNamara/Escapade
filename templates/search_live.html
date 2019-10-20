@@ -20,6 +20,7 @@
     var originplace = row.insertCell(0);
     var destinationplace = row.insertCell(1);
     var outboundpartialdate = row.insertCell(2);
+    var inbounddate = row.insertCell(3);
     // Inject input html code with unique identifiers for the current rowNo
     originplace.innerHTML = '<select name="originplace_' + id + '">\
                               {% for row in ss_places %}\
@@ -32,6 +33,7 @@
                               {% endfor %}\
                             </select>';
     outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" type="date"/>';
+    inbounddate.innerHTML = '<input autocomplete="off" name="inbounddate_' + id + '" type="date"/>';
     //Update the rowNum input and increment for next row addition
     document.getElementById("rowNum").value = id;
     rowNo ++;
@@ -49,6 +51,7 @@ Prototype for the input to the search_live function!
           <th>Departure Airport</th>
           <th>Destination Airport</th>
           <th>Departure Date</th>
+          <th>Return Date*</th>
         </tr>
         <tr>
           <td><select name="originplace_0">
@@ -64,6 +67,7 @@ Prototype for the input to the search_live function!
             </select>
           </td>
           <td><input autocomplete="off" name="outboundpartialdate_0" type="date"/></td>
+          <td><input autocomplete="off" name="inbounddate_0" type="date"/></td>
         </tr>
       </table>
     </div>
