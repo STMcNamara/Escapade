@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Test
+    Live Search Results
 {% endblock %}
 
 {% block main %}
@@ -9,7 +9,12 @@
 <script>
   // Use the Datatable jquery plugin to format table (refer to layout.html)
   $(document).ready( function () {
-    $('#results_table').DataTable();
+    $('#results_table').DataTable( {
+      dom: 'Bfrtip',
+      buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+    } );
 } );
 </script>
 
@@ -18,7 +23,7 @@
     WIP for the Live Search results!
 </body>
 
-<table id="results_table" class="display" style="width:100%">
+<table id="results_table" class="display compact" style="width:100%">
   <thead>
     <tr>
       <th>Origin Place</th>
@@ -49,7 +54,7 @@
       <td>{{ result['stopsListIB'] }}</td>
       <td>{{ result['carriersListIB'] }}</td>
       <td>£{{ result['Price'] }}</td>
-      <td><a href="{{ result['linkURL'] }}">Link</a>
+      <td><a href="{{ result['linkURL'] }}" target="_blank">Link</a>
     </tr>
     {% endfor %}
   </tbody>
