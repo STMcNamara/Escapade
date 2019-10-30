@@ -8,9 +8,22 @@ Escapade database.
 from flask import Flask, abort, redirect, render_template, request
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
+from db_helpers import db_intialise
 
 # Configure application
 app = Flask(__name__)
+
+@app.after_request
+def after_request(response):
+    """Disable caching"""
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
+# If required, create or update the database
+db_intialise()
+
 
 # Define default values - TODO to be replaced by database and/or user defined parameters
 country = 'UK' # User's skyscanner home country
@@ -22,14 +35,6 @@ adults = '1' # Number of adults to search for
 ss_places_csv = './data/results_places.csv'
 ss_places = CSVtoDict(ss_places_csv)
 
-
-@app.after_request
-def after_request(response):
-    """Disable caching"""
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Expires"] = 0
-    response.headers["Pragma"] = "no-cache"
-    return response
 
 @app.route("/")
 def index():
@@ -138,7 +143,7 @@ def logout():
 @app.route("/register")
 def register():
     """TODO - Placeholder for accounts functionality - Register"""
-    return render_template("todo.html")
+    return render_template("register.html")
 
 @app.route("/login")
 def login():
