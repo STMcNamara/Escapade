@@ -47,8 +47,8 @@ def db_createUser(conn, user):
     :param project:
     :return: project id
     """
-    sql = ''' INSERT INTO users(id,first_name,second_name,email)
-              VALUES(?,?,?,?) '''
+    sql = ''' INSERT INTO users(user_id,username,password,first_name,second_name,email)
+              VALUES(?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, user)
     return cur.lastrowid
@@ -89,7 +89,20 @@ def db_intialise():
 
 
 def main():
+    """ Test Area"""
+    # Create the database if it doesn't exist
     db_intialise()
+
+    # User data
+    user_1 = (1,"stm","password","Sean","McNamara","sean@mail")
+    user_2 = (2,"lcr","password","Lee","Ramsay","lee@mail")
+
+    # Connect to database
+    conn = db_connect(r"database.db")
+
+    # create new users
+    db_createUser(conn,user_1)
+    db_createUser(conn,user_2)
 
 
 
