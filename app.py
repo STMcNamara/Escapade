@@ -8,7 +8,8 @@ Escapade database.
 from flask import Flask, abort, redirect, render_template, request
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
-from db_helpers import db_intialise
+from db_functions import db_intialise
+from helpers import apology
 
 # Configure application
 app = Flask(__name__)
@@ -140,9 +141,43 @@ def logout():
     """TODO - Placeholder for accounts functionality - Log Out"""
     return render_template("todo.html")
 
-@app.route("/register")
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    """TODO - Placeholder for accounts functionality - Register"""
+    """TODO - Allows the user to register an account and provde Optional
+    account details.
+
+    GET:
+        Presents register.html to allow user to submit account details.
+
+    POST:
+        INPUTS - TOSO
+
+        CALLS - TODO
+
+        RETURNS - TODO
+
+    """
+    # User reached route via POST (by submitting account details)
+    if request.method == "POST":
+
+               # Ensure username was submitted
+        if not request.form.get("username"):
+            return apology("must provide username")
+
+        # Ensure password was submitted
+        elif not request.form.get("password"):
+            return apology("must provide password")
+
+        # Ensure passwords match
+        elif request.form.get("password") != request.form.get("confirmation"):
+            return apology("passwords do not match")
+
+        else:
+            # TODO - for now return to front page
+            return render_template("index.html")
+
+
+
     return render_template("register.html")
 
 @app.route("/login")

@@ -29,12 +29,15 @@ def db_createTable(conn, createTableSQL):
 
 # Create the user table tables TODO - OR UPDATE:
 createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
-                                        user_id integer PRIMARY KEY,
+                                        user_id integer PRIMARY KEY AUTOINCREMENT,
                                         username text NOT NULL,
                                         password text NOT NULL,
-                                        first_name text,
-                                        second_name text,
-                                        email text
+                                        firstName text,
+                                        secondName text,
+                                        email text,
+                                        locationPref text,
+                                        localePref text,
+                                        currencyPref text
                                         ); """
 
 
@@ -47,8 +50,9 @@ def db_createUser(conn, user):
     :param project:
     :return: project id
     """
-    sql = ''' INSERT INTO users(user_id,username,password,first_name,second_name,email)
-              VALUES(?,?,?,?,?,?) '''
+    sql = ''' INSERT INTO users(username,password,firstName,secondName,email,
+                                locationPref,localePref,currencyPref)
+              VALUES(?,?,?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, user)
     return cur.lastrowid
@@ -93,16 +97,16 @@ def main():
     # Create the database if it doesn't exist
     db_intialise()
 
-    # User data
-    user_1 = (1,"stm","password","Sean","McNamara","sean@mail")
-    user_2 = (2,"lcr","password","Lee","Ramsay","lee@mail")
-
     # Connect to database
     conn = db_connect(r"database.db")
+    with conn:
+        # create new users
 
-    # create new users
-    db_createUser(conn,user_1)
-    db_createUser(conn,user_2)
+        user_1 = ("stm","abc","Sean","McNamara","sean@mail","UK","UK","GBP")
+        user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
+
+        db_createUser(conn,user_1)
+        db_createUser(conn,user_2)
 
 
 
