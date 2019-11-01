@@ -50,18 +50,20 @@ def db_createUser(conn, user):
     :param project:
     :return: project id
     """
+
     sql = ''' INSERT INTO users(username,password,firstName,secondName,email,
                                 locationPref,localePref,currencyPref)
               VALUES(?,?,?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, user)
+    print("got here")
     return cur.lastrowid
 
 
 
 """Specific database operators and wrappers"""
 
-def db_intialise():
+def db_intialise(db):
     """
     Wrapper for use in app.py that creates (if none present) the database or
     updates the structure and associated schema if required.
@@ -76,8 +78,7 @@ def db_intialise():
         TBD
     """
 
-    # Define database object and connect to it
-    db = r"database.db"
+    # Connect to database
     conn = db_connect(db)
 
     if conn is not None:
@@ -95,10 +96,11 @@ def db_intialise():
 def main():
     """ Test Area"""
     # Create the database if it doesn't exist
-    db_intialise()
+    db = r"test.db"
+    db_intialise(db)
 
     # Connect to database
-    conn = db_connect(r"database.db")
+    conn = db_connect(db)
     with conn:
         # create new users
 

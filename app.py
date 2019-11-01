@@ -8,8 +8,9 @@ Escapade database.
 from flask import Flask, abort, redirect, render_template, request
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
-from db_functions import db_intialise
+from db_functions import db_intialise, db_connect,db_createUser
 from helpers import apology
+from werkzeug.security import check_password_hash, generate_password_hash
 
 # Configure application
 app = Flask(__name__)
@@ -22,8 +23,9 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
-# If required, create or update the database
-db_intialise()
+# Define datebase name, and if required create or update
+db = r"database.db"
+db_intialise(db)
 
 
 # Define default values - TODO to be replaced by database and/or user defined parameters
@@ -160,7 +162,7 @@ def register():
     # User reached route via POST (by submitting account details)
     if request.method == "POST":
 
-               # Ensure username was submitted
+        # Ensure username was submitted
         if not request.form.get("username"):
             return apology("must provide username")
 
@@ -172,9 +174,24 @@ def register():
         elif request.form.get("password") != request.form.get("confirmation"):
             return apology("passwords do not match")
 
-        else:
-            # TODO - for now return to front page
-            return render_template("index.html")
+        # Hash the password and create temporary variables
+        hash = generate_password_hash(request.form.get("password"))
+        print(hash)
+
+        # Create user object from form parameters
+        user = (request.form.get("username"),
+                request.form.get("password"),
+                "","","","","","")
+
+        print(user)
+
+        # Connect to database and insert user data
+        conn = db_connect(db)
+        with conn:
+            db_createUser(conn,user)
+
+        # TODO - for now return to front page
+        return render_template("index.html")
 
 
 
