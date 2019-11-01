@@ -176,14 +176,14 @@ def register():
 
         # Hash the password and create temporary variables
         hash = generate_password_hash(request.form.get("password"))
-        print(hash)
 
         # Create user object from form parameters
         user = (request.form.get("username"),
-                request.form.get("password"),
-                "","","","","","")
-
-        print(user)
+                hash,
+                request.form.get("firstName"),
+                request.form.get("secondName"),
+                request.form.get("email"),
+                "","","")
 
         # Connect to database and insert user data
         conn = db_connect(db)
@@ -193,9 +193,8 @@ def register():
         # TODO - for now return to front page
         return render_template("index.html")
 
-
-
-    return render_template("register.html")
+    else:
+        return render_template("register.html")
 
 @app.route("/login")
 def login():

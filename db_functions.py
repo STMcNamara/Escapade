@@ -56,7 +56,6 @@ def db_createUser(conn, user):
               VALUES(?,?,?,?,?,?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, user)
-    print("got here")
     return cur.lastrowid
 
 
