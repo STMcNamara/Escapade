@@ -68,10 +68,25 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
 
 def db_createUser(db, user):
     """
-    Create a new project into the projects table
-    :param conn:
-    :param project:
-    :return: project id
+    Create a new user in the users table of the specifed database, using the
+    information provided within the users object
+
+    Args:
+        db(string): The address of the database file to be written to
+
+        user(tuple): A tuple containing the users information to be inserted
+        as a new entry. The required elements and order are defined in the sql
+        parameter below.
+
+    Returns:
+        cur.lastrowid(int): On success, the row position in the table at which
+        the user was created.
+
+        None: On failure to create user.
+
+    Exceptions:
+        e(string): An sqlite3 error message upon failure to create the user
+
     """
 
     sql = ''' INSERT INTO users(username,password,firstName,secondName,email,
@@ -83,23 +98,40 @@ def db_createUser(db, user):
             cur = conn.cursor()
             cur.execute(sql, user)
             return cur.lastrowid
-    except:
+    except Error as e:
+        print(e)
         return None
 
 def db_getUser(db, username):
     """
-    Returns an object containing user details for the provided username
+    Returns an object containing user details for the provided username, from
+    the specified database.
+
+    Args:
+        db(string): The address of the database file to interogate
+
+        username(string): The username to retrive the data for
+
+    Returns:
+        user(tuple):
+            pass
     """
     sql = "SELECT * FROM users WHERE username=?"
 
     row = None
     try:
         conn = db_connect(db)
+        # Row_factory allow column headers to return with rows
+        conn.row_factory = sqlite3.Row
+
         with conn:
             cur = conn.cursor()
             cur.execute(sql, (username,))
 
-            row = cur.fetchall()[0]
+            rows = cur.fetchall()
+
+            row = dict(rows[0])
+
     except:
         pass
 
@@ -151,11 +183,12 @@ def main():
     user_1 = ("stm","abc","Sean","McNamara","sean@mail","UK","UK","GBP")
     user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
 
-    db_createUser(db,user_1)
+    x = db_createUser(db,user_1)
     db_createUser(db,user_2)
 
-    result = db_getUser(db,"stm")
-    print(result)
+    result = db_getUser(db,"lcr")
+    print(result["username"])
+    print(result["user_id"])
 
 
 
