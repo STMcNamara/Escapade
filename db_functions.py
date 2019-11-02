@@ -113,12 +113,11 @@ def db_getUser(db, username):
         username(string): The username to retrive the data for
 
     Returns:
-        user(tuple):
-            pass
+        user(dict):
     """
     sql = "SELECT * FROM users WHERE username=?"
 
-    row = None
+    user = None
     try:
         conn = db_connect(db)
         # Row_factory allow column headers to return with rows
@@ -127,15 +126,15 @@ def db_getUser(db, username):
         with conn:
             cur = conn.cursor()
             cur.execute(sql, (username,))
-
             rows = cur.fetchall()
 
-            row = dict(rows[0])
+            # Convert to dictionary
+            user = dict(rows[0])
 
     except:
         pass
 
-    return row
+    return user
 
 
 

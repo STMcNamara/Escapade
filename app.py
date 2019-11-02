@@ -9,7 +9,7 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
-from db_functions import db_intialise, db_connect,db_createUser
+from db_functions import db_intialise, db_connect,db_createUser,db_getUser
 from helpers import apology
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -220,13 +220,16 @@ def login():
         elif not request.form.get("password"):
             return apology("must provide password", 403)
 
-        # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = :username",
-                          username=request.form.get("username"))
+        # Retreive the user object from the database
+        user = db_getUser(db, request.form.get("username"))
 
-        # Ensure username exists and password is correct
-        if len(rows) != 1 or not check_password_hash(rows[0]["password"], request.form.get("password")):
-            return apology("invalid username and/or password", 403)
+        # Check if user exists
+        if not user:
+            return apology("User does not exist", 403)
+
+        # Check the password is correct
+        if not check_password_hash(user["password"], request.form.get("password")):
+            return apology("Incorrect password", 403)
 
         else:
             return render_template("todo.html")
