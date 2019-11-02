@@ -2,24 +2,47 @@ import sqlite3
 from sqlite3 import Error
 
 
-""" Generic database helpers"""
+""" Generic database helpers:"""
 
 def db_connect(db_file):
-    """ create a database connection to a SQLite database """
+    """
+    Create a connection object to the database. If no database exists, will
+    creat that database
+
+    Args:
+        db_file(string): The address of the database file to be connected to
+
+    Returns:
+        conn(object): The database connection object, or none
+
+    Exceptions:
+        e(string): An sqlite3 error message upon failure to connect to a database
+        """
     conn = None
     try:
         conn = sqlite3.connect(db_file)
-        return conn
     except Error as e:
         print(e)
 
-""" Table creation functions and schema """
+    return conn
+
+""" Table creation functions and schema: """
 
 def db_createTable(conn, createTableSQL):
-    """ create a table from the create_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
+    """
+    Creates a table in a specifed database, using the provided SQL schema
+
+    Args:
+        conn(object): A database connection object
+
+        createTableSQL(string): SQL defining the table schema
+
+    Returns:
+        Nothing - creates the table in the database
+
+    Exceptions:
+        e(string): An sqlite3 error message upon failure to connect to
+                    create a table
     """
     try:
         c = conn.cursor()
@@ -27,7 +50,7 @@ def db_createTable(conn, createTableSQL):
     except Error as e:
         print(e)
 
-# Create the user table tables TODO - OR UPDATE:
+# SQL Schema for the "users" table
 createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         user_id integer PRIMARY KEY AUTOINCREMENT,
                                         username text UNIQUE NOT NULL,
@@ -41,7 +64,7 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         ); """
 
 
-""" User account setting functions """
+""" User account setting functions: """
 
 def db_createUser(db, user):
     """
@@ -62,6 +85,25 @@ def db_createUser(db, user):
             return cur.lastrowid
     except:
         return None
+
+def db_getUser(db, username):
+    """
+    Returns an object containing user details for the provided username
+    """
+    sql = "SELECT * FROM users WHERE username=?"
+
+    row = None
+    try:
+        conn = db_connect(db)
+        with conn:
+            cur = conn.cursor()
+            cur.execute(sql, (username,))
+
+            row = cur.fetchall()[0]
+    except:
+        pass
+
+    return row
 
 
 
@@ -111,6 +153,9 @@ def main():
 
     db_createUser(db,user_1)
     db_createUser(db,user_2)
+
+    result = db_getUser(db,"stm")
+    print(result)
 
 
 
