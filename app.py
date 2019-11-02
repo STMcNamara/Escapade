@@ -186,9 +186,10 @@ def register():
                 "","","")
 
         # Connect to database and insert user data
-        conn = db_connect(db)
-        with conn:
-            db_createUser(conn,user)
+        result = db_createUser(db,user)
+
+        if not result:
+            return apology("User already exists")
 
         # TODO - for now return to front page
         return render_template("index.html")

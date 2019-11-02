@@ -30,7 +30,7 @@ def db_createTable(conn, createTableSQL):
 # Create the user table tables TODO - OR UPDATE:
 createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         user_id integer PRIMARY KEY AUTOINCREMENT,
-                                        username text NOT NULL,
+                                        username text UNIQUE NOT NULL,
                                         password text NOT NULL,
                                         firstName text,
                                         secondName text,
@@ -43,7 +43,7 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
 
 """ User account setting functions """
 
-def db_createUser(conn, user):
+def db_createUser(db, user):
     """
     Create a new project into the projects table
     :param conn:
@@ -54,9 +54,14 @@ def db_createUser(conn, user):
     sql = ''' INSERT INTO users(username,password,firstName,secondName,email,
                                 locationPref,localePref,currencyPref)
               VALUES(?,?,?,?,?,?,?,?) '''
-    cur = conn.cursor()
-    cur.execute(sql, user)
-    return cur.lastrowid
+    try:
+        conn = db_connect(db)
+        with conn:
+            cur = conn.cursor()
+            cur.execute(sql, user)
+            return cur.lastrowid
+    except:
+        return None
 
 
 
@@ -99,15 +104,13 @@ def main():
     db_intialise(db)
 
     # Connect to database
-    conn = db_connect(db)
-    with conn:
-        # create new users
 
-        user_1 = ("stm","abc","Sean","McNamara","sean@mail","UK","UK","GBP")
-        user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
 
-        db_createUser(conn,user_1)
-        db_createUser(conn,user_2)
+    user_1 = ("stm","abc","Sean","McNamara","sean@mail","UK","UK","GBP")
+    user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
+
+    db_createUser(db,user_1)
+    db_createUser(db,user_2)
 
 
 
