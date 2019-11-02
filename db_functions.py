@@ -113,7 +113,13 @@ def db_getUser(db, username):
         username(string): The username to retrive the data for
 
     Returns:
-        user(dict):
+        user(dict): A dictionary with all of the information for a single user.
+        Keys are the column headings from the user table.  Returns None if user
+        not present.
+
+    Exceptions:
+        N/A
+
     """
     sql = "SELECT * FROM users WHERE username=?"
 

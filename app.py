@@ -139,10 +139,6 @@ def search_live():
         return render_template("search_live.html", ss_places=ss_places)
 
 
-
-
-
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     """TODO - Allows the user to register an account and provde Optional
@@ -232,7 +228,11 @@ def login():
             return apology("Incorrect password", 403)
 
         else:
-            return render_template("todo.html")
+            # Create a session
+            session["user_id"] = user["user_id"]
+            session["username"] = user["username"]
+
+            return render_template("index.html")
 
     # User reached route via GET (as by clicking a link or via redirect)
     else:

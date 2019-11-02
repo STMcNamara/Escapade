@@ -6,8 +6,11 @@
 
 {% block main %}
 
-<body>
-Hello world - welcome to the test page for Escapade!
-</body>
+<p> Hello world! </p>
+{% if session.user_id %}
+<p> Hello {{ session.username }} - you're logged on! Welcome to the test page for Escapade!</p>
+{% else %}
+<p> You're a guest! Welcome to the test page for Escapade!</p>
+{% endif %}
 
 {% endblock %}
