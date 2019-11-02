@@ -9,7 +9,7 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
-from db_functions import db_intialise, db_connect,db_createUser,db_getUser
+from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword
 from helpers import apology
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -209,10 +209,41 @@ def register():
     else:
         return render_template("register.html")
 
-@app.route("/password")
+@app.route("/password", methods=["GET", "POST"])
 def password():
-    """TODO - Placeholder for accounts functionality - password Change"""
-    return render_template("todo.html")
+    """
+    Allows the user to change password
+    """
+    # User reached route via POST (as by submitting a form via POST)
+    if request.method == "POST":
+
+        # Retreive the user object from the database
+        user = db_getUser(db, session["username"])
+
+        # Check inputted password against hash
+        if not check_password_hash(user["password"], request.form.get("current_password")):
+            return apology("incorrect password")
+
+        # Ensure new password was submitted
+        elif not request.form.get("new_password"):
+            return apology("must provide new password")
+
+        # Ensure passwords match
+        elif request.form.get("new_password") != request.form.get("confirmation"):
+            return apology("passwords do not match")
+
+        # Hash the new password
+        hash = generate_password_hash(request.form.get("new_password"))
+
+        # TODO Update the hash in the database
+        db_updatePassword(db, hash, session["username"])
+
+        # Redirect the user to home page
+        return redirect("/")
+
+    # User reached route via GET (as by clicking a link or via redirect)
+    else:
+        return render_template("password.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

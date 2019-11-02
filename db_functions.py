@@ -142,6 +142,22 @@ def db_getUser(db, username):
 
     return user
 
+def db_updatePassword(db,newPassword,username):
+    """
+
+    """
+    sql = "UPDATE users SET password=? WHERE username=?"
+
+    try:
+        conn = db_connect(db)
+        with conn:
+            cur = conn.cursor()
+            cur.execute(sql, (newPassword, username))
+            return cur.lastrowid
+    except Error as e:
+        print(e)
+        return None
+
 
 
 """Specific database operators and wrappers"""
