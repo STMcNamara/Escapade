@@ -141,18 +141,34 @@ def search_live():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """TODO - Allows the user to register an account and provde Optional
-    account details.
+    """
+    Allows the user to register an account with username and password
+    and provde optional account details.
 
     GET:
         Presents register.html to allow user to submit account details.
 
     POST:
-        INPUTS - TODO
+        INPUTS:
+            Reads user parameters from register.html, and conducts basic
+            validation:
+                username(string): Required
+                password(string): Required
+                confirmation(string): Required - must match password
+                firstName(string): Optional
+                secondName(string): Optional
+                email(string): Optional
 
-        CALLS - TODO
+        CALLS:
+            generate_password_hash to hash the password
 
-        RETURNS - TODO
+            db_createUser to confirm username does not exist, and write user
+            information to the database
+
+        RETURNS:
+            On success, returns the user to index.html (currently does not log in.
+            On failure returns apology with the appropriate data validation
+            information.
 
     """
     # User reached route via POST (by submitting account details)
@@ -200,7 +216,29 @@ def password():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    """TODO - Placeholder for accounts functionality - Log In"""
+    """
+    Allows the user to log in and creates a user session
+
+    GET:
+        Presents login.html to allow use to submit login information
+
+    POST:
+        INPUTS:
+            Reads the user login parameters, and conducts basic validation:
+                username(string): Required
+                password(string): Required
+
+        CALLS:
+            db_getUser to retreive user details from the database
+
+            check_password_hash to confirm passwords match
+
+        RETURNS:
+            On success, returns the user to index.html. Logs the user in by adding
+            user_id and unsername to the session dictionary.
+            On failure returns apology with the appropriate data validation
+            information.
+    """
 
     # Forget any user_id
     # session.clear()
@@ -240,5 +278,16 @@ def login():
 
 @app.route("/logout")
 def logout():
-    """TODO - Placeholder for accounts functionality - Log Out"""
-    return render_template("todo.html")
+    """
+    Logs user out by clearing all information from the session dictionary
+
+    RETURNS:
+        Returns the user to index.html
+
+    """
+
+    # Clear session database
+    session.clear()
+
+    # Redirect user to login form
+    return redirect("login")
