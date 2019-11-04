@@ -10,7 +10,7 @@ from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
 from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword
-from helpers import apology
+from helpers import apology, login_required
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # Configure application
@@ -210,6 +210,7 @@ def register():
         return render_template("register.html")
 
 @app.route("/password", methods=["GET", "POST"])
+@login_required
 def password():
     """
     Allows the user to change password
@@ -308,6 +309,7 @@ def login():
         return render_template("login.html")
 
 @app.route("/logout")
+@login_required
 def logout():
     """
     Logs user out by clearing all information from the session dictionary
