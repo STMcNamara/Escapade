@@ -50,6 +50,11 @@ def db_createTable(conn, createTableSQL):
     except Error as e:
         print(e)
 
+def db_createUsersTable(conn):
+    """
+    Creates the users table by calling db_createTable and the user table
+    SQL defined within this function.
+    """
 # SQL Schema for the "users" table
 createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         user_id integer PRIMARY KEY AUTOINCREMENT,
@@ -64,12 +69,49 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         ); """
 
 
+""" Generic database interactions"""
+
+def db_putData(db,sql,data):
+    """
+    A generic function for creating or updating data within any table
+    in a databse, based on the provided SQL statement and corresponding
+    data.
+
+    Args:
+        db(string): The address of the database file to be written to.
+
+        sql(string): An SQL statement to manipulate the data entry.
+
+        data(tuple): A tuple corresponding to data to the PUT via the
+        SQL statement.
+
+    Returns:
+        cur.lastrowid(int): On success, the row position in the table at which
+        the data entry was created or edited.
+
+        None: On failure to complete edit.
+
+    Exceptions:
+        e(string): An sqlite3 error message upon failure to create the user
+    """
+    print("Put called")
+    try:
+        conn = db_connect(db)
+        with conn:
+            cur = conn.cursor()
+            cur.execute(sql, data)
+            return cur.lastrowid
+    except Error as e:
+        print(e)
+        return None
+
+
 """ User account setting functions: """
 
 def db_createUser(db, user):
     """
-    Create a new user in the users table of the specifed database, using the
-    information provided within the users object
+    Uses db_putData to create a new user entry in the database. Refer to db_putData
+    for further information on returns and exceptions.
 
     Args:
         db(string): The address of the database file to be written to
@@ -77,30 +119,15 @@ def db_createUser(db, user):
         user(tuple): A tuple containing the users information to be inserted
         as a new entry. The required elements and order are defined in the sql
         parameter below.
-
-    Returns:
-        cur.lastrowid(int): On success, the row position in the table at which
-        the user was created.
-
-        None: On failure to create user.
-
-    Exceptions:
-        e(string): An sqlite3 error message upon failure to create the user
-
     """
-
+    print("Create user called")
     sql = ''' INSERT INTO users(username,password,firstName,secondName,email,
                                 locationPref,localePref,currencyPref)
               VALUES(?,?,?,?,?,?,?,?) '''
-    try:
-        conn = db_connect(db)
-        with conn:
-            cur = conn.cursor()
-            cur.execute(sql, user)
-            return cur.lastrowid
-    except Error as e:
-        print(e)
-        return None
+
+    # Call PUT function
+    return db_putData(db, sql, user)
+
 
 def db_getUser(db, username):
     """
@@ -144,19 +171,23 @@ def db_getUser(db, username):
 
 def db_updatePassword(db,newPassword,username):
     """
+    Uses db_putData to ammend a users password hash. Refer to db_putData
+    for further information on returns and exceptions.
 
+    Args:
+        db(string): The address of the database file to be written to
+
+        newPassword(string): The new password hash.
+
+        username(string): User's unique username.
     """
+
     sql = "UPDATE users SET password=? WHERE username=?"
 
-    try:
-        conn = db_connect(db)
-        with conn:
-            cur = conn.cursor()
-            cur.execute(sql, (newPassword, username))
-            return cur.lastrowid
-    except Error as e:
-        print(e)
-        return None
+    data = (newPassword, username)
+
+    # Call PUT function
+    return db_putData(db, sql, data)
 
 
 
