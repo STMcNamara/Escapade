@@ -30,7 +30,7 @@ def after_request(response):
     return response
 
 # Define datebase name, and if required create or update
-db = r"database.db"
+db = r"escapade.db"
 db_intialise(db)
 
 

@@ -50,11 +50,7 @@ def db_createTable(conn, createTableSQL):
     except Error as e:
         print(e)
 
-def db_createUsersTable(conn):
-    """
-    Creates the users table by calling db_createTable and the user table
-    SQL defined within this function.
-    """
+
 # SQL Schema for the "users" table
 createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         user_id integer PRIMARY KEY AUTOINCREMENT,
