@@ -26,6 +26,84 @@ def db_connect(db_file):
 
     return conn
 
+def db_putData(db,sql,data):
+    """
+    A generic function for creating or updating data within any table
+    in a databse, based on the provided SQL statement and corresponding
+    data.
+
+    Args:
+        db(string): The address of the database file to be written to.
+
+        sql(string): An SQL statement to manipulate the data entry.
+
+        data(tuple): A tuple corresponding to data to the PUT via the
+        SQL statement.
+
+    Returns:
+        cur.lastrowid(int): On success, the row position in the table at which
+        the data entry was created or edited.
+
+        None: On failure to complete edit.
+
+    Exceptions:
+        e(string): An sqlite3 error message upon failure to create the user
+    """
+
+    try:
+        conn = db_connect(db)
+        with conn:
+            cur = conn.cursor()
+            cur.execute(sql, data)
+            return cur.lastrowid
+    except Error as e:
+        print(e)
+        return None
+
+def db_getDataDict(db,sql,data):
+    """
+    A generic function for making a query to retreive data from a table within
+    the database.
+
+    Args:
+        db(string): The address of the database file to be written to.
+
+        sql(string): An SQL statement to query the database.
+
+        data(tuple): A tuple corresponding to data to the retreived via the
+        SQL statement.
+
+    Returns:
+        result(list(of dictionaries)): A list of dictionaries where each item is
+        the data for a retreived row, and the dictionary keys are the requested
+        table column headers. Returns None on failure to execute query.
+
+    Exceptions:
+
+        e(string): An sqlite3 error message upon failure to create the userExceptions:
+
+    """
+    result = []
+    try:
+        conn = db_connect(db)
+        # Row_factory allows column headers to return with rows
+        conn.row_factory = sqlite3.Row
+
+        with conn:
+            cur = conn.cursor()
+            cur.execute(sql, data)
+            rows = cur.fetchall()
+
+            # Convert to list of dictionaries
+            for row in rows:
+                result.append(dict(row))
+
+            return result
+
+    except Error as e:
+        print(e)
+        return None
+
 """ Table creation functions and schema: """
 
 def db_createTable(conn, createTableSQL):
@@ -65,41 +143,6 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         ); """
 
 
-""" Generic database interactions"""
-
-def db_putData(db,sql,data):
-    """
-    A generic function for creating or updating data within any table
-    in a databse, based on the provided SQL statement and corresponding
-    data.
-
-    Args:
-        db(string): The address of the database file to be written to.
-
-        sql(string): An SQL statement to manipulate the data entry.
-
-        data(tuple): A tuple corresponding to data to the PUT via the
-        SQL statement.
-
-    Returns:
-        cur.lastrowid(int): On success, the row position in the table at which
-        the data entry was created or edited.
-
-        None: On failure to complete edit.
-
-    Exceptions:
-        e(string): An sqlite3 error message upon failure to create the user
-    """
-    print("Put called")
-    try:
-        conn = db_connect(db)
-        with conn:
-            cur = conn.cursor()
-            cur.execute(sql, data)
-            return cur.lastrowid
-    except Error as e:
-        print(e)
-        return None
 
 
 """ User account setting functions: """
@@ -116,7 +159,6 @@ def db_createUser(db, user):
         as a new entry. The required elements and order are defined in the sql
         parameter below.
     """
-    print("Create user called")
     sql = ''' INSERT INTO users(username,password,firstName,secondName,email,
                                 locationPref,localePref,currencyPref)
               VALUES(?,?,?,?,?,?,?,?) '''
@@ -127,8 +169,9 @@ def db_createUser(db, user):
 
 def db_getUser(db, username):
     """
-    Returns an object containing user details for the provided username, from
-    the specified database.
+    Returns an dictionary object containing all user information for
+    the provided username. Refer to db_putData for further information on
+    exceptions.
 
     Args:
         db(string): The address of the database file to interogate
@@ -139,31 +182,21 @@ def db_getUser(db, username):
         user(dict): A dictionary with all of the information for a single user.
         Keys are the column headings from the user table.  Returns None if user
         not present.
-
-    Exceptions:
-        N/A
-
     """
     sql = "SELECT * FROM users WHERE username=?"
 
-    user = None
+    # Call GET function
+    result = db_getDataDict(db, sql, (username,))
+
+    # Retrieve first / only value from list
     try:
-        conn = db_connect(db)
-        # Row_factory allow column headers to return with rows
-        conn.row_factory = sqlite3.Row
-
-        with conn:
-            cur = conn.cursor()
-            cur.execute(sql, (username,))
-            rows = cur.fetchall()
-
-            # Convert to dictionary
-            user = dict(rows[0])
+        user = result[0]
 
     except:
-        pass
+        user = None
 
     return user
+
 
 def db_updatePassword(db,newPassword,username):
     """
@@ -226,8 +259,6 @@ def main():
     db_intialise(db)
 
     # Connect to database
-
-
     user_1 = ("stm","abc","Sean","McNamara","sean@mail","UK","UK","GBP")
     user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
 
