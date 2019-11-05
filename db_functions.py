@@ -142,6 +142,14 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         currencyPref text
                                         ); """
 
+# SQL Schema for the "search_live_history table"
+createTableSQL_search_live_history = """ CREATE TABLE IF NOT EXISTS search_live_history (
+                                            search_id integer PRIMARY KEY AUTOINCREMENT,
+                                            user_id integer,
+                                            created timestamp,
+                                            searchJson text,
+                                            searchName text
+                                            ); """
 
 
 
@@ -243,6 +251,7 @@ def db_intialise(db):
     if conn is not None:
         # create tables using schema defined above [TODO consider updating]
         db_createTable(conn, createTableSQL_Users)
+        db_createTable(conn, createTableSQL_search_live_history)
 
     else:
         print("Error! cannot create the database connection.")
