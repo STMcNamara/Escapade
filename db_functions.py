@@ -1,5 +1,7 @@
 import sqlite3
 from sqlite3 import Error
+import json
+from datetime import datetime
 
 
 """ Generic database helpers:"""
@@ -143,7 +145,7 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         ); """
 
 # SQL Schema for the "search_live_history table"
-createTableSQL_search_live_history = """ CREATE TABLE IF NOT EXISTS search_live_history (
+createTableSQL_search_live_history = """ CREATE TABLE IF NOT EXISTS search_live_log (
                                             search_id integer PRIMARY KEY AUTOINCREMENT,
                                             user_id integer,
                                             created timestamp,
@@ -161,7 +163,7 @@ def db_createUser(db, user):
     for further information on returns and exceptions.
 
     Args:
-        db(string): The address of the database file to be written to
+        db(string): The address of the database file to be written to.
 
         user(tuple): A tuple containing the users information to be inserted
         as a new entry. The required elements and order are defined in the sql
@@ -226,6 +228,40 @@ def db_updatePassword(db,newPassword,username):
     # Call PUT function
     return db_putData(db, sql, data)
 
+""" User search history functions """
+
+def db_logSLQuery(db, user_id, searchQuery):
+    """
+    Uses db_putData to create log any search carried out using search_live as
+    a .json with associated metadata.
+
+    Refer to db_putData for further information on returns and exceptions.
+
+    Args:
+        db(string): The address of the database file to be written to.
+
+        user_id(integer: User id for the search to be recorded against.
+
+        timestamp(TBD): TODO
+
+        searchQuery(list(of dictionaries)): A list of dictionaries, each
+        containing keys required to construct an URL for the Live Flight
+        Search API endpoint. Key value pairs are: "country", "currency",
+        "locale","originplace","destinationplace", "outboundpartialdate","adults".
+
+    """
+    # Convert searchQuery into .json format for storage in the database
+    searchJson = json.dumps(searchQuery)
+    timestamp = datetime.now()
+
+    data = (user_id, timestamp, searchJson)
+
+    sql = ''' INSERT INTO search_live_log (user_id,created,searchJson)
+                VALUES(?,?,?) '''
+
+    # Call PUT function
+    return db_putData(db, sql, data)
+
 
 
 """Specific database operators and wrappers"""
@@ -272,7 +308,13 @@ def main():
     user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
 
     x = db_createUser(db,user_1)
+    # Test create user
     db_createUser(db,user_2)
+
+    # Test log search
+    user_id = 123
+    searchQuery = [{"a":1, "b":2, "c":3}]
+    db_logSLQuery(db, user_id, searchQuery)
 
     result = db_getUser(db,"lcr")
     print(result["username"])
