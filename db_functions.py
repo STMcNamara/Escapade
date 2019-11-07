@@ -144,8 +144,8 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         currencyPref text
                                         ); """
 
-# SQL Schema for the "search_live_history table"
-createTableSQL_search_live_history = """ CREATE TABLE IF NOT EXISTS search_live_log (
+# SQL Schema for the "search_live_log" table
+createTableSQL_search_live_log = """ CREATE TABLE IF NOT EXISTS search_live_log (
                                             search_id integer PRIMARY KEY AUTOINCREMENT,
                                             user_id integer,
                                             created timestamp,
@@ -153,6 +153,15 @@ createTableSQL_search_live_history = """ CREATE TABLE IF NOT EXISTS search_live_
                                             searchName text
                                             ); """
 
+# SQL Schema for the "search_live_history" table
+createTableSQL_search_live_results = """ CREATE TABLE IF NOT EXISTS search_live_results (
+                                            results_id integer PRIMARY KEY AUTOINCREMENT,
+                                            search_id integer NOT NULL,
+                                            user_id integer,
+                                            created timestamp,
+                                            resultJson text,
+                                            searchName text
+                                            ); """
 
 
 """ User account setting functions: """
@@ -262,6 +271,28 @@ def db_logSLQuery(db, user_id, searchQuery):
     # Call PUT function
     return db_putData(db, sql, data)
 
+def db_logSLResults(db, user_id, search_id, resultsDicts):
+    """
+    Uses db_putData to log results retreived from search_live as a .json
+    with associated metadata.  The raw result is stored as returned from the
+    multithreaded query, therefore each query may have multiple associated
+    results rows within the database.
+
+    Refer to db_putData for further information on returns and exceptions.
+
+    Args:
+        db(string): The address of the database file to be written to.
+
+        user_id(integer): User id for the search to be recorded against. May be
+        "" if no user_id to be stored.
+
+        search_id(integer): The unique id of the search query for which the result
+        is associated.
+
+    - TODO - 
+
+    """
+
 
 
 """Specific database operators and wrappers"""
@@ -287,7 +318,7 @@ def db_intialise(db):
     if conn is not None:
         # create tables using schema defined above [TODO consider updating]
         db_createTable(conn, createTableSQL_Users)
-        db_createTable(conn, createTableSQL_search_live_history)
+        db_createTable(conn, createTableSQL_search_live_log)
 
     else:
         print("Error! cannot create the database connection.")
