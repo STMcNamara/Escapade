@@ -19,3 +19,12 @@ def login_required(f):
             return redirect("/login")
         return f(*args, **kwargs)
     return decorated_function
+
+def sessionActive():
+    """
+    Checks if there is an active user session and returns True or False
+    """
+    if session.get("user_id") is None:
+        return False
+    else:
+        return True

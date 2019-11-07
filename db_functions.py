@@ -228,11 +228,12 @@ def db_updatePassword(db,newPassword,username):
     # Call PUT function
     return db_putData(db, sql, data)
 
+
 """ User search history functions """
 
 def db_logSLQuery(db, user_id, searchQuery):
     """
-    Uses db_putData to create log any search carried out using search_live as
+    Uses db_putData to log any search carried out using search_live as
     a .json with associated metadata.
 
     Refer to db_putData for further information on returns and exceptions.
@@ -240,9 +241,8 @@ def db_logSLQuery(db, user_id, searchQuery):
     Args:
         db(string): The address of the database file to be written to.
 
-        user_id(integer: User id for the search to be recorded against.
-
-        timestamp(TBD): TODO
+        user_id(integer: User id for the search to be recorded against. May be
+        "" if no user_id to be stored.
 
         searchQuery(list(of dictionaries)): A list of dictionaries, each
         containing keys required to construct an URL for the Live Flight
@@ -312,7 +312,7 @@ def main():
     db_createUser(db,user_2)
 
     # Test log search
-    user_id = 123
+    user_id = ""
     searchQuery = [{"a":1, "b":2, "c":3}]
     db_logSLQuery(db, user_id, searchQuery)
 

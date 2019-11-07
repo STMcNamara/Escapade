@@ -9,8 +9,8 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
-from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword
-from helpers import apology, login_required
+from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery
+from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
 # Configure application
@@ -132,6 +132,18 @@ def search_live():
 
         # Make the live search request
         resultsDict = liveSearchRequestQuotes_T(queryList)
+
+        # Check if session in progress to set user_id or blank
+
+        if sessionActive():
+            user_id = session["user_id"]
+        else:
+            user_id = ""
+
+        # Log the query in search_live_log
+        db_logSLQuery(db, user_id, queryList)
+
+        # Return the results to the user
         return render_template("results_live.html", resultsDict=resultsDict)
 
     # Reached via GET (display form)
