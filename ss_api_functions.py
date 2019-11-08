@@ -463,9 +463,8 @@ def liveSearchRequestQuote(query):
         the API endpoint.
 
     Returns:
-        resutsDict(dictionary):  List of dictionaries containing the
-        itinary data for a single query. Refer to liveSearchFormatResult
-        output.
+        response_json (dictionary): A Python formatted json containing
+        multiple lists and dictionaries, as recevied from the API endpoint.
 
     Excptions:
         TODO
@@ -474,10 +473,8 @@ def liveSearchRequestQuote(query):
     sessionKey = liveSearchCreateSession(query)
     # Poll the results
     response_json = liveSearchGetData(sessionKey)
-    # Format the response itinary into a dictionary
-    resultsDict = liveSearchFormatResult(response_json)
 
-    return resultsDict
+    return response_json
 
 def liveSearchRequestQuotes_S(inputDicts):
     """
@@ -491,23 +488,25 @@ def liveSearchRequestQuotes_S(inputDicts):
         "locale","originplace","destinationplace", "outboundpartialdate","adults".
 
     Returns:
-        resultsDicts (list(of dictionaries)): A list of dictionaries, each
-        containing keys defined within liveSearchFormatResult which provide
-        provide the itinary data for multiple user queries.
+        resultsList (list): A list of .json responses for each query made to the
+        SS API.
 
     Exceptions:
         TODO
     """
-    resultsDicts = []
+    # Format the query strings
+    queryStringList = formatLsData(inputDicts)
+
+    resultsList = []
 
     # For each query
     for query in queryStringList:
         # Request data from the API for each queryString
-        itinariesList = liveSearchRequestQuote(query)
+        responseJson = liveSearchRequestQuote(query)
         # Append the returned itinary to the results
-        resultsDicts += itinariesList
+        resultsList.append(responseJson)
 
-    return resultsDicts
+    return resultsList
 
 
 def liveSearchRequestQuotes_T(inputDicts):
@@ -523,9 +522,8 @@ def liveSearchRequestQuotes_T(inputDicts):
         "locale","originplace","destinationplace", "outboundpartialdate","adults".
 
     Returns:
-        resultsDicts (list(of dictionaries)): A list of dictionaries, each
-        containing keys defined within liveSearchFormatResult which provide
-        provide the itinary data for multiple user queries.
+        resultsList (list): A list of .json responses for each query made to the
+        SS API.
 
     Exceptions:
         TODO
@@ -534,7 +532,7 @@ def liveSearchRequestQuotes_T(inputDicts):
     queryDicts = [[] for x in inputDicts]
 
     # Define a wrapper for the thread process
-    def threadWrapper(query, resultDict, index):
+    def threadWrapper(query, resultsList, index):
         queryDicts[index] = liveSearchRequestQuote(query)
         return True
 
@@ -556,11 +554,11 @@ def liveSearchRequestQuotes_T(inputDicts):
         process.join()
 
     # Consolidate individual lists into a single list
-    resultsDicts = []
+    resultsList = []
     for list in queryDicts:
-        resultsDicts += list
+        resultsList += list
 
-    return resultsDicts
+    return resultsList
 
 def getLocationsAll():
     """
@@ -600,7 +598,7 @@ def getLocationsAll():
     return places
 
 
-'''Test Area
+"""Test Area"""
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-resultsDict = liveSearchRequestQuotes_T(inputDicts)[0]
-print(resultsDict)'''
+resultsList = liveSearchRequestQuotes_S(inputDicts)
+print(resultsList)
