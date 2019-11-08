@@ -624,10 +624,10 @@ def getLocationsAll():
     return places
 
 
-"""Test Area"""
+"""Test Area
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
 resultsJson = liveSearchRequestQuotes_T(inputDicts)
 
 result = liveSearchFormatResultList(resultsJson)
 
-print(result)
+print(result)"""

@@ -8,7 +8,7 @@ Escapade database.
 import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
-from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T
+from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T, liveSearchFormatResultList
 from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery
 from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -130,8 +130,13 @@ def search_live():
                         'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i)),
                         'inbounddate': request.form.get("inbounddate_" + str(i))})
 
-        # Make the live search request
-        resultsDict = liveSearchRequestQuotes_T(queryList)
+        # Make the live search request for list of raw API results
+        liveQuotesList = liveSearchRequestQuotes_T(queryList)
+
+        # TODO - store the raw API result in the database
+
+        # Format the results to display to user
+        resultsDict = liveSearchFormatResultList(liveQuotesList)
 
         # Check if session in progress to set user_id or blank
 
