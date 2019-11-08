@@ -453,6 +453,32 @@ def liveSearchFormatResult(liveQuotes):
 
     return lQuoteList
 
+def liveSearchFormatResultList(liveQuotesList):
+    """
+    Provides multiple .json live search results and consolidates into a single
+    list of itinaries formatted by liveSearchFormatResult.
+
+    Args:
+        liveQuotesList (List( of dictionaries): A list of dictionaries containing
+        multiple API response .json.
+        Refer to API documentation for structure.
+
+    Returns:
+        combinedQuotesList (list(of dictionaries)): List of dictionaries containing the
+        itinary data described in liveSearchFormatResult for multiple API queries
+
+    Exceptions:
+        TODO
+    """
+
+    combinedQuotesList = []
+
+    for quote in liveQuotesList:
+        combinedQuotesList += liveSearchFormatResult(quote)
+
+    return combinedQuotesList
+
+
 def liveSearchRequestQuote(query):
     """
     Handles the calling of liveSearch functions in series for a single user
@@ -556,7 +582,7 @@ def liveSearchRequestQuotes_T(inputDicts):
     # Consolidate individual lists into a single list
     resultsList = []
     for list in queryDicts:
-        resultsList += list
+        resultsList.append(list)
 
     return resultsList
 
@@ -600,5 +626,8 @@ def getLocationsAll():
 
 """Test Area"""
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-resultsList = liveSearchRequestQuotes_S(inputDicts)
-print(resultsList)
+resultsJson = liveSearchRequestQuotes_T(inputDicts)
+
+result = liveSearchFormatResultList(resultsJson)
+
+print(result)
