@@ -9,7 +9,7 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T, liveSearchFormatResultList
-from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery
+from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery, db_logSLResults
 from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -133,8 +133,6 @@ def search_live():
         # Make the live search request for list of raw API results
         liveQuotesList = liveSearchRequestQuotes_T(queryList)
 
-        # TODO - store the raw API result in the database
-
         # Format the results to display to user
         resultsDict = liveSearchFormatResultList(liveQuotesList)
 
@@ -145,8 +143,11 @@ def search_live():
         else:
             user_id = ""
 
-        # Log the query in search_live_log
-        db_logSLQuery(db, user_id, queryList)
+        # Log the query, raw and formatted results in the datbase
+        search_id = db_logSLQuery(db, user_id, queryList)
+        results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
+
+        # Log the raw .json results
 
         # Return the results to the user
         return render_template("results_live.html", resultsDict=resultsDict)

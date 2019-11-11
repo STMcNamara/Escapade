@@ -158,8 +158,8 @@ createTableSQL_search_live_results = """ CREATE TABLE IF NOT EXISTS search_live_
                                             results_id integer PRIMARY KEY AUTOINCREMENT,
                                             search_id integer NOT NULL,
                                             user_id integer,
-                                            created timestamp,
-                                            resultJson text,
+                                            resultTimestamp timestamp,
+                                            resultsJson text,
                                             searchName text
                                             ); """
 
@@ -258,6 +258,10 @@ def db_logSLQuery(db, user_id, searchQuery):
         Search API endpoint. Key value pairs are: "country", "currency",
         "locale","originplace","destinationplace", "outboundpartialdate","adults".
 
+    Returns:
+        search_id(integer): The last row id, which is the unique autoincrement
+        value for search_id.
+
     """
     # Convert searchQuery into .json format for storage in the database
     searchJson = json.dumps(searchQuery)
@@ -269,14 +273,16 @@ def db_logSLQuery(db, user_id, searchQuery):
                 VALUES(?,?,?) '''
 
     # Call PUT function
-    return db_putData(db, sql, data)
 
-def db_logSLResults(db, user_id, search_id, resultsDicts):
+    search_id = db_putData(db, sql, data)
+
+    return search_id
+
+def db_logSLResults(db, user_id, search_id, liveQuotesList):
     """
     Uses db_putData to log results retreived from search_live as a .json
-    with associated metadata.  The raw result is stored as returned from the
-    multithreaded query, therefore each query may have multiple associated
-    results rows within the database.
+    with associated metadata.  The  result are stored as a single .json object
+    that is created from the list of .jsons returned from liveSearchRequestQuotes_T.
 
     Refer to db_putData for further information on returns and exceptions.
 
@@ -289,10 +295,29 @@ def db_logSLResults(db, user_id, search_id, resultsDicts):
         search_id(integer): The unique id of the search query for which the result
         is associated.
 
-    - TODO - 
+        liveQuotesList (List( of dictionaries): A list of dictionaries containing
+        multiple API response .json.
+        Refer to API documentation for structure.
 
+    Returns:
+        results_id(integer): The last row id, which is the unique autoincrement
+        value for resutls_id.
     """
+    # Convert liveQuotesList into .json format for storage in the database
+    resultsJson = json.dumps(liveQuotesList)
+    resultTimestamp = datetime.now()
 
+    data = (search_id, user_id, resultTimestamp, resultsJson)
+
+    sql = ''' INSERT INTO search_live_results(search_id,user_id,resultTimestamp,
+                                            resultsJson)
+                VALUES(?,?,?,?) '''
+
+    # Call the PUT function
+
+    results_id = db_putData(db, sql, data)
+
+    return results_id
 
 
 """Specific database operators and wrappers"""
@@ -319,6 +344,7 @@ def db_intialise(db):
         # create tables using schema defined above [TODO consider updating]
         db_createTable(conn, createTableSQL_Users)
         db_createTable(conn, createTableSQL_search_live_log)
+        db_createTable(conn, createTableSQL_search_live_results)
 
     else:
         print("Error! cannot create the database connection.")
@@ -345,7 +371,7 @@ def main():
     # Test log search
     user_id = ""
     searchQuery = [{"a":1, "b":2, "c":3}]
-    db_logSLQuery(db, user_id, searchQuery)
+    print(db_logSLQuery(db, user_id, searchQuery))
 
     result = db_getUser(db,"lcr")
     print(result["username"])
