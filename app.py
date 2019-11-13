@@ -147,8 +147,6 @@ def search_live():
         search_id = db_logSLQuery(db, user_id, queryList)
         results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
 
-        # Log the raw .json results
-
         # Return the results to the user
         return render_template("results_live.html", resultsDict=resultsDict)
 
@@ -254,7 +252,7 @@ def password():
         # Hash the new password
         hash = generate_password_hash(request.form.get("new_password"))
 
-        # TODO Update the hash in the database
+        # Update the hash in the database
         db_updatePassword(db, hash, session["username"])
 
         # Redirect the user to home page

@@ -25,9 +25,5 @@ stopsListIB
 carriersListIB
 OriginStationNameOB
 DestinationStationNameOB
-stopsListOB
 OriginStationNameIB
 DestinationStationNameIB
-stopsListIB
-carriersListOB
-carriersListIB

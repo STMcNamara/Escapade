@@ -153,7 +153,7 @@ createTableSQL_search_live_log = """ CREATE TABLE IF NOT EXISTS search_live_log 
                                             searchName text
                                             ); """
 
-# SQL Schema for the "search_live_history" table
+# SQL Schema for the "search_live_results" table
 createTableSQL_search_live_results = """ CREATE TABLE IF NOT EXISTS search_live_results (
                                             results_id integer PRIMARY KEY AUTOINCREMENT,
                                             search_id integer NOT NULL,
@@ -161,6 +161,43 @@ createTableSQL_search_live_results = """ CREATE TABLE IF NOT EXISTS search_live_
                                             resultTimestamp timestamp,
                                             resultsJson text,
                                             searchName text
+                                            ); """
+
+# SQL Schema for the "search_live_data" table
+createTableSQL_search_live_data = """ CREATE TABLE IF NOT EXISTS search_live_data (
+                                            results_id integer,
+                                            search_id integer,
+                                            user_id integer,
+                                            resultTimestamp timestamp,
+                                            OutboundLegId text,
+                                            Price text,
+                                            QuoteAge text,
+                                            InboundLegId text,
+                                            linkURL text,
+                                            OriginStationOB text,
+                                            DestinationStationOB text,
+                                            DepartureOB text,
+                                            ArrivalOB text,
+                                            DurationOB text,
+                                            CarriersOB text,
+                                            DirectionalityOB text,
+                                            StopsOB text,
+                                            OriginStationIB text,
+                                            DestinationStationIB text,
+                                            DepartureIB text,
+                                            ArrivalIB text,
+                                            DurationIB text,
+                                            CarriersIB text,
+                                            DirectionalityIB text,
+                                            StopsIB text,
+                                            stopsListOB text,
+                                            carriersListOB text,
+                                            stopsListIB text,
+                                            carriersListIB text,
+                                            OriginStationNameOB text,
+                                            DestinationStationNameOB text,
+                                            OriginStationNameIB text,
+                                            DestinationStationNameIB text
                                             ); """
 
 
@@ -314,10 +351,47 @@ def db_logSLResults(db, user_id, search_id, liveQuotesList):
                 VALUES(?,?,?,?) '''
 
     # Call the PUT function
-
     results_id = db_putData(db, sql, data)
 
     return results_id
+
+def db_logSLItineraries(db, resultsDict):
+    """
+    Uses db_putData to log the formatted itinaries created by liveSearchFormatResult
+    for analysis and presentation to the user, and the associated search
+    metadata.
+    Refer to db_putData for further information on returns and exceptions.
+
+    Args:
+        db(string): The address of the database file to be written to.
+
+        user_id(integer): User id for the search to be recorded against. May be
+        "" if no user_id to be stored.
+
+        search_id(integer): The unique id of the search query for which the result
+        is associated.
+
+        results_id(integer): The unique id for the search result key from the
+        search_live_data table.
+
+    Returns:
+        lQuoteList (list(of dictionaries)): List of dictionaries containing the
+        itinary data defined within liveSearchFormatResult in ss_api_functions.
+
+    """
+
+    # For each itinerary dict in the list:
+    for itinerary in resultsDict:
+        # Placeholders for length of itinary, plus 3 TODO id parameters
+        placeholders = ', '.join(['?'] * (len(itinerary)))
+        keys = ', '.join(itinerary.keys())
+        values = tuple(itinerary.values())
+        print(values)
+        sql = "INSERT INTO search_live_data(%s) VALUES (%s)" % (keys, placeholders)
+        print(sql)
+
+        # Call PUT function
+        db_putData(db, sql, values)
 
 
 """Specific database operators and wrappers"""
@@ -345,6 +419,7 @@ def db_intialise(db):
         db_createTable(conn, createTableSQL_Users)
         db_createTable(conn, createTableSQL_search_live_log)
         db_createTable(conn, createTableSQL_search_live_results)
+        db_createTable(conn, createTableSQL_search_live_data)
 
     else:
         print("Error! cannot create the database connection.")
@@ -363,6 +438,11 @@ def main():
     # Connect to database
     user_1 = ("stm","abc","Sean","McNamara","sean@mail","UK","UK","GBP")
     user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
+
+    testDict = [{"OutboundLegId":"ID1", "Price": "Price1"},
+                {"OutboundLegId":"ID2", "Price": "Price2"}]
+
+    db_logSLItineraries(db, testDict)
 
     x = db_createUser(db,user_1)
     # Test create user
