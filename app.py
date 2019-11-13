@@ -9,7 +9,7 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T, liveSearchFormatResultList
-from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery, db_logSLResults
+from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery, db_logSLResults, db_logSLItineraries
 from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -146,6 +146,7 @@ def search_live():
         # Log the query, raw and formatted results in the datbase
         search_id = db_logSLQuery(db, user_id, queryList)
         results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
+        db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
 
         # Return the results to the user
         return render_template("results_live.html", resultsDict=resultsDict)

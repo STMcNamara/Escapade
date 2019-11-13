@@ -374,8 +374,7 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
         results_id(integer): The unique id for the search result key from the
         search_live_data table.
 
-    Returns:
-        lQuoteList (list(of dictionaries)): List of dictionaries containing the
+        resultsDict (list(of dictionaries)): List of dictionaries containing the
         itinary data defined within liveSearchFormatResult in ss_api_functions.
 
     """
@@ -395,7 +394,7 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
         print(sql)
 
         # Call PUT function
-        db_putData(db, sql, values)
+        return db_putData(db, sql, values)
 
 
 """Specific database operators and wrappers"""
