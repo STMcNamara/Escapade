@@ -355,7 +355,7 @@ def db_logSLResults(db, user_id, search_id, liveQuotesList):
 
     return results_id
 
-def db_logSLItineraries(db, resultsDict):
+def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
     """
     Uses db_putData to log the formatted itinaries created by liveSearchFormatResult
     for analysis and presentation to the user, and the associated search
@@ -382,12 +382,16 @@ def db_logSLItineraries(db, resultsDict):
 
     # For each itinerary dict in the list:
     for itinerary in resultsDict:
-        # Placeholders for length of itinary, plus 3 TODO id parameters
-        placeholders = ', '.join(['?'] * (len(itinerary)))
-        keys = ', '.join(itinerary.keys())
-        values = tuple(itinerary.values())
+        # Placeholders for length of itinary, plus 3 id parameters
+        placeholders = ', '.join(['?'] * (len(itinerary) + 3))
+
+        # Create string for SQL labels and tuple for SQL values.
+        # Note: must be in the same order
+        columns = "user_id,search_id,results_id," + ','.join(itinerary.keys())
+        print(columns)
+        values = (user_id, search_id, results_id) + tuple(itinerary.values())
         print(values)
-        sql = "INSERT INTO search_live_data(%s) VALUES (%s)" % (keys, placeholders)
+        sql = "INSERT INTO search_live_data(%s) VALUES (%s)" % (columns, placeholders)
         print(sql)
 
         # Call PUT function
@@ -442,7 +446,7 @@ def main():
     testDict = [{"OutboundLegId":"ID1", "Price": "Price1"},
                 {"OutboundLegId":"ID2", "Price": "Price2"}]
 
-    db_logSLItineraries(db, testDict)
+    db_logSLItineraries(db, 1, 10, 100, testDict)
 
     x = db_createUser(db,user_1)
     # Test create user
