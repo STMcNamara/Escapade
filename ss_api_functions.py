@@ -390,9 +390,9 @@ def liveSearchFormatResult(liveQuotes):
                 itinaryDict["DepartureOB"] = leg["Departure"]
                 itinaryDict["ArrivalOB"] = leg["Arrival"]
                 itinaryDict["DurationOB"] = leg["Duration"]
-                itinaryDict["CarriersOB"] = leg["Carriers"]
+                itinaryDict["CarriersOB"] = leg["Carriers"] # This is a list
                 itinaryDict["DirectionalityOB"] = leg["Directionality"]
-                itinaryDict["StopsOB"] = leg["Stops"]
+                itinaryDict["StopsOB"] = leg["Stops"] # This is a list
 
                 # Break out as should only be one match
                 break
@@ -406,16 +406,16 @@ def liveSearchFormatResult(liveQuotes):
                     itinaryDict["DepartureIB"] = leg["Departure"]
                     itinaryDict["ArrivalIB"] = leg["Arrival"]
                     itinaryDict["DurationIB"] = leg["Duration"]
-                    itinaryDict["CarriersIB"] = leg["Carriers"]
+                    itinaryDict["CarriersIB"] = leg["Carriers"] # This is a list
                     itinaryDict["DirectionalityIB"] = leg["Directionality"]
-                    itinaryDict["StopsIB"] = leg["Stops"]
+                    itinaryDict["StopsIB"] = leg["Stops"] # This is a list
 
                     # Break out as should only be one match
                     break
         except:
             pass
 
-        # Add in carrier and location names
+        # Add in carrier and location names - These are lists
         itinaryDict["stopsListOB"] = []
         itinaryDict["carriersListOB"] = []
         itinaryDict["stopsListIB"] = []
@@ -447,6 +447,21 @@ def liveSearchFormatResult(liveQuotes):
                     itinaryDict["carriersListIB"].append(carrier['Name'])
             except:
                 pass
+
+        # TEMP - Convert List items to strings to allow storage in database
+        itinaryDict["CarriersOB"] = json.dumps(itinaryDict["CarriersOB"])
+        itinaryDict["StopsOB"] = json.dumps(itinaryDict["StopsOB"])
+        itinaryDict["stopsListOB"] = json.dumps(itinaryDict["stopsListOB"])
+        itinaryDict["carriersListOB"] = json.dumps(itinaryDict["carriersListOB"])
+
+        try:
+            itinaryDict["CarriersIB"] = json.dumps(itinaryDict["CarriersIB"])
+            itinaryDict["StopsIB"] = json.dumps(itinaryDict["StopsIB"])
+            itinaryDict["stopsListIB"] = json.dumps(itinaryDict["stopsListIB"])
+            itinaryDict["carriersListIB"] = json.dumps(itinaryDict["carriersListIB"])
+        except:
+            pass
+
 
         # Append dictionary to the quote list
         lQuoteList.append(itinaryDict)

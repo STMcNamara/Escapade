@@ -387,14 +387,11 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
         # Create string for SQL labels and tuple for SQL values.
         # Note: must be in the same order
         columns = "user_id,search_id,results_id," + ','.join(itinerary.keys())
-        print(columns)
         values = (user_id, search_id, results_id) + tuple(itinerary.values())
-        print(values)
         sql = "INSERT INTO search_live_data(%s) VALUES (%s)" % (columns, placeholders)
-        print(sql)
 
         # Call PUT function
-        return db_putData(db, sql, values)
+        db_putData(db, sql, values)
 
 
 """Specific database operators and wrappers"""
