@@ -453,12 +453,13 @@ def liveSearchFormatResult(liveQuotes):
         itinaryDict["StopsOB"] = json.dumps(itinaryDict["StopsOB"])
         itinaryDict["stopsListOB"] = json.dumps(itinaryDict["stopsListOB"])
         itinaryDict["carriersListOB"] = json.dumps(itinaryDict["carriersListOB"])
+        itinaryDict["stopsListIB"] = json.dumps(itinaryDict["stopsListIB"])
+        itinaryDict["carriersListIB"] = json.dumps(itinaryDict["carriersListIB"])
 
+        # These may or may not exist so try:
         try:
             itinaryDict["CarriersIB"] = json.dumps(itinaryDict["CarriersIB"])
             itinaryDict["StopsIB"] = json.dumps(itinaryDict["StopsIB"])
-            itinaryDict["stopsListIB"] = json.dumps(itinaryDict["stopsListIB"])
-            itinaryDict["carriersListIB"] = json.dumps(itinaryDict["carriersListIB"])
         except:
             pass
 

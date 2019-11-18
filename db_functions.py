@@ -9,7 +9,7 @@ from datetime import datetime
 def db_connect(db_file):
     """
     Create a connection object to the database. If no database exists, will
-    creat that database
+    create that database
 
     Args:
         db_file(string): The address of the database file to be connected to
@@ -381,7 +381,7 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
 
     # For each itinerary dict in the list:
     for itinerary in resultsDict:
-        # Placeholders for length of itinary, plus 3 id parameters
+        # Placeholders for length of itinary, plus 3 id and 1 timestamp parameters
         placeholders = ', '.join(['?'] * (len(itinerary) + 3))
 
         # Create string for SQL labels and tuple for SQL values.
