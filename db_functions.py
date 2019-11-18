@@ -1,3 +1,11 @@
+"""
+This file contains all functions that directly interact with the Escapade
+database. This is includes, connecting, creation of tables, reading, writing,
+and interpratation and manipulation of raw data into a format suitable for
+sqlite3.
+"""
+
+
 import sqlite3
 from sqlite3 import Error
 import json
@@ -168,7 +176,7 @@ createTableSQL_search_live_data = """ CREATE TABLE IF NOT EXISTS search_live_dat
                                             results_id integer,
                                             search_id integer,
                                             user_id integer,
-                                            resultTimestamp timestamp,
+                                            itineraryTimestamp timestamp,
                                             OutboundLegId text,
                                             Price text,
                                             QuoteAge text,
@@ -381,13 +389,16 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
 
     # For each itinerary dict in the list:
     for itinerary in resultsDict:
+        # Create timestamp
+        itineraryTimestamp = datetime.now()
+
         # Placeholders for length of itinary, plus 3 id and 1 timestamp parameters
-        placeholders = ', '.join(['?'] * (len(itinerary) + 3))
+        placeholders = ', '.join(['?'] * (len(itinerary) + 4))
 
         # Create string for SQL labels and tuple for SQL values.
         # Note: must be in the same order
-        columns = "user_id,search_id,results_id," + ','.join(itinerary.keys())
-        values = (user_id, search_id, results_id) + tuple(itinerary.values())
+        columns = "user_id,search_id,results_id,itineraryTimestamp," + ','.join(itinerary.keys())
+        values = (user_id, search_id, results_id,itineraryTimestamp) + tuple(itinerary.values())
         sql = "INSERT INTO search_live_data(%s) VALUES (%s)" % (columns, placeholders)
 
         # Call PUT function
@@ -435,28 +446,7 @@ def main():
     db = r"test.db"
     db_intialise(db)
 
-    # Connect to database
-    user_1 = ("stm","abc","Sean","McNamara","sean@mail","UK","UK","GBP")
-    user_2 = ("lcr","123","Lee","Ramsay","lee@mail","","","")
-
-    testDict = [{"OutboundLegId":"ID1", "Price": "Price1"},
-                {"OutboundLegId":"ID2", "Price": "Price2"}]
-
-    db_logSLItineraries(db, 1, 10, 100, testDict)
-
-    x = db_createUser(db,user_1)
-    # Test create user
-    db_createUser(db,user_2)
-
-    # Test log search
-    user_id = ""
-    searchQuery = [{"a":1, "b":2, "c":3}]
-    print(db_logSLQuery(db, user_id, searchQuery))
-
-    result = db_getUser(db,"lcr")
-    print(result["username"])
-    print(result["user_id"])
-
+    # Space reserved for testing
 
 
 if __name__ == '__main__':
