@@ -9,7 +9,7 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T, liveSearchFormatResultList
-from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery, db_logSLResults, db_logSLItineraries
+from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery, db_logSLResults, db_logSLItineraries, db_getUserSearchHistory
 from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -166,7 +166,10 @@ def search_history():
         return render_template("todo.html")
 
     else:
-        return render_template("search_history.html")
+        #Retreive the user's search history from the database
+        userSearchHistory = db_getUserSearchHistory(db, session["user_id"])
+
+        return render_template("search_history.html", searchHistory=userSearchHistory)
 
 
 @app.route("/register", methods=["GET", "POST"])
