@@ -261,6 +261,32 @@ def db_getUser(db, username):
 
     return user
 
+def db_getUserSearchHistory(db, user_id):
+    """Returns a list of dictionaries comprising the user search history, obtained
+    from the search_live_log table in the database.
+
+    Args:
+        db(string): The address of the database file to interogate
+
+        user_id(integer): The unique identifier for the user.
+
+    Returns:
+        userSearchHistory(list(of dictionaries)): A list of dictionaries each
+        comprising of data from the columns within the search_live_log table
+        of the escapde database, for searches with matching user_id. Returns None
+        on error.
+
+    Exceptions:
+        TODO - Consider behaviour if there are no resuls to return
+
+    """
+    sql = "SELECT * FROM search_live_log WHERE user_id=?"
+
+    userSearchHistory = db_getDataDict(db, sql, (user_id,))
+
+    return userSearchHistory
+
+
 
 def db_updatePassword(db,newPassword,username):
     """
@@ -443,8 +469,12 @@ def db_intialise(db):
 def main():
     """ Test Area"""
     # Create the database if it doesn't exist
-    db = r"test.db"
+    db = r"escapade.db"
     db_intialise(db)
+
+    user_id = 2
+    # trial search of the escapade database
+    print(db_getUserSearchHistory(db, user_id))
 
     # Space reserved for testing
 

@@ -155,6 +155,19 @@ def search_live():
     else:
         return render_template("search_live.html", ss_places=ss_places)
 
+@app.route("/search_history", methods=["GET", "POST"])
+@login_required
+def search_history():
+    """
+    TODO - Allows the user to view their search History
+    """
+    if request.method == "POST":
+        # TODO
+        return render_template("todo.html")
+
+    else:
+        return render_template("search_history.html")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
