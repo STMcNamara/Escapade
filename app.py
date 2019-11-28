@@ -9,7 +9,7 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T, liveSearchFormatResultList
-from db_functions import db_intialise, db_connect,db_createUser,db_getUser, db_updatePassword, db_logSLQuery, db_logSLResults, db_logSLItineraries, db_getUserSearchHistory
+from db_functions import *
 from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -162,7 +162,47 @@ def search_history():
     TODO - Allows the user to view their search History
     """
     if request.method == "POST":
-        # TODO
+
+        # Get the search ID
+        search_id = request.form.get("rerun")
+
+        # Retrieve the search query to rerun
+        queryList = db_getSearchQuery(db, search_id)
+
+        # TODO - from here to return is duplicate code from search_live -
+        # refactor probably required.
+
+        # Make the live search request for list of raw API results
+        liveQuotesList = liveSearchRequestQuotes_T(queryList)
+
+        # Format the results to display to user
+        resultsDict = liveSearchFormatResultList(liveQuotesList)
+
+        # Check if session in progress to set user_id or blank
+
+        if sessionActive():
+            user_id = session["user_id"]
+        else:
+            user_id = ""
+
+        # Log the query, raw and formatted results in the datbase
+        search_id = db_logSLQuery(db, user_id, queryList)
+        results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
+        db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
+
+        # Return the results to the user
+        return render_template("results_live.html", resultsDict=resultsDict)
+        
+        # Some logic to choose to request either rerun or view historic
+            # If rerun - call API and pass results to results_live.html
+            # Ensure new results are stored
+
+        #TODO security - some logic to check search belongs to the user
+
+        #TODO errors - what if search is invalid (i.e. due to dates in the past)
+
+            # If historic - call database and pass results to results_live.html
+
         return render_template("todo.html")
 
     else:

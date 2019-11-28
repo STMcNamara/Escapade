@@ -70,10 +70,18 @@ def db_putData(db,sql,data):
         print(e)
         return None
 
+def db_getData(db,sql,data):
+    """
+    TODO
+    """
+
+
+
 def db_getDataDict(db,sql,data):
     """
     A generic function for making a query to retreive data from a table within
-    the database.
+    the database. Returns data as a List in which each element represents a
+    database row, consisting of a dictionary with column headings as keys.
 
     Args:
         db(string): The address of the database file to be written to.
@@ -277,7 +285,7 @@ def db_getUserSearchHistory(db, user_id):
         on error.
 
     Exceptions:
-        TODO - Consider behaviour if there are no resuls to return
+        TODO - Consider behaviour if there are no results to return
 
     """
     sql = "SELECT * FROM search_live_log WHERE user_id=?"
@@ -286,6 +294,28 @@ def db_getUserSearchHistory(db, user_id):
 
     return userSearchHistory
 
+def db_getSearchQuery(db, search_id):
+    """
+    Returns a Python formatted search query from the database.
+
+    Args:
+        db(string): The address of the database file to interogate
+
+        user_id(integer): The unique identifier for the user.
+
+    Returns:
+        queryList(list (of dictionaries): A list of dictionaries
+        collectively comprising a live_search query.)
+    """
+    sql = "SELECT * FROM search_live_log WHERE search_id=?"
+
+    queryDB = db_getDataDict(db, sql, (search_id,))
+    queryJson = queryDB[0]["searchJson"]
+
+    # Convert from json into Python
+    queryList = json.loads(queryJson)
+
+    return queryList
 
 
 def db_updatePassword(db,newPassword,username):

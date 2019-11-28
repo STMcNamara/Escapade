@@ -10,28 +10,29 @@
   Placeholder for the users' search history
 </body>
 
-<table id="history_table" class="display compact" style="width:100%">
-  <thead>
-    <tr>
-      <th>Search Name</th>
-      <th>Search ID</th>
-      <th>Search Date</th>
-      <th>Search Query (.json placeholder)</th>
-      <th>Rerun Search</th>
-      <th>View Results</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for search in searchHistory %}
+<form action="/search_history" method="post">
+  <table id="history_table" class="display compact" style="width:100%">
+    <thead>
       <tr>
-        <td>{{ search['searchName'] }}</td>
-        <td>{{ search['search_id'] }}</td>
-        <td>{{ search['created'] }}</td>
-        <td>{{ search['searchJson'] }}</td>
-        <td>Placeholder</td>
-        <td>Placeholder</td>
+        <th>Search Name</th>
+        <th>Search ID</th>
+        <th>Search Date</th>
+        <th>Search Query (.json placeholder)</th>
+        <th>Rerun Search</th>
+        <th>View Results</th>
       </tr>
-    {% endfor %}
-  </tbody>
-
+    </thead>
+    <tbody>
+      {% for search in searchHistory %}
+        <tr>
+          <td>{{ search['searchName'] }}</td>
+          <td>{{ search['search_id'] }}</td>
+          <td>{{ search['created'] }}</td>
+          <td>{{ search['searchJson'] }}</td>
+          <td><button class="btn btn-primary" type="submit" name="rerun" value="{{ search['search_id'] }}">Search Again</button></td>
+          <td>Placeholder</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+</form>
 {% endblock %}
