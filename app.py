@@ -163,50 +163,54 @@ def search_history():
     """
     if request.method == "POST":
 
-        # Get the search ID
-        search_id = request.form.get("rerun")
+        #If rerun logic selected
+        if "rerun" in request.form:
 
-        # Retrieve the search query to rerun
-        queryList = db_getSearchQuery(db, search_id)
+            # Get the search ID
+            search_id = request.form.get("rerun")
 
-        # TODO - from here to return is duplicate code from search_live -
-        # refactor probably required.
+            # Retrieve the search query to rerun
+            queryList = db_getSearchQuery(db, search_id)
 
-        # Make the live search request for list of raw API results
-        liveQuotesList = liveSearchRequestQuotes_T(queryList)
+            # TODO - from here to return is duplicate code from search_live -
+            # refactor probably required.
 
-        # Format the results to display to user
-        resultsDict = liveSearchFormatResultList(liveQuotesList)
+            # Make the live search request for list of raw API results
+            liveQuotesList = liveSearchRequestQuotes_T(queryList)
 
-        # Check if session in progress to set user_id or blank
+            # Format the results to display to user
+            resultsDict = liveSearchFormatResultList(liveQuotesList)
 
-        if sessionActive():
-            user_id = session["user_id"]
+            # Check if session in progress to set user_id or blank
+
+            if sessionActive():
+                user_id = session["user_id"]
+            else:
+                user_id = ""
+
+            # Log the query, raw and formatted results in the datbase
+            search_id = db_logSLQuery(db, user_id, queryList)
+            results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
+            db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
+
+            #TODO errors - what if search is invalid (i.e. due to dates in the past)
+
+        # If retreive results selected on POST
         else:
-            user_id = ""
+            # Get the search ID
+            search_id = request.form.get("view_results")
 
-        # Log the query, raw and formatted results in the datbase
-        search_id = db_logSLQuery(db, user_id, queryList)
-        results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
-        db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
+            # Retreive the raw results for the search-id from the database
+            responseHistoric = db_getSearchResult(db, search_id)
+
+            # Format the results to display to user
+            resultsDict = liveSearchFormatResultList(responseHistoric)
 
         # Return the results to the user
         return render_template("results_live.html", resultsDict=resultsDict)
-        
-        # Some logic to choose to request either rerun or view historic
-            # If rerun - call API and pass results to results_live.html
-            # Ensure new results are stored
-
-        #TODO security - some logic to check search belongs to the user
-
-        #TODO errors - what if search is invalid (i.e. due to dates in the past)
-
-            # If historic - call database and pass results to results_live.html
-
-        return render_template("todo.html")
 
     else:
-        #Retreive the user's search history from the database
+        #For GET - Retreive the user's search history from the database
         userSearchHistory = db_getUserSearchHistory(db, session["user_id"])
 
         return render_template("search_history.html", searchHistory=userSearchHistory)

@@ -301,7 +301,7 @@ def db_getSearchQuery(db, search_id):
     Args:
         db(string): The address of the database file to interogate
 
-        user_id(integer): The unique identifier for the user.
+        search_id(integer): The unique identifier for the search.
 
     Returns:
         queryList(list (of dictionaries): A list of dictionaries
@@ -316,6 +316,30 @@ def db_getSearchQuery(db, search_id):
     queryList = json.loads(queryJson)
 
     return queryList
+
+def db_getSearchResult(db, search_id):
+    """
+    Returns a Python formatted version of the stored skyscanner json
+    response from a previous live search query
+
+    Args:
+        db(string): The address of the database file to interogate
+
+        search_id(integer): The unique identifier for the search.
+
+    Returns:
+        responsHistoric (dictionary): A Python formatted json containing
+        multiple lists and dictionaries, as recevied from the API endpoint.
+    """
+    sql = "SELECT resultsJson FROM search_live_results WHERE search_id=?"
+
+    resultDB = db_getDataDict(db, sql, (search_id,))
+    responseJson = resultDB[0]["resultsJson"]
+
+    # Convert from json into Python
+    responseHistoric = json.loads(responseJson)
+
+    return responseHistoric
 
 
 def db_updatePassword(db,newPassword,username):

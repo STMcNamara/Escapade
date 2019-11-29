@@ -30,7 +30,7 @@
           <td>{{ search['created'] }}</td>
           <td>{{ search['searchJson'] }}</td>
           <td><button class="btn btn-primary" type="submit" name="rerun" value="{{ search['search_id'] }}">Search Again</button></td>
-          <td>Placeholder</td>
+          <td><button class="btn btn-primary" type="submit" name="view_results" value="{{ search['search_id'] }}">View Results</button></td>
         </tr>
       {% endfor %}
     </tbody>
