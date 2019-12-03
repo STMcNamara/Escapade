@@ -130,6 +130,9 @@ def search_live():
                         'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i)),
                         'inbounddate': request.form.get("inbounddate_" + str(i))})
 
+        # Check search query values are valid
+        validFlightSearchQuery(queryList)
+
         # Make the live search request for list of raw API results
         liveQuotesList = liveSearchRequestQuotes_T(queryList)
 
@@ -172,8 +175,8 @@ def search_history():
             # Retrieve the search query to rerun
             queryList = db_getSearchQuery(db, search_id)
 
-            # TODO - from here to return is duplicate code from search_live -
-            # refactor probably required.
+            # Check search query values are valid
+            validFlightSearchQuery(queryList)
 
             # Make the live search request for list of raw API results
             liveQuotesList = liveSearchRequestQuotes_T(queryList)
