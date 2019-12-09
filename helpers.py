@@ -33,7 +33,7 @@ def sessionActive():
 def validFlightSearchQuery(queryList):
     """
     Performs data validation checks on user generated queries:
-        Dates: Confirms that all dates are in the future, and that the return
+        Dates: Confirms that the outbound date is in the future, and that the return
         date/time is later than the outbound.
 
         Destinations: (TODO)

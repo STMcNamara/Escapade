@@ -319,19 +319,25 @@ def liveSearchGetData(key, headers=headers):
     url = ("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/uk2/v1.0/" +
             key)
     pagination = {"pageIndex":"0","pageSize":"10"}
+
+    # Provide status with an intial value to provent key errors:
+    status = "Initial Default"
+
     # Make an inital API request and receive .json formatted strings
     response_string = requests.request("GET",url,headers=headers,params=pagination)
     # Convert .json into Python lists and dictionaries
     response_json = response_string.json()
     # Keep requesting results until
     # Repeat @ 1s interval while status not equal to "UpdatesComplete"
-    status = response_json["Status"]
     while status != "UpdatesComplete":
-            time.sleep(1)
             response_string = requests.request("GET",url,headers=headers,params=pagination)
             response_json = response_string.json()
-            status = response_json["Status"]
+            try:
+                status = response_json["Status"]
+            except:
+                pass
             print(status)
+            time.sleep(1)
 
     # Make one final request with pagination limits removed
     pagination["pageSize"] = 1000

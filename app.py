@@ -136,19 +136,19 @@ def search_live():
         # Make the live search request for list of raw API results
         liveQuotesList = liveSearchRequestQuotes_T(queryList)
 
-        # Format the results to display to user
-        resultsDict = liveSearchFormatResultList(liveQuotesList)
-
-        # Check if session in progress to set user_id or blank
-
+        # Store the raw results in the database
         if sessionActive():
             user_id = session["user_id"]
         else:
             user_id = ""
 
-        # Log the query, raw and formatted results in the datbase
         search_id = db_logSLQuery(db, user_id, queryList)
         results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
+
+        # Format the results to display to user
+        resultsDict = liveSearchFormatResultList(liveQuotesList)
+
+        # Store the formatted data in the database
         db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
 
         # Return the results to the user
@@ -181,19 +181,19 @@ def search_history():
             # Make the live search request for list of raw API results
             liveQuotesList = liveSearchRequestQuotes_T(queryList)
 
-            # Format the results to display to user
-            resultsDict = liveSearchFormatResultList(liveQuotesList)
-
-            # Check if session in progress to set user_id or blank
-
+            # Store the raw results in the database
             if sessionActive():
                 user_id = session["user_id"]
             else:
                 user_id = ""
 
-            # Log the query, raw and formatted results in the datbase
             search_id = db_logSLQuery(db, user_id, queryList)
             results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
+
+            # Format the results to display to user
+            resultsDict = liveSearchFormatResultList(liveQuotesList)
+
+            # Store the formatted results in the database
             db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
 
             #TODO errors - what if search is invalid (i.e. due to dates in the past)
