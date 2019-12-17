@@ -130,8 +130,8 @@ def search_live():
                         'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i)),
                         'inbounddate': request.form.get("inbounddate_" + str(i))})
 
-        # Check search query values are valid
-        validFlightSearchQuery(queryList)
+        # Check search query values are valid - Raises error if not
+        validFlightSearchQuery(queryList, ss_places)
 
         # Make the live search request for list of raw API results
         liveQuotesList = liveSearchRequestQuotes_T(queryList)
@@ -175,8 +175,8 @@ def search_history():
             # Retrieve the search query to rerun
             queryList = db_getSearchQuery(db, search_id)
 
-            # Check search query values are valid
-            validFlightSearchQuery(queryList)
+            # Check search query values are valid - Raises error if not
+            validFlightSearchQuery(queryList, ss_places)
 
             # Make the live search request for list of raw API results
             liveQuotesList = liveSearchRequestQuotes_T(queryList)
@@ -195,8 +195,6 @@ def search_history():
 
             # Store the formatted results in the database
             db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
-
-            #TODO errors - what if search is invalid (i.e. due to dates in the past)
 
         # If retreive results selected on POST
         else:

@@ -30,9 +30,10 @@ def sessionActive():
     else:
         return True
 
-def validFlightSearchQuery(queryList):
+def validFlightSearchQuery(queryList,ss_places):
     """
-    Performs data validation checks on user generated queries:
+    Performs data validation checks on user generated queries for the ss API
+    endpoint:
         Dates: Confirms that the outbound date is in the future, and that the return
         date/time is later than the outbound.
 
@@ -45,6 +46,8 @@ def validFlightSearchQuery(queryList):
     Args:
         queryList(list(of dictionaries)): A list of dictionaries, each containing keys
         required to construct an URL for the Live Flight Search API endpoint.
+
+        validPlaces(list(of dictionaries)): TODO
 
     Returns:
         validQuery(Bool): Returns True if validation conditions are met. Raises errors
@@ -67,5 +70,14 @@ def validFlightSearchQuery(queryList):
 
         if not inboundDate == None:
             assert inboundDate >= outboundDate, "Inbound date cannot be before outbound"
+
+        # Define the list of valid places (for now, airport codes)
+        validPlaces = []
+        for place in ss_places:
+            validPlaces.append(place['PlaceId'])
+
+        # Check that origin and destination places are on the valid list
+        assert query['originplace'] in validPlaces, "Origin place not on valid places list"
+        assert query['destinationplace'] in validPlaces, "Destination place not on valid places list"
 
     return True
