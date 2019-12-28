@@ -110,13 +110,17 @@ def search_live():
                 inbounddate_[0-N] (string): Optional, yyyy-mm-dd
             TODO - placeholder - uses the globals country, currency, locale and adults
 
-            CALLS:
-                Passes data to liveSearchRequestQuotes in ss_api_functions.py
+        CALLS:
+            Passes data to liveSearchRequestQuotes in ss_api_functions.py
 
-            RETURNS:
-                results_live.html consisting of an automatically generated table
-                that contains the query results where:
-                    resultsDict (list(of dictionaries)): From Live Search
+        RETURNS:
+            results_live.html consisting of an automatically generated table
+            that contains the query results where:
+                resultsDict (list(of dictionaries)): From Live Search
+
+        DATABASE:
+            Stores the search query, raw results and formatted results in the
+            database.
     """
     # Reached via POST (form submitted)
     if request.method == "POST":
@@ -162,7 +166,48 @@ def search_live():
 @login_required
 def search_history():
     """
-    TODO - Allows the user to view their search History
+    GET:
+        Presents search_history.html to the user to view their search history
+        with the option to re-run past searches, or view past results.
+
+        Builds the search history table with data and fields from the
+        search_live_log database, with form submission names links to search_ids.
+
+    POST - "rerun":
+        INPUTS:
+            Using the search_id submitted with the POST form, retreives the
+            associated search parameters from the database to duplicate a
+            search_live query.
+
+        CALLS:
+            Passes data to liveSearchRequestQuotes in ss_api_functions.py
+
+        RETURNS:
+            results_live.html consisting of an automatically generated table
+            that contains the query results where:
+                resultsDict (list(of dictionaries)): From Live Search
+
+        DATABASE:
+            Stores the search query, raw results and formatted results in the
+            database.
+
+    POST - "view_results"  :
+        INPUTS:
+            Using the search_id submitted with the POST form, retreives the
+            associated raw search results.
+
+        CALLS:
+            Formats the raw results from the databse using liveSearchFormatResultList
+            in ss-ss_api_functions.py.
+
+        RETURNS:
+            results_live.html consisting of an automatically generated table
+            that contains the query results where:
+                resultsDict (list(of dictionaries)): Formatted from results
+                retreived from the database.
+
+        DATABASE:
+            N/A: Makes no changess
     """
     if request.method == "POST":
 

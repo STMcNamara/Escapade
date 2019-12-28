@@ -37,7 +37,8 @@ def validFlightSearchQuery(queryList,ss_places):
         Dates: Confirms that the outbound date is in the future, and that the return
         date/time is later than the outbound.
 
-        Destinations: (TODO)
+        Destinations: Confirms that the origin and destination places are the valid
+        list of places for a live_search query, defined within ss_places.
 
     (In theory these should be picked up at the front end, but this provides a
     serverside backup in case of omissions, for security, and for development
@@ -47,7 +48,8 @@ def validFlightSearchQuery(queryList,ss_places):
         queryList(list(of dictionaries)): A list of dictionaries, each containing keys
         required to construct an URL for the Live Flight Search API endpoint.
 
-        validPlaces(list(of dictionaries)): TODO
+        validPlaces(list(of dictionaries)): A list of dictionaries defining the 
+        attributes for a place used by the SkyScanner API.
 
     Returns:
         validQuery(Bool): Returns True if validation conditions are met. Raises errors

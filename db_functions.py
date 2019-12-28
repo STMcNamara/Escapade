@@ -70,12 +70,6 @@ def db_putData(db,sql,data):
         print(e)
         return None
 
-def db_getData(db,sql,data):
-    """
-    TODO
-    """
-
-
 
 def db_getDataDict(db,sql,data):
     """
@@ -506,7 +500,7 @@ def db_intialise(db):
     conn = db_connect(db)
 
     if conn is not None:
-        # create tables using schema defined above [TODO consider updating]
+        # create tables using schema defined above
         db_createTable(conn, createTableSQL_Users)
         db_createTable(conn, createTableSQL_search_live_log)
         db_createTable(conn, createTableSQL_search_live_results)
