@@ -70,6 +70,32 @@ def db_putData(db,sql,data):
         print(e)
         return None
 
+def db_putDataMany(db,sql,data):
+    """
+    Like db_putData but uses the sql .execuate many method to allow for large 
+    numbers of rows to be inserted in one transaction into the database.
+
+    Args:
+        db(string): The address of the database file to be written to.
+
+        sql(string): An SQL statement to define the data input to be carried
+        out for each row.
+
+        dataMany(List (of tuples)): A list of tuples, each of which corresponds
+        to a row of data to be PUT by the SQL statemet.
+
+    """
+
+    try:
+        conn = db_connect(db)
+        with conn:
+            cur = conn.cursor()
+            cur.executemany(sql, data)
+            return cur.lastrowid
+    except Error as e:
+        print(e)
+        return None
+
 
 def db_getDataDict(db,sql,data):
     """
@@ -439,7 +465,7 @@ def db_logSLResults(db, user_id, search_id, liveQuotesList):
 
 def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
     """
-    Uses db_putData to log the formatted itinaries created by liveSearchFormatResult
+    Uses db_putDataMany to log the formatted itinaries created by liveSearchFormatResult
     for analysis and presentation to the user, and the associated search
     metadata.
     Refer to db_putData for further information on returns and exceptions.
@@ -459,24 +485,32 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
         resultsDict (list(of dictionaries)): List of dictionaries containing the
         itinary data defined within liveSearchFormatResult in ss_api_functions.
 
+    Contraints:
+        TODO - Length of dictionary items must be constant
+
     """
+
+    # Create the SQL insertion to be used for each entry
+    columns = "user_id,search_id,results_id,itineraryTimestamp," + ','.join(resultsDict[0].keys())
+    # Placeholders for length of itinary, plus 3 id and 1 timestamp parameters
+    itineraryLength = len(resultsDict[0])
+    placeholders = ', '.join(['?'] * (itineraryLength + 4))
+    sql = "INSERT INTO search_live_data(%s) VALUES (%s)" % (columns, placeholders)
+
+    # Initialise values list
+    values = []
 
     # For each itinerary dict in the list:
     for itinerary in resultsDict:
         # Create timestamp
         itineraryTimestamp = datetime.now()
 
-        # Placeholders for length of itinary, plus 3 id and 1 timestamp parameters
-        placeholders = ', '.join(['?'] * (len(itinerary) + 4))
+        #Create a values tuple and append to list
+        entry = (user_id, search_id, results_id,itineraryTimestamp) + tuple(itinerary.values())
+        values.append(entry)
 
-        # Create string for SQL labels and tuple for SQL values.
-        # Note: must be in the same order
-        columns = "user_id,search_id,results_id,itineraryTimestamp," + ','.join(itinerary.keys())
-        values = (user_id, search_id, results_id,itineraryTimestamp) + tuple(itinerary.values())
-        sql = "INSERT INTO search_live_data(%s) VALUES (%s)" % (columns, placeholders)
-
-        # Call PUT function
-        db_putData(db, sql, values)
+    # Call PUT MANY function
+    db_putDataMany(db, sql, values)
 
 
 """Specific database operators and wrappers"""
