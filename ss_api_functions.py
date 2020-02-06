@@ -26,9 +26,6 @@ def CSVtoDict(csv_input_file):
     Returns:
         inputDicts (list(of dictionaries)): A list of dictionaries, each with
         keys derived from the header row of the .cvs input.
-
-    Exceptions:
-        TODO
     """
     # Open .csv and read each line
     inputFile = open(csv_input_file)
@@ -56,9 +53,6 @@ def DicttoCSV(dict,resultsPath):
         Creates a .csv file in which the first row is the
         dictionary keys, and each following row is the associated values for each
         dictionary in the list.
-
-    Exceptions:
-        TODO
     """
     keys = dict[0].keys()
     with open(resultsPath, 'w') as results:
@@ -117,8 +111,6 @@ def BrowseQuotes(urlList):
         results (list(of dictionaries)): A list of dictionaries, the format of
         which is defined within BrowseQuotesAPI function.
 
-    Exceptions:
-        TODO
     """
     results = []
     for url in urlList:
@@ -300,9 +292,6 @@ def liveSearchGetData(key, headers=headers):
     session key. Continues to refresh while results are generated until query
     status becomes "UpdatesComplete"
 
-    TODO - review pagination and sorting options - only retreives 10, not
-    sure in what order.
-
     Refer to:
         https://skyscanner.github.io/slate/#flights-live-prices
 
@@ -349,6 +338,7 @@ def liveSearchGetData(key, headers=headers):
 
 
     # Make one final request with pagination limits removed
+    # TODO - Add to a config file
     pagination["pageSize"] = 1000
     response_string = requests.request("GET",url,headers=headers,params=pagination)
     response_json = response_string.json()
@@ -515,8 +505,6 @@ def liveSearchFormatResultList(liveQuotesList):
         combinedQuotesList (list(of dictionaries)): List of dictionaries containing the
         itinary data described in liveSearchFormatResult for multiple API queries
 
-    Exceptions:
-        TODO
     """
 
     combinedQuotesList = []
@@ -540,8 +528,6 @@ def liveSearchRequestQuote(query):
         response_json (dictionary): A Python formatted json containing
         multiple lists and dictionaries, as recevied from the API endpoint.
 
-    Excptions:
-        TODO
     """
     # Request a session key
     sessionKey = liveSearchCreateSession(query)
@@ -565,8 +551,6 @@ def liveSearchRequestQuotes_S(inputDicts):
         resultsList (list): A list of .json responses for each query made to the
         SS API.
 
-    Exceptions:
-        TODO
     """
     # Format the query strings
     queryStringList = formatLsData(inputDicts)
@@ -599,8 +583,6 @@ def liveSearchRequestQuotes_T(inputDicts):
         resultsList (list): A list of .json responses for each query made to the
         SS API.
 
-    Exceptions:
-        TODO
     """
     # Define a global list of length equal to the number of queries
     queryDicts = [[] for x in inputDicts]
@@ -649,8 +631,6 @@ def getLocationsAll():
         contains Skyscanner place information with the following keys:
         "CountryId", "PlaceName", "CountryName", "PlaceId", "RegionId", "CityId"
 
-    Exceptions:
-        TODO
     """
     # Create empty list for places
     places = []
