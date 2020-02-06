@@ -303,10 +303,6 @@ def db_getUserSearchHistory(db, user_id):
         comprising of data from the columns within the search_live_log table
         of the escapde database, for searches with matching user_id. Returns None
         on error.
-
-    Exceptions:
-        TODO - Consider behaviour if there are no results to return
-
     """
     sql = "SELECT * FROM search_live_log WHERE user_id=?"
 
@@ -485,8 +481,13 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
         resultsDict (list(of dictionaries)): List of dictionaries containing the
         itinary data defined within liveSearchFormatResult in ss_api_functions.
 
-    Contraints:
-        TODO - Length of dictionary items must be constant
+    Constraints:
+        This function works by defining a generic SQL insertion statement, and determines
+        no number of variables to enter based on the number of key:value pair for the first 
+        entry in resultsDict, which is different for one-way and return trips. As such if
+        there are a mixture of return and single route trips in resultsDict, the SQL will
+        not commit properly. This may be fixed as part of a future datastructure refactor,
+        but does not currently affect core functionality of the program. 
 
     """
 
