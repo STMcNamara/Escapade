@@ -326,8 +326,15 @@ def register():
         if not result:
             return apology("User already exists")
 
-        # TODO - for now return to front page
-        return render_template("index.html")
+        else:
+            # Update user to retreive generated data (user_id)
+            user = db_getUser(db, request.form.get("username"))
+            
+            # Leave the user logged in and return to index
+            session["user_id"] = user["user_id"]
+            session["username"] = user["username"]
+        
+            return render_template("index.html")
 
     else:
         return render_template("register.html")
