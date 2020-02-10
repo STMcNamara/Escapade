@@ -22,12 +22,12 @@
     var outboundpartialdate = row.insertCell(2);
     var inbounddate = row.insertCell(3);
     // Inject input html code with unique identifiers for the current rowNo
-    originplace.innerHTML = '<select name="originplace_' + id + '">\
+    originplace.innerHTML = '<select name="originplaces_' + id + '" multiple>\
                               {% for row in ss_places %}\
                                 <option value={{ row["PlaceId"] }}> {{ row["PlaceName"] }}</option>\
                               {% endfor %}\
                             </select>';
-    destinationplace.innerHTML = '<select name="destinationplace_' + id + '">\
+    destinationplace.innerHTML = '<select name="destinationplaces_' + id + '" multiple>\
                               {% for row in ss_places %}\
                                 <option value={{ row["PlaceId"] }}> {{ row["PlaceName"] }}</option>\
                               {% endfor %}\
