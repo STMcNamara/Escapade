@@ -83,3 +83,8 @@ def validFlightSearchQuery(queryList,ss_places):
         assert query['destinationplace'] in validPlaces, "Destination place not on valid places list"
 
     return True
+
+def possibleTravelDates():
+    """
+    TODO
+    """
