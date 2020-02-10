@@ -38,6 +38,15 @@
     document.getElementById("rowNum").value = id;
     rowNo ++;
   }
+  
+  // Initialise the datepicker module
+  $( function() {
+    $( '.datepicker' ).datepicker({
+      format: "yyyy-mm-dd",
+      multidate: true
+    });
+  } );
+
 </script>
 
 <body>
@@ -66,8 +75,8 @@ Prototype for the input to the search_live function!
             {% endfor %}
             </select>
           </td>
-          <td><input autocomplete="off" name="outboundpartialdate_0" type="date"/></td>
-          <td><input autocomplete="off" name="inbounddate_0" type="date"/></td>
+          <td><input autocomplete="off" name="outboundpartialdate_0" type="text" class="datepicker"/></td>
+          <td><input autocomplete="off" name="inbounddate_0" type="text" class="datepicker"/></td>
         </tr>
       </table>
     </div>

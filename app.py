@@ -92,7 +92,7 @@ def search_bq():
 
     # Reached via GET (display form)
     else:
-        return render_template("search_bq.html", ss_places=ss_places)
+        return render_template("todo.html", ss_places=ss_places)
 
 @app.route("/search_live", methods=["GET", "POST"])
 def search_live():
@@ -134,16 +134,23 @@ def search_live():
             originplacesList = request.form.getlist("originplaces_" + str(i))
             destinationplacesList = request.form.getlist("destinationplaces_" + str(i))
             
-            # TODO - Placeholder for multiple dates functionality
+            # Populate list of outbound and inbound dates
+            outboundpartialdateString = request.form.get("outboundpartialdate_" + str(i))
+            inbounddateString = request.form.get("inbounddate_" + str(i))
+
+            outboundpartialdateList = outboundpartialdateString.split(",")
+            inbounddateList = inbounddateString.split(",")
             
             # Format multi-data lists into individual date and place itineraries and append to list
             for originplace in originplacesList:
                 for destinationplace in destinationplacesList:
-                        queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
-                        'originplace': originplace,
-                        'destinationplace': destinationplace,
-                        'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i)),
-                        'inbounddate': request.form.get("inbounddate_" + str(i))})
+                    for outboundDate in outboundpartialdateList:
+                        for inboundDate in inbounddateList:
+                            queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
+                            'originplace': originplace,
+                            'destinationplace': destinationplace,
+                            'outboundpartialdate': outboundDate,
+                            'inbounddate': inboundDate})
 
 
         # Check search query values are valid - Raises error if not
