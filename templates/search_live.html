@@ -54,13 +54,13 @@ Prototype for the input to the search_live function!
           <th>Return Date*</th>
         </tr>
         <tr>
-          <td><select name="originplace_0">
+          <td><select name="originplaces_0" multiple>
             {% for row in ss_places %}
               <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
             {% endfor %}
             </select>
           </td>
-          <td><select name="destinationplace_0">
+          <td><select name="destinationplaces_0" multiple>
             {% for row in ss_places %}
               <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
             {% endfor %}

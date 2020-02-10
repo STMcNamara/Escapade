@@ -127,12 +127,24 @@ def search_live():
     # Populate query dictionary with default location and form parameters
         rows = int(request.form.get("rowNum"))
         queryList = []
+        
+        # For each combination of destination and dates
         for i in range(rows+1):
-            queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
-                        'originplace': request.form.get("originplace_" + str(i)),
-                        'destinationplace': request.form.get("destinationplace_" + str(i)),
+            # Populate list of Origin places and Destination places
+            originplacesList = request.form.getlist("originplaces_" + str(i))
+            destinationplacesList = request.form.getlist("destinationplaces_" + str(i))
+            
+            # TODO - Placeholder for multiple dates functionality
+            
+            # Format multi-data lists into individual date and place itineraries and append to list
+            for originplace in originplacesList:
+                for destinationplace in destinationplacesList:
+                        queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
+                        'originplace': originplace,
+                        'destinationplace': destinationplace,
                         'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i)),
                         'inbounddate': request.form.get("inbounddate_" + str(i))})
+
 
         # Check search query values are valid - Raises error if not
         validFlightSearchQuery(queryList, ss_places)
@@ -157,6 +169,7 @@ def search_live():
 
         # Return the results to the user
         return render_template("results_live.html", resultsDict=resultsDict)
+        
 
     # Reached via GET (display form)
     else:
