@@ -7,6 +7,14 @@
 {% block main %}
 
 <script>
+  // Initialise the datepicker module
+  $( function() {
+    $( '.datepicker' ).datepicker({
+      format: "yyyy-mm-dd",
+      multidate: true
+    });
+  } );
+  
   // Inital value for first added table row
   var rowNo = 1;
 
@@ -32,20 +40,22 @@
                                 <option value={{ row["PlaceId"] }}> {{ row["PlaceName"] }}</option>\
                               {% endfor %}\
                             </select>';
-    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" type="date"/>';
-    inbounddate.innerHTML = '<input autocomplete="off" name="inbounddate_' + id + '" type="date"/>';
+    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" type="text" class="datepicker"/>';
+    inbounddate.innerHTML = '<input autocomplete="off" name="inbounddate_' + id + '" type="text" class="datepicker"/>';
+    
+   // Initialise the datepicker module for the added row - TODO - can this be better?
+   $( function() {
+    $( '.datepicker' ).datepicker({
+      format: "yyyy-mm-dd",
+      multidate: true
+    });
+  } ); 
+    
     //Update the rowNum input and increment for next row addition
     document.getElementById("rowNum").value = id;
     rowNo ++;
   }
   
-  // Initialise the datepicker module
-  $( function() {
-    $( '.datepicker' ).datepicker({
-      format: "yyyy-mm-dd",
-      multidate: true
-    });
-  } );
 
 </script>
 

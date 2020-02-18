@@ -92,7 +92,7 @@ def search_bq():
 
     # Reached via GET (display form)
     else:
-        return render_template("todo.html", ss_places=ss_places)
+        return render_template("search_bq.html", ss_places=ss_places)
 
 @app.route("/search_live", methods=["GET", "POST"])
 def search_live():
