@@ -60,9 +60,9 @@ def DicttoCSV(dict,resultsPath):
         dict_writer.writeheader()
         dict_writer.writerows(dict)
 
-def formatBqUrl(inputDicts):
+def formatBqUrl(inputDict):
     """
-    Takes a list of dictionaries containing the following required key value
+    Takes a dictionary containing the following required key value
     pairs with the following names: "country", "currency", "locale",
     "originplace","destinationplace","outboundpartialdate". Produces an URL in
     the format required to make a call to the BrowseQuotes API endpoint.
@@ -71,11 +71,11 @@ def formatBqUrl(inputDicts):
     https://skyscanner.github.io/slate/#flights-browse-prices
 
     Args:
-        inputDicts (list(of dictionaries)): A list of dictionaries, each containing keys
+        inputDict (dictionary): A dictionary, containing keys
         required to construct an URL for the BrowseQuotes API endpoint.
 
     Returns:
-        urlListBq (list(of strings)): A list of strings in the correct URL format to make
+        urlBq (string): A string in the correct URL format to make
         a call to the BrowseQuotes API endpoint.
 
     Exceptions:
@@ -83,40 +83,144 @@ def formatBqUrl(inputDicts):
     """
     # Confirm all required API inputs are present for BrowseQuotes - TODO
 
-    # For each dict in list build the URL in the format defined here:
+    # Contruct the URL in the format defined here:
     # https://rapidapi.com/skyscanner/api/skyscanner-flight-search?endpoint=5aa1eab3e4b00687d3574279
-    urlListBq = []
-    for row in inputDicts:
-        urlListBq.append("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/" +
-                            row["country"] + "/" +
-                            row["currency"] + "/" +
-                            row["locale"] + "/" +
-                            row["originplace"] + "/" +
-                            row["destinationplace"] + "/" +
-                            row["outboundpartialdate"] + "/")
-    return urlListBq
+    # Construct URL for Outbound Trip
+    urlBq = ("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/" +
+                        inputDict["country"] + "/" +
+                        inputDict["currency"] + "/" +
+                        inputDict["locale"] + "/" +
+                        inputDict["originplace"] + "/" +
+                        inputDict["destinationplace"] + "/" +
+                        inputDict["outboundpartialdate"] + "/" +
+                        inputDict["inboundpartialdate"])
+    
+    return urlBq
 
-def BrowseQuotes(urlList):
+def BrowseQuotesGetData(inputDict):
     """
-    Makes multiple calls to the BrowseQuotesAPI function for each query defined
+    Makes a call to the Skyscanner API endpoint Browse Routes to retreive a
+    .JSON formated string comprising search results for a given query. 
+    Each query comprises a single route, and outbound date combination. 
+    Refer to:
+    https://rapidapi.com/skyscanner/api/skyscanner-flight-search
+
+    Args:
+        inputDict (dictionary): A dictionary, containing keys
+        required to construct an URL for the BrowseQuotes API endpoint.
+
+        headers (dictionary): A dictionary containing the html headers required
+        to be submitted with the API call. This is a global variable within this
+        file.
+
+    Returns:
+        response_json (dictionary): A Python formatted json containing
+        multiple lists and dictionaries, as recevied from the API endpoint.
+
+    Exceptions:
+        TODO
+
+    """
+    # Format the request URL for the outbound data
+    url = formatBqUrl(inputDict)
+
+    # Make the API call and receive a .json formatted string
+    response_string = requests.request("GET", url, headers=headers)
+
+    # Convert .json into Python lists and dictionaries
+    response_json = response_string.json()
+
+    return response_json
+
+
+def BrowseQuotes(inputDictList):
+    """
+    Makes multiple calls to the BrowseQuotesGetData function for each query defined
     within a list of query URLs. Returns a list of the individual dictionary
     responses returned from BrowseQuotesAPI.
 
     Args:
-        urlList (list(of strings)): A list of URLs formated as required to to make
-        a call to the BrowseQuotes API endpoint. (Refer to function formatBqUrl
-        for details).
+        inputDictList (list(of dictionaries)): A list of dictionaries, each of which
+        contains the keys required to query to BrowseQuotesAPI endpoint.  (Refer 
+        to function formatBqUrl for details).
 
     Returns:
-        results (list(of dictionaries)): A list of dictionaries, the format of
-        which is defined within BrowseQuotesAPI function.
+        results (list(of dictionaries)): A list of dictionaries, each of which has format,
+        received from BrowseQuotesGetData function.
 
     """
     results = []
-    for url in urlList:
-        quote = BrowseQuotesAPI(url, headers)
+    for inputDict in inputDictList:
+        quote = BrowseQuotesGetData(inputDict)
         results.append(quote)
+    
     return results
+
+def BrowseQuotesFormatResults(rawResults):
+    """
+    Converts a list of raw Browse Quotes API responses into a list of single depth
+    dictionaries for parsing to the webapp.
+
+    Args:
+        rawResults(list (of dictionaries)): A list of dictionaries, each of which has format,
+        received from BrowseQuotesGetData function.
+
+    Returns:
+        formattedResultList(list (of dictionaries)): A formatted list of dictionaries,
+        each of which has the following keys:
+            Outbound_OriginID (string): Numeric location identifer for origin
+            Outbound_DestinationID (string): Numeric location identifer for
+                destination
+            Outbound_CarrierID (list): A list of numeric identifiers for the
+                carrier(s) for the outbound leg of the trip
+            Outbound_Date (string): Date of the outbound leg of the  trip
+            Outbound_OriginPlace (string): Name of the origin place
+            Outbound_DestinationPlace (string): Name of the destination place
+            Outbound_CarrierNames (list): A list of the names of the Carriers
+                for the trip
+            Inbound_CarrierID (list): A list of numeric identifiers for the
+                carrier(s) for the inbound leg of the trip
+            Outbound_Date (string): Date of the inbound leg of the trip
+            Inbound_CarrierNames (list): A list of the names of the Carriers
+                for the inbound leg of the trip 
+    """
+    
+    formattedResultList = []
+    
+    for result in rawResults:
+        # Extract required data into a single dictionary for outbound leg.
+        formattedResult = {}
+        Quotes_list = result["Quotes"]
+        Places_list = result["Places"]
+        Carriers_list = result["Carriers"]
+        formattedResult['MinPrice'] = Quotes_list[0]['MinPrice']
+        formattedResult['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
+        formattedResult['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
+        formattedResult['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds']
+        formattedResult['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
+
+        for place in Places_list:
+            if place['PlaceId'] == formattedResult['Outbound_OriginID']:
+                formattedResult['Outbound_OriginPlace'] = place['Name']
+            elif place['PlaceId'] == formattedResult['Outbound_DestinationID']:
+                formattedResult['Outbound_DestinationPlace'] = place['Name']
+
+
+        # There may be multiple carriers so requires a lists
+        formattedResult['Outbound_CarrierNames'] = []
+        for carrier in Carriers_list:
+            if carrier['CarrierId'] in formattedResult['Outbound_CarrierID']:
+                formattedResult['Outbound_CarrierNames'].append(carrier['Name'])
+
+        # Try to format inbound leg parameters, if present
+        # TODO
+
+        # Append to the results list
+        formattedResultList.append(formattedResult)
+    
+    return formattedResultList
+
+
 
 
 def BrowseQuotesAPI(url, headers):
@@ -652,10 +756,11 @@ def getLocationsAll():
     return places
 
 
-"""Test Area
+"""Test Area"""
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-resultsJson = liveSearchRequestQuotes_T(inputDicts)
+print(inputDicts)
+resultsJson = BrowseQuotes(inputDicts)
 
-result = liveSearchFormatResultList(resultsJson)
+resultsFormatted = BrowseQuotesFormatResults(resultsJson)
 
-print(result)"""
+print(resultsFormatted)
