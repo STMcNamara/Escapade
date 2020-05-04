@@ -196,6 +196,7 @@ def BrowseQuotesFormatResults(rawResults):
         formattedResult['MinPrice'] = Quotes_list[0]['MinPrice']
         formattedResult['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
         formattedResult['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
+        formattedResult['Direct'] = Quotes_list[0]['Direct']
         formattedResult['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds']
         formattedResult['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
 
@@ -231,72 +232,6 @@ def BrowseQuotesFormatResults(rawResults):
     
     return formattedResultList
 
-def BrowseQuotesAPI(url, headers):
-    """
-    Makes a call to the Skyscanner API endpoint Browse Quotes to retreive a
-    .JSON formated string comprising search results for the the cheapest flight
-    for a given query. Each query comprises a single route, and outbound date
-    combination. Refer to:
-    https://rapidapi.com/skyscanner/api/skyscanner-flight-search
-
-    Args:
-        url (string): A URL in the format required to make a call to the
-        Skyscanner Browse Quotes API endpoint. Refer to function formatBqUrl
-        for details).
-
-        headers (dictionary): A dictionary containing the html headers required
-        to be submitted with the API call. This is a global variable within this
-        file.
-
-    Returns:
-        results (dictionary): Revalant items from the returned .json, formatted
-        as a single dictionary with the following keys:
-            MinPrice (string): The price of the trip in the requested currency
-            Outbound_OriginID (string): Numeric location identifer for origin
-            Outbound_DestinationID (string): Numeric location identifer for
-                destination
-            Outbound_CarrierID (list): A list of numeric identifiers for the
-                carrier(s) for the trip
-            Outbound_Date (string): Date of the trip
-            Outbound_OriginPlace (string): Name of the origin place
-            Outbound_DestinationPlace (string): Name of the destination place
-            Outbound_CarrierNames (list): A list of the names of the Carriers
-                for the trip
-
-    Exceptions:
-        TODO
-    """
-    # Create blank dictionary to store required data
-    results = {}
-    # Make the API call and receive .json formatted string
-    response_string = requests.request("GET", url, headers=headers)
-    # Convert .json into Python lists and dictionaries
-    response_json = response_string.json()
-    # Extract required data into a single dictionary.
-    Quotes_list = response_json["Quotes"]
-    Places_list = response_json["Places"]
-    Carriers_list = response_json["Carriers"]
-    
-    results['MinPrice'] = Quotes_list[0]['MinPrice']
-    results['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
-    results['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
-    results['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds']
-    results['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
-
-    for place in Places_list:
-        if place['PlaceId'] == results['Outbound_OriginID']:
-            results['Outbound_OriginPlace'] = place['Name']
-        elif place['PlaceId'] == results['Outbound_DestinationID']:
-            results['Outbound_DestinationPlace'] = place['Name']
-
-
-    # There may be multiple carriers so requires a lists
-    results['Outbound_CarrierNames'] = []
-    for carrier in Carriers_list:
-        if carrier['CarrierId'] in results['Outbound_CarrierID']:
-            results['Outbound_CarrierNames'].append(carrier['Name'])
-
-    return results
 
 def formatLsData(inputDicts):
     '''

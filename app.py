@@ -8,7 +8,7 @@ Escapade database.
 import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
-from ss_api_functions import formatBqUrl, BrowseQuotes, CSVtoDict, liveSearchRequestQuotes_T, liveSearchFormatResultList
+from ss_api_functions import BrowseQuotes, BrowseQuotesFormatResults, CSVtoDict 
 from db_functions import *
 from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -78,16 +78,37 @@ def search_bq():
     # Populate query dictionary with default location and form parameters
         rows = int(request.form.get("rowNum"))
         queryList = []
+        
+        # For each combination of destination and dates
         for i in range(rows+1):
-            queryList.append({'country' : country, 'currency': currency, 'locale' : locale,
-                        'originplace': request.form.get("originplace_" + str(i)),
-                        'destinationplace': request.form.get("destinationplace_" + str(i)),
-                        'outboundpartialdate': request.form.get("outboundpartialdate_" + str(i))})
+            # Populate list of Origin places and Destination places
+            originplacesList = request.form.getlist("originplaces_" + str(i))
+            destinationplacesList = request.form.getlist("destinationplaces_" + str(i))
+            
+            # Populate list of outbound and inbound dates
+            outboundpartialdateString = request.form.get("outboundpartialdate_" + str(i))
+            inboundpartialdateString = request.form.get("inboundpartialdate_" + str(i))
 
-        # Produce URL string for BrowseQuotes call
-        query_URL = formatBqUrl(queryList)
-        # Call BrowseQuotes and return list of dictionaries - CURRENTLY 1 ITEM
-        resultsDict = BrowseQuotes(query_URL)
+            outboundpartialdateList = outboundpartialdateString.split(",")
+            inboundpartialdateList = inboundpartialdateString.split(",")
+            
+            # Format multi-data lists into individual date and place itineraries and append to list
+            for originplace in originplacesList:
+                for destinationplace in destinationplacesList:
+                    for outboundDate in outboundpartialdateList:
+                        for inboundDate in inboundpartialdateList:
+                            queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
+                            'originplace': originplace,
+                            'destinationplace': destinationplace,
+                            'outboundpartialdate': outboundDate,
+                            'inboundpartialdate': inboundDate})
+       
+        # Call the Browse Quotes API endpoint and retreive raw results
+        results = BrowseQuotes(queryList)
+
+        # Format the results for interpretation be the return form
+        resultsDict = BrowseQuotesFormatResults(results)
+        
         return render_template("results_bq.html", resultsDict=resultsDict)
 
     # Reached via GET (display form)

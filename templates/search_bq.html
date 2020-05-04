@@ -1,12 +1,20 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Browse Quotes
+    Live Search
 {% endblock %}
 
 {% block main %}
 
 <script>
+  // Initialise the datepicker module
+  $( function() {
+    $( '.datepicker' ).datepicker({
+      format: "yyyy-mm-dd",
+      multidate: true
+    });
+  } );
+  
   // Inital value for first added table row
   var rowNo = 1;
 
@@ -20,26 +28,39 @@
     var originplace = row.insertCell(0);
     var destinationplace = row.insertCell(1);
     var outboundpartialdate = row.insertCell(2);
+    var inboundpartialdate = row.insertCell(3);
     // Inject input html code with unique identifiers for the current rowNo
-    originplace.innerHTML = '<select name="originplace_' + id + '">\
+    originplace.innerHTML = '<select name="originplaces_' + id + '" multiple>\
                               {% for row in ss_places %}\
                                 <option value={{ row["PlaceId"] }}> {{ row["PlaceName"] }}</option>\
                               {% endfor %}\
                             </select>';
-    destinationplace.innerHTML = '<select name="destinationplace_' + id + '">\
+    destinationplace.innerHTML = '<select name="destinationplaces_' + id + '" multiple>\
                               {% for row in ss_places %}\
                                 <option value={{ row["PlaceId"] }}> {{ row["PlaceName"] }}</option>\
                               {% endfor %}\
                             </select>';
-    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" type="date"/>';
+    outboundpartialdate.innerHTML = '<input autocomplete="off" name="outboundpartialdate_' + id + '" type="text" class="datepicker"/>';
+    inboundpartialdate.innerHTML = '<input autocomplete="off" name="inboundpartialdate_' + id + '" type="text" class="datepicker"/>';
+    
+   // Initialise the datepicker module for the added row - TODO - can this be better?
+   $( function() {
+    $( '.datepicker' ).datepicker({
+      format: "yyyy-mm-dd",
+      multidate: true
+    });
+  } ); 
+    
     //Update the rowNum input and increment for next row addition
     document.getElementById("rowNum").value = id;
     rowNo ++;
   }
+  
+
 </script>
 
 <body>
-Prototype for the input to the search_bq function!
+Prototype for the input to the search_live function!
 </body>
 <!-- Create a table template with a single row and _0 input names -->
 <form action="/search_bq" method="post">
@@ -49,21 +70,23 @@ Prototype for the input to the search_bq function!
           <th>Departure Airport</th>
           <th>Destination Airport</th>
           <th>Departure Date</th>
+          <th>Return Date*</th>
         </tr>
         <tr>
-          <td><select name="originplace_0">
+          <td><select name="originplaces_0" multiple>
             {% for row in ss_places %}
               <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
             {% endfor %}
             </select>
           </td>
-          <td><select name="destinationplace_0">
+          <td><select name="destinationplaces_0" multiple>
             {% for row in ss_places %}
               <option value={{ row['PlaceId'] }}> {{ row['PlaceName'] }}</option>
             {% endfor %}
             </select>
           </td>
-          <td><input autocomplete="off" name="outboundpartialdate_0" type="date"/></td>
+          <td><input autocomplete="off" name="outboundpartialdate_0" type="text" class="datepicker"/></td>
+          <td><input autocomplete="off" name="inboundpartialdate_0" type="text" class="datepicker"/></td>
         </tr>
       </table>
     </div>

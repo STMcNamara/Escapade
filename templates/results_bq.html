@@ -1,32 +1,57 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Browse Quotes Search Results
+    Browse Quotes Results
 {% endblock %}
 
 {% block main %}
 
-    <body>
-        WIP for the results!
-    </body>
+<script>
+  // Use the Datatable jquery plugin to format table (refer to layout.html)
+  $(document).ready( function () {
+    $('#results_table').DataTable( {
+      dom: 'Bfrtip',
+      buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print'
+      ]
+    } );
+} );
+</script>
 
-    <table style="width:100%">
-      <tr>
-        <th>Departure Date</th>
-        <th>Origin Place</th>
-        <th>Destination Place</th>
-        <th>Min Price</th>
-        <th>Carrier ID</th>
-      </tr>
-      {% for result in resultsDict %}
-      <tr>
-        <td>{{ result['Outbound_Date'] }}</td>
-        <td>{{ result['Outbound_OriginPlace'] }}</td>
-        <td>{{ result['Outbound_DestinationPlace'] }}</td>
-        <td>£{{ result['MinPrice'] }}</td>
-        <td>{{ result['Outbound_CarrierNames'] }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+
+<body>
+    WIP for the Live Search results!
+</body>
+
+<table id="results_table" class="display compact" style="width:100%">
+  <thead>
+    <tr>
+      <th>Origin Place</th>
+      <th>Destination Place</th>
+      <th>Direct?</th>
+      <th>Outbound Departure Date</th>
+      <th>Outbound Carriers</th>
+      <th>Inbound Departure Date</th>
+      <th>Inbound Carriers</th>
+      <th>Price</th>
+      <th>Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for result in resultsDict %}
+    <tr>
+      <td>{{ result['Outbound_OriginPlace'] }}</td>
+      <td>{{ result['Outbound_DestinationPlace'] }}</td>
+      <td>{{ result['Direct'] }}</td>
+      <td>{{ result['Outbound_Date'] }}</td>
+      <td>{{ result['Outbound_CarrierNames'] }}</td>
+      <td>{{ result['Inbound_Date'] }}</td>
+      <td>{{ result['Inbound_CarrierNames'] }}</td>
+      <td>£{{ result['MinPrice'] }}</td>
+      <td><a href="{{ result['linkURL'] }}" target="_blank">Link</a>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 {% endblock %}
