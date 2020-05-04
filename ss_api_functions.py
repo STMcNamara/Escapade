@@ -700,13 +700,17 @@ def getLocationsAll():
     return places
 
 
-"""Test Area"""
-inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-print(inputDicts)
-resultsJson = BrowseQuotes(inputDicts)
+if __name__ == "__main__":
+    """
+    This is a development area to allow API functions to be tested directly without launching
+    the main flask app
+    """
+    inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
+    print(inputDicts)
+    resultsJson = BrowseQuotes(inputDicts)
 
-print(resultsJson)
+    print(resultsJson)
 
-resultsFormatted = BrowseQuotesFormatResults(resultsJson)
+    resultsFormatted = BrowseQuotesFormatResults(resultsJson)
 
-print(resultsFormatted)
+    print(resultsFormatted)
