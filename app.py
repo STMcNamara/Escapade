@@ -105,7 +105,15 @@ def search_bq():
        
         # Call the Browse Quotes API endpoint and retreive raw results
         results = BrowseQuotes(queryList)
-
+        
+        # Store the raw results in the database
+        if sessionActive():
+            user_id = session["user_id"]
+        else:
+            user_id = ""
+        
+        search_id = db_logBQQuery(db, user_id, queryList) 
+        
         # Format the results for interpretation be the return form
         resultsDict = BrowseQuotesFormatResults(results)
         

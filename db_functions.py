@@ -1,7 +1,7 @@
 """
 This file contains all functions that directly interact with the Escapade
 database. This is includes, connecting, creation of tables, reading, writing,
-and interpratation and manipulation of raw data into a format suitable for
+and interpretation and manipulation of raw data into a format suitable for
 sqlite3.
 """
 
@@ -180,8 +180,8 @@ createTableSQL_Users = """ CREATE TABLE IF NOT EXISTS users (
                                         currencyPref text
                                         ); """
 
-# SQL Schema for the "search_live_log" table
-createTableSQL_search_live_log = """ CREATE TABLE IF NOT EXISTS search_live_log (
+# SQL Schema for the "search_bq_log" table
+createTableSQL_search_bq_log = """ CREATE TABLE IF NOT EXISTS search_bq_log (
                                             search_id integer PRIMARY KEY AUTOINCREMENT,
                                             user_id integer,
                                             created timestamp,
@@ -381,7 +381,7 @@ def db_updatePassword(db,newPassword,username):
 
 """ User search history functions """
 
-def db_logSLQuery(db, user_id, searchQuery):
+def db_logBQQuery(db, user_id, searchQuery):
     """
     Uses db_putData to log any search carried out using search_live as
     a .json with associated metadata.
@@ -410,7 +410,7 @@ def db_logSLQuery(db, user_id, searchQuery):
 
     data = (user_id, timestamp, searchJson)
 
-    sql = ''' INSERT INTO search_live_log (user_id,created,searchJson)
+    sql = ''' INSERT INTO search_bq_log (user_id,created,searchJson)
                 VALUES(?,?,?) '''
 
     # Call PUT function
@@ -537,7 +537,7 @@ def db_intialise(db):
     if conn is not None:
         # create tables using schema defined above
         db_createTable(conn, createTableSQL_Users)
-        db_createTable(conn, createTableSQL_search_live_log)
+        db_createTable(conn, createTableSQL_search_bq_log)
         db_createTable(conn, createTableSQL_search_live_results)
         db_createTable(conn, createTableSQL_search_live_data)
 
