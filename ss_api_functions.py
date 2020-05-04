@@ -205,23 +205,31 @@ def BrowseQuotesFormatResults(rawResults):
             elif place['PlaceId'] == formattedResult['Outbound_DestinationID']:
                 formattedResult['Outbound_DestinationPlace'] = place['Name']
 
+        # Try to format inbound leg parameters, if present
+        formattedResult['Inbound_CarrierID'] = None
+        formattedResult['Inbound_Date'] = None
+        try:
+            formattedResult['Inbound_CarrierID'] = Quotes_list[0]['InboundLeg']['CarrierIds']
+            formattedResult['Inbound_Date'] = Quotes_list[0]['InboundLeg']['DepartureDate']
+        except:
+            pass
 
         # There may be multiple carriers so requires a lists
         formattedResult['Outbound_CarrierNames'] = []
+        formattedResult['Inbound_CarrierNames'] = []
         for carrier in Carriers_list:
             if carrier['CarrierId'] in formattedResult['Outbound_CarrierID']:
                 formattedResult['Outbound_CarrierNames'].append(carrier['Name'])
-
-        # Try to format inbound leg parameters, if present
-        # TODO
+            try:
+                if carrier['CarrierId'] in formattedResult['Inbound_CarrierID']:
+                    formattedResult['Inbound_CarrierNames'].append(carrier['Name'])
+            except:
+                pass
 
         # Append to the results list
         formattedResultList.append(formattedResult)
     
     return formattedResultList
-
-
-
 
 def BrowseQuotesAPI(url, headers):
     """
@@ -268,6 +276,7 @@ def BrowseQuotesAPI(url, headers):
     Quotes_list = response_json["Quotes"]
     Places_list = response_json["Places"]
     Carriers_list = response_json["Carriers"]
+    
     results['MinPrice'] = Quotes_list[0]['MinPrice']
     results['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
     results['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
@@ -760,6 +769,8 @@ def getLocationsAll():
 inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
 print(inputDicts)
 resultsJson = BrowseQuotes(inputDicts)
+
+print(resultsJson)
 
 resultsFormatted = BrowseQuotesFormatResults(resultsJson)
 

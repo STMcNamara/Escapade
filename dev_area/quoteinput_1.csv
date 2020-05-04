@@ -1,3 +1,5 @@
-country,currency,locale,originplace,destinationplace,outboundpartialdate,adults,inbounddate
-US,USD,en-US,SFO-sky,JFK-sky,2019-12-01,1,2019-12-04
-US,USD,en-US,SFO-sky,JFK-sky,2019-12-02,1,2019-12-04
+country,currency,locale,originplace,destinationplace,outboundpartialdate,inboundpartialdate
+US,USD,en-US,BRS-sky,DUB-sky,2020-09-01,2020-09-02
+US,USD,en-US,BRS-sky,DUB-sky,2020-09-01,2020-09-03
+US,USD,en-US,BRS-sky,DUB-sky,2020-09-03,""
+US,USD,en-US,BRS-sky,DUB-sky,2020-09-04,""
