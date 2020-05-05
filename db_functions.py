@@ -36,7 +36,7 @@ def db_connect(db_file):
 
     return conn
 
-def db_putData(db,sql,data):
+def putData(db,sql,data):
     """
     A generic function for creating or updating data within any table
     in a databse, based on the provided SQL statement and corresponding
@@ -70,9 +70,9 @@ def db_putData(db,sql,data):
         print(e)
         return None
 
-def db_putDataMany(db,sql,data):
+def putDataMany(db,sql,data):
     """
-    Like db_putData but uses the sql .execuate many method to allow for large 
+    Like putData but uses the sql .execuate many method to allow for large 
     numbers of rows to be inserted in one transaction into the database.
 
     Args:
@@ -97,7 +97,7 @@ def db_putDataMany(db,sql,data):
         return None
 
 
-def db_getDataDict(db,sql,data):
+def getDataDict(db,sql,data):
     """
     A generic function for making a query to retreive data from a table within
     the database. Returns data as a List in which each element represents a
@@ -144,7 +144,7 @@ def db_getDataDict(db,sql,data):
 
 """ Table creation functions and schema: """
 
-def db_createTable(conn, createTableSQL):
+def createTable(conn, createTableSQL):
     """
     Creates a table in a specifed database, using the provided SQL schema
 
@@ -239,9 +239,9 @@ createTableSQL_search_live_data = """ CREATE TABLE IF NOT EXISTS search_live_dat
 
 """ User account setting functions: """
 
-def db_createUser(db, user):
+def createUser(db, user):
     """
-    Uses db_putData to create a new user entry in the database. Refer to db_putData
+    Uses putData to create a new user entry in the database. Refer to putData
     for further information on returns and exceptions.
 
     Args:
@@ -256,13 +256,13 @@ def db_createUser(db, user):
               VALUES(?,?,?,?,?,?,?,?) '''
 
     # Call PUT function
-    return db_putData(db, sql, user)
+    return putData(db, sql, user)
 
 
-def db_getUser(db, username):
+def getUser(db, username):
     """
     Returns an dictionary object containing all user information for
-    the provided username. Refer to db_putData for further information on
+    the provided username. Refer to putData for further information on
     exceptions.
 
     Args:
@@ -278,7 +278,7 @@ def db_getUser(db, username):
     sql = "SELECT * FROM users WHERE username=?"
 
     # Call GET function
-    result = db_getDataDict(db, sql, (username,))
+    result = getDataDict(db, sql, (username,))
 
     # Retrieve first / only value from list
     try:
@@ -289,7 +289,7 @@ def db_getUser(db, username):
 
     return user
 
-def db_getUserSearchHistory(db, user_id):
+def getUserSearchHistory(db, user_id):
     """Returns a list of dictionaries comprising the user search history, obtained
     from the search_live_log table in the database.
 
@@ -306,11 +306,11 @@ def db_getUserSearchHistory(db, user_id):
     """
     sql = "SELECT * FROM search_bq_log WHERE user_id=?"
 
-    userSearchHistory = db_getDataDict(db, sql, (user_id,))
+    userSearchHistory = getDataDict(db, sql, (user_id,))
 
     return userSearchHistory
 
-def db_getSearchQuery(db, search_id):
+def getSearchQuery(db, search_id):
     """
     Returns a Python formatted search query from the database.
 
@@ -325,7 +325,7 @@ def db_getSearchQuery(db, search_id):
     """
     sql = "SELECT * FROM search_bq_log WHERE search_id=?"
 
-    queryDB = db_getDataDict(db, sql, (search_id,))
+    queryDB = getDataDict(db, sql, (search_id,))
     queryJson = queryDB[0]["searchJson"]
 
     # Convert from json into Python
@@ -333,7 +333,7 @@ def db_getSearchQuery(db, search_id):
 
     return queryList
 
-def db_getSearchResult(db, search_id):
+def getSearchResult(db, search_id):
     """
     Returns a Python formatted version of the stored skyscanner json
     response from a previous live search query
@@ -349,7 +349,7 @@ def db_getSearchResult(db, search_id):
     """
     sql = "SELECT resultsJson FROM browse_quotes_results WHERE search_id=?"
 
-    resultDB = db_getDataDict(db, sql, (search_id,))
+    resultDB = getDataDict(db, sql, (search_id,))
     responseJson = resultDB[0]["resultsJson"]
 
     # Convert from json into Python
@@ -358,9 +358,9 @@ def db_getSearchResult(db, search_id):
     return responseHistoric
 
 
-def db_updatePassword(db,newPassword,username):
+def updatePassword(db,newPassword,username):
     """
-    Uses db_putData to ammend a users password hash. Refer to db_putData
+    Uses putData to ammend a users password hash. Refer to putData
     for further information on returns and exceptions.
 
     Args:
@@ -376,17 +376,17 @@ def db_updatePassword(db,newPassword,username):
     data = (newPassword, username)
 
     # Call PUT function
-    return db_putData(db, sql, data)
+    return putData(db, sql, data)
 
 
 """ User search history functions """
 
-def db_logBQQuery(db, user_id, searchQuery):
+def logBQQuery(db, user_id, searchQuery):
     """
-    Uses db_putData to log any search carried out using search_live as
+    Uses putData to log any search carried out using search_live as
     a .json with associated metadata.
 
-    Refer to db_putData for further information on returns and exceptions.
+    Refer to putData for further information on returns and exceptions.
 
     Args:
         db(string): The address of the database file to be written to.
@@ -415,17 +415,17 @@ def db_logBQQuery(db, user_id, searchQuery):
 
     # Call PUT function
 
-    search_id = db_putData(db, sql, data)
+    search_id = putData(db, sql, data)
 
     return search_id
 
-def db_logBQResults(db, user_id, search_id, browseQuotesList):
+def logBQResults(db, user_id, search_id, browseQuotesList):
     """
-    Uses db_putData to log results retreived from the Browse quotes endpoint as a .json
+    Uses putData to log results retreived from the Browse quotes endpoint as a .json
     with associated metadata.  The  results are stored as a single .json object
     that is created from the list of .jsons returned from BrowseQuotes.
 
-    Refer to db_putData for further information on returns and exceptions.
+    Refer to putData for further information on returns and exceptions.
 
     Args:
         db(string): The address of the database file to be written to.
@@ -455,16 +455,19 @@ def db_logBQResults(db, user_id, search_id, browseQuotesList):
                 VALUES(?,?,?,?) '''
 
     # Call the PUT function
-    results_id = db_putData(db, sql, data)
+    results_id = putData(db, sql, data)
 
     return results_id
 
 def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
     """
-    Uses db_putDataMany to log the formatted itinaries created by liveSearchFormatResult
+    TODO - This function is not currently used as of version 0.5.1. Retained for
+    potential future use.
+
+    Uses putDataMany to log the formatted itinaries created by liveSearchFormatResult
     for analysis and presentation to the user, and the associated search
     metadata.
-    Refer to db_putData for further information on returns and exceptions.
+    Refer to putData for further information on returns and exceptions.
 
     Args:
         db(string): The address of the database file to be written to.
@@ -511,12 +514,12 @@ def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
         values.append(entry)
 
     # Call PUT MANY function
-    db_putDataMany(db, sql, values)
+    putDataMany(db, sql, values)
 
 
 """Specific database operators and wrappers"""
 
-def db_intialise(db):
+def intialise(db):
     """
     Wrapper for use in app.py that creates (if none present) the database or
     updates the structure and associated schema if required.
@@ -536,10 +539,10 @@ def db_intialise(db):
 
     if conn is not None:
         # create tables using schema defined above
-        db_createTable(conn, createTableSQL_Users)
-        db_createTable(conn, createTableSQL_search_bq_log)
-        db_createTable(conn, createTableSQL_browse_quotes_results)
-        db_createTable(conn, createTableSQL_search_live_data)
+        createTable(conn, createTableSQL_Users)
+        createTable(conn, createTableSQL_search_bq_log)
+        createTable(conn, createTableSQL_browse_quotes_results)
+        createTable(conn, createTableSQL_search_live_data)
 
     else:
         print("Error! cannot create the database connection.")
@@ -553,11 +556,11 @@ def main():
     """ Test Area"""
     # Create the database if it doesn't exist
     db = r"escapade.db"
-    db_intialise(db)
+    intialise(db)
 
     user_id = 2
     # trial search of the escapade database
-    print(db_getUserSearchHistory(db, user_id))
+    print(getUserSearchHistory(db, user_id))
 
     # Space reserved for testing
 
