@@ -9,7 +9,7 @@ import os
 from flask import Flask, abort, redirect, render_template, request, session
 from pathlib import Path
 from ss_api_functions import BrowseQuotes, BrowseQuotesFormatResults, CSVtoDict 
-from db_functions import *
+import db_functions
 from helpers import *
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -31,7 +31,7 @@ def after_request(response):
 
 # Define datebase name, and if required create or update
 db = r"escapade.db"
-db_intialise(db)
+db_functions.db_intialise(db)
 
 
 # Define default values - TODO to be replaced by database and/or user defined parameters
@@ -115,9 +115,8 @@ def search_bq():
         else:
             user_id = ""
         
-        search_id = db_logBQQuery(db, user_id, queryList)
-        
-        db_logBQResults(db, user_id, search_id, results_json) 
+        search_id = db_functions.db_logBQQuery(db, user_id, queryList)        
+        db_functions.db_logBQResults(db, user_id, search_id, results_json) 
         
         # Format the results for interpretation be the return form
         resultsDict = BrowseQuotesFormatResults(results_json)
@@ -188,29 +187,9 @@ def search_live2():
                             'inbounddate': inboundDate})
 
 
-        # Check search query values are valid - Raises error if not
-        validFlightSearchQuery(queryList, ss_places)
-
-        # Make the live search request for list of raw API results
-        liveQuotesList = liveSearchRequestQuotes_T(queryList)
-
-        # Store the raw results in the database
-        if sessionActive():
-            user_id = session["user_id"]
-        else:
-            user_id = ""
-
-        search_id = db_logSLQuery(db, user_id, queryList)
-        results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
-
-        # Format the results to display to user
-        resultsDict = liveSearchFormatResultList(liveQuotesList)
-
-        # Store the formatted data in the database
-        db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
 
         # Return the results to the user
-        return render_template("results_live.html", resultsDict=resultsDict)
+        return render_template("results_live.html", resultsDict={})
         
 
     # Reached via GET (display form)
@@ -273,13 +252,13 @@ def search_history():
             search_id = request.form.get("rerun")
 
             # Retrieve the search query to rerun
-            queryList = db_getSearchQuery(db, search_id)
+            queryList = db_functions.db_getSearchQuery(db, search_id)
 
             # Check search query values are valid - Raises error if not
             validFlightSearchQuery(queryList, ss_places)
 
-            # Make the live search request for list of raw API results
-            liveQuotesList = liveSearchRequestQuotes_T(queryList)
+            # Call the Browse Quotes API endpoint and retreive raw results
+            results_json = BrowseQuotes(queryList)
 
             # Store the raw results in the database
             if sessionActive():
@@ -287,32 +266,29 @@ def search_history():
             else:
                 user_id = ""
 
-            search_id = db_logSLQuery(db, user_id, queryList)
-            results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
+            search_id = db_functions.db_logBQQuery(db, user_id, queryList)        
+            db_functions.db_logBQResults(db, user_id, search_id, results_json) 
 
-            # Format the results to display to user
-            resultsDict = liveSearchFormatResultList(liveQuotesList)
-
-            # Store the formatted results in the database
-            db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
+            # Format the results for interpretation be the return form
+            resultsDict = BrowseQuotesFormatResults(results_json)
 
         # If retreive results selected on POST
         else:
             # Get the search ID
             search_id = request.form.get("view_results")
 
-            # Retreive the raw results for the search-id from the database
-            responseHistoric = db_getSearchResult(db, search_id)
+            # Retreive the raw historic results for the search-id from the database
+            results_json = db_functions.db_getSearchResult(db, search_id)
 
-            # Format the results to display to user
-            resultsDict = liveSearchFormatResultList(responseHistoric)
+            # Format the results for interpretation be the return form
+            resultsDict = BrowseQuotesFormatResults(results_json)
 
         # Return the results to the user
-        return render_template("results_live.html", resultsDict=resultsDict)
+        return render_template("results_bq.html", resultsDict=resultsDict)
 
     else:
         #For GET - Retreive the user's search history from the database
-        userSearchHistory = db_getUserSearchHistory(db, session["user_id"])
+        userSearchHistory = db_functions.db_getUserSearchHistory(db, session["user_id"])
 
         return render_template("search_history.html", searchHistory=userSearchHistory)
 
@@ -376,14 +352,14 @@ def register():
                 "","","")
 
         # Connect to database and insert user data
-        result = db_createUser(db,user)
+        result = db_functions.db_createUser(db,user)
 
         if not result:
             return apology("User already exists")
 
         else:
             # Update user to retreive generated data (user_id)
-            user = db_getUser(db, request.form.get("username"))
+            user = db_functions.db_getUser(db, request.form.get("username"))
             
             # Leave the user logged in and return to index
             session["user_id"] = user["user_id"]
@@ -404,7 +380,7 @@ def password():
     if request.method == "POST":
 
         # Retreive the user object from the database
-        user = db_getUser(db, session["username"])
+        user = db_functions.db_getUser(db, session["username"])
 
         # Check inputted password against hash
         if not check_password_hash(user["password"], request.form.get("current_password")):
@@ -422,7 +398,7 @@ def password():
         hash = generate_password_hash(request.form.get("new_password"))
 
         # Update the hash in the database
-        db_updatePassword(db, hash, session["username"])
+        db_functions.db_updatePassword(db, hash, session["username"])
 
         # Redirect the user to home page
         return redirect("/")
@@ -472,7 +448,7 @@ def login():
             return apology("must provide password", 403)
 
         # Retreive the user object from the database
-        user = db_getUser(db, request.form.get("username"))
+        user = db_functions.db_getUser(db, request.form.get("username"))
 
         # Check if user exists
         if not user:

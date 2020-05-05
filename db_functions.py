@@ -304,7 +304,7 @@ def db_getUserSearchHistory(db, user_id):
         of the escapde database, for searches with matching user_id. Returns None
         on error.
     """
-    sql = "SELECT * FROM search_live_log WHERE user_id=?"
+    sql = "SELECT * FROM search_bq_log WHERE user_id=?"
 
     userSearchHistory = db_getDataDict(db, sql, (user_id,))
 
@@ -323,7 +323,7 @@ def db_getSearchQuery(db, search_id):
         queryList(list (of dictionaries): A list of dictionaries
         collectively comprising a live_search query.)
     """
-    sql = "SELECT * FROM search_live_log WHERE search_id=?"
+    sql = "SELECT * FROM search_bq_log WHERE search_id=?"
 
     queryDB = db_getDataDict(db, sql, (search_id,))
     queryJson = queryDB[0]["searchJson"]
