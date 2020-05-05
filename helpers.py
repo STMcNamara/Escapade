@@ -66,7 +66,7 @@ def validFlightSearchQuery(queryList,ss_places):
 
         # If there is an inbound trip, check it occurs after or equal to outbound
         try:
-            inboundDate = datetime.strptime(query["inbounddate"], "%Y-%m-%d").date()
+            inboundDate = datetime.strptime(query["inboundpartialdate"], "%Y-%m-%d").date()
         except:
             inboundDate = None
 

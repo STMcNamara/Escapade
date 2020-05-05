@@ -103,6 +103,9 @@ def search_bq():
                             'outboundpartialdate': outboundDate,
                             'inboundpartialdate': inboundDate})
        
+        # Check search query values are valid - Raises error if not
+        validFlightSearchQuery(queryList, ss_places)
+
         # Call the Browse Quotes API endpoint and retreive raw results
         results_json = BrowseQuotes(queryList)
         
@@ -125,93 +128,6 @@ def search_bq():
     else:
         return render_template("search_bq.html", ss_places=ss_places)
 
-@app.route("/search_live", methods=["GET", "POST"])
-def search_live():
-    """
-    GET:
-        Presents search_live.html to allow user to input queries.
-
-    POST:
-        INPUTS:
-            Reads user inputs from search_bq.html via request.form.get (where N
-            is the number of query rows):
-                originplace_[0-N] (string): In the format Skyscanner PlaceId
-                destination_[0-N] (string): In the format Skyscanner PlaceId
-                outboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
-                inbounddate_[0-N] (string): Optional, yyyy-mm-dd
-            TODO - placeholder - uses the globals country, currency, locale and adults
-
-        CALLS:
-            Passes data to liveSearchRequestQuotes in ss_api_functions.py
-
-        RETURNS:
-            results_live.html consisting of an automatically generated table
-            that contains the query results where:
-                resultsDict (list(of dictionaries)): From Live Search
-
-        DATABASE:
-            Stores the search query, raw results and formatted results in the
-            database.
-    """
-    # Reached via POST (form submitted)
-    if request.method == "POST":
-    # Populate query dictionary with default location and form parameters
-        rows = int(request.form.get("rowNum"))
-        queryList = []
-        
-        # For each combination of destination and dates
-        for i in range(rows+1):
-            # Populate list of Origin places and Destination places
-            originplacesList = request.form.getlist("originplaces_" + str(i))
-            destinationplacesList = request.form.getlist("destinationplaces_" + str(i))
-            
-            # Populate list of outbound and inbound dates
-            outboundpartialdateString = request.form.get("outboundpartialdate_" + str(i))
-            inbounddateString = request.form.get("inbounddate_" + str(i))
-
-            outboundpartialdateList = outboundpartialdateString.split(",")
-            inbounddateList = inbounddateString.split(",")
-            
-            # Format multi-data lists into individual date and place itineraries and append to list
-            for originplace in originplacesList:
-                for destinationplace in destinationplacesList:
-                    for outboundDate in outboundpartialdateList:
-                        for inboundDate in inbounddateList:
-                            queryList.append({'country' : country, 'currency': currency, 'locale' : locale, 'adults' : adults,
-                            'originplace': originplace,
-                            'destinationplace': destinationplace,
-                            'outboundpartialdate': outboundDate,
-                            'inbounddate': inboundDate})
-
-
-        # Check search query values are valid - Raises error if not
-        validFlightSearchQuery(queryList, ss_places)
-
-        # Make the live search request for list of raw API results
-        liveQuotesList = liveSearchRequestQuotes_T(queryList)
-
-        # Store the raw results in the database
-        if sessionActive():
-            user_id = session["user_id"]
-        else:
-            user_id = ""
-
-        search_id = db_logSLQuery(db, user_id, queryList)
-        results_id = db_logSLResults(db, user_id, search_id, liveQuotesList)
-
-        # Format the results to display to user
-        resultsDict = liveSearchFormatResultList(liveQuotesList)
-
-        # Store the formatted data in the database
-        db_logSLItineraries(db, user_id, search_id, results_id, resultsDict)
-
-        # Return the results to the user
-        return render_template("results_live.html", resultsDict=resultsDict)
-        
-
-    # Reached via GET (display form)
-    else:
-        return render_template("search_live.html", ss_places=ss_places)
 
 @app.route("/search_live2", methods=["GET", "POST"])
 def search_live2():
