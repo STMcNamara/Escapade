@@ -189,8 +189,8 @@ createTableSQL_search_bq_log = """ CREATE TABLE IF NOT EXISTS search_bq_log (
                                             searchName text
                                             ); """
 
-# SQL Schema for the "search_live_results" table
-createTableSQL_search_live_results = """ CREATE TABLE IF NOT EXISTS search_live_results (
+# SQL Schema for the "browse_quotes_results" table
+createTableSQL_browse_quotes_results = """ CREATE TABLE IF NOT EXISTS browse_quotes_results (
                                             results_id integer PRIMARY KEY AUTOINCREMENT,
                                             search_id integer NOT NULL,
                                             user_id integer,
@@ -347,7 +347,7 @@ def db_getSearchResult(db, search_id):
         responsHistoric (dictionary): A Python formatted json containing
         multiple lists and dictionaries, as recevied from the API endpoint.
     """
-    sql = "SELECT resultsJson FROM search_live_results WHERE search_id=?"
+    sql = "SELECT resultsJson FROM browse_quotes_results WHERE search_id=?"
 
     resultDB = db_getDataDict(db, sql, (search_id,))
     responseJson = resultDB[0]["resultsJson"]
@@ -419,11 +419,11 @@ def db_logBQQuery(db, user_id, searchQuery):
 
     return search_id
 
-def db_logSLResults(db, user_id, search_id, liveQuotesList):
+def db_logBQResults(db, user_id, search_id, browseQuotesList):
     """
-    Uses db_putData to log results retreived from search_live as a .json
-    with associated metadata.  The  result are stored as a single .json object
-    that is created from the list of .jsons returned from liveSearchRequestQuotes_T.
+    Uses db_putData to log results retreived from the Browse quotes endpoint as a .json
+    with associated metadata.  The  results are stored as a single .json object
+    that is created from the list of .jsons returned from BrowseQuotes.
 
     Refer to db_putData for further information on returns and exceptions.
 
@@ -436,7 +436,7 @@ def db_logSLResults(db, user_id, search_id, liveQuotesList):
         search_id(integer): The unique id of the search query for which the result
         is associated.
 
-        liveQuotesList (List( of dictionaries): A list of dictionaries containing
+        browseQuotesList (List( of dictionaries): A list of dictionaries containing
         multiple API response .json.
         Refer to API documentation for structure.
 
@@ -444,13 +444,13 @@ def db_logSLResults(db, user_id, search_id, liveQuotesList):
         results_id(integer): The last row id, which is the unique autoincrement
         value for resutls_id.
     """
-    # Convert liveQuotesList into .json format for storage in the database
-    resultsJson = json.dumps(liveQuotesList)
+    # Convert browseQuotesList into .json format for storage in the database
+    resultsJson = json.dumps(browseQuotesList)
     resultTimestamp = datetime.now()
 
     data = (search_id, user_id, resultTimestamp, resultsJson)
 
-    sql = ''' INSERT INTO search_live_results(search_id,user_id,resultTimestamp,
+    sql = ''' INSERT INTO browse_quotes_results(search_id,user_id,resultTimestamp,
                                             resultsJson)
                 VALUES(?,?,?,?) '''
 
@@ -538,7 +538,7 @@ def db_intialise(db):
         # create tables using schema defined above
         db_createTable(conn, createTableSQL_Users)
         db_createTable(conn, createTableSQL_search_bq_log)
-        db_createTable(conn, createTableSQL_search_live_results)
+        db_createTable(conn, createTableSQL_browse_quotes_results)
         db_createTable(conn, createTableSQL_search_live_data)
 
     else:

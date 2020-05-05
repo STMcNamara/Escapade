@@ -104,18 +104,20 @@ def search_bq():
                             'inboundpartialdate': inboundDate})
        
         # Call the Browse Quotes API endpoint and retreive raw results
-        results = BrowseQuotes(queryList)
+        results_json = BrowseQuotes(queryList)
         
-        # Store the raw results in the database
+        # Store the query and raw results in the database
         if sessionActive():
             user_id = session["user_id"]
         else:
             user_id = ""
         
-        search_id = db_logBQQuery(db, user_id, queryList) 
+        search_id = db_logBQQuery(db, user_id, queryList)
+        
+        db_logBQResults(db, user_id, search_id, results_json) 
         
         # Format the results for interpretation be the return form
-        resultsDict = BrowseQuotesFormatResults(results)
+        resultsDict = BrowseQuotesFormatResults(results_json)
         
         return render_template("results_bq.html", resultsDict=resultsDict)
 
