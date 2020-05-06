@@ -200,6 +200,7 @@ createTableSQL_browse_quotes_results = """ CREATE TABLE IF NOT EXISTS browse_quo
                                             ); """
 
 # SQL Schema for the "search_live_data" table
+# LEGACY - retained for potetnial future implementation
 createTableSQL_search_live_data = """ CREATE TABLE IF NOT EXISTS search_live_data (
                                             results_id integer,
                                             search_id integer,
@@ -461,7 +462,7 @@ def logBQResults(db, user_id, search_id, browseQuotesList):
 
 def db_logSLItineraries(db, user_id, search_id, results_id, resultsDict):
     """
-    TODO - This function is not currently used as of version 0.5.1. Retained for
+    LEGACY - This function is not currently used as of version 0.5.1. Retained for
     potential future use.
 
     Uses putDataMany to log the formatted itinaries created by liveSearchFormatResult
@@ -542,7 +543,6 @@ def intialise(db):
         createTable(conn, createTableSQL_Users)
         createTable(conn, createTableSQL_search_bq_log)
         createTable(conn, createTableSQL_browse_quotes_results)
-        createTable(conn, createTableSQL_search_live_data)
 
     else:
         print("Error! cannot create the database connection.")

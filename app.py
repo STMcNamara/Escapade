@@ -63,10 +63,11 @@ def search_bq():
                 originplace_[0-N] (string): In the format Skyscanner PlaceId
                 destination_[0-N] (string): In the format Skyscanner PlaceId
                 outboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
+                inboundpartialdate_[0-N] (string): In the html date format yyyy-mm-dd
             TODO - placeholder - uses the globals country, currency and locale
 
         CALLS:
-            Passes data to formatBqUrl and BrowseQuotes in ss_api_functions.py
+            Passes data to BrowseQuotes in ss_api_functions.py
 
         RETURNS:
             results_bq.html consisting of an automatically generated table
@@ -205,21 +206,21 @@ def search_history():
         with the option to re-run past searches, or view past results.
 
         Builds the search history table with data and fields from the
-        search_live_log database, with form submission names links to search_ids.
+        search_bq_log database, with form submission names links to search_ids.
 
     POST - "rerun":
         INPUTS:
             Using the search_id submitted with the POST form, retreives the
             associated search parameters from the database to duplicate a
-            search_live query.
+            search_bq query.
 
         CALLS:
-            Passes data to liveSearchRequestQuotes in ss_api_functions.py
+            Passes data to BrowseQuotes in ss_api_functions.py
 
         RETURNS:
-            results_live.html consisting of an automatically generated table
+            results_bq.html consisting of an automatically generated table
             that contains the query results where:
-                resultsDict (list(of dictionaries)): From Live Search
+                resultsDict (list(of dictionaries)): From Browse Quotes
 
         DATABASE:
             Stores the search query, raw results and formatted results in the
@@ -231,11 +232,11 @@ def search_history():
             associated raw search results.
 
         CALLS:
-            Formats the raw results from the databse using liveSearchFormatResultList
+            Formats the raw results from the database using BrowseQuotesFormatResults
             in ss-ss_api_functions.py.
 
         RETURNS:
-            results_live.html consisting of an automatically generated table
+            results_bq.html consisting of an automatically generated table
             that contains the query results where:
                 resultsDict (list(of dictionaries)): Formatted from results
                 retreived from the database.
