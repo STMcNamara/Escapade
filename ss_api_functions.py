@@ -292,12 +292,33 @@ if __name__ == "__main__":
     This is a development area to allow API functions to be tested directly without launching
     the main flask app
     """
-    inputDicts = CSVtoDict("./dev_area/quoteinput_1.csv")
-    print(inputDicts)
-    resultsJson = BrowseQuotes(inputDicts)
+    print("Running ss_api_functions.py development area")
+    
+    # Define the path to the testcase folder and list of test cases
+    
+    testcasefolder = "./testing/browsequotestests/testcases/"
+    
+    test_cases = ["quoteinput_1.csv",
+                "quoteinput_10.csv",
+                "quoteinput_50.csv",
+                "quoteinput_365.csv"]
 
-    print(resultsJson)
+    # Make a results directory with the time and date 
+    
+    test_number = 1
 
-    resultsFormatted = BrowseQuotesFormatResults(resultsJson)
+    for testCase in test_cases:
+        print("Testing: " + str(testCase))
 
-    print(resultsFormatted)
+        inputDicts = CSVtoDict(testCase)
+        resultsJson = BrowseQuotes(inputDicts)
+        resultsFormatted = BrowseQuotesFormatResults(resultsJson)
+
+        # Write responses to file
+        resultsPath = "./dev_area/results_" + str(test_number) + ".csv"
+        DicttoCSV(resultsFormatted, resultsPath)
+
+        # Increment test number
+        test_number += 1
+
+    
