@@ -42,8 +42,8 @@ def CSVtoDict(csv_input_file):
 
 def DicttoCSV(dict,resultsPath):
     """
-    GENERAL PURPOSE - Reads a list of dictionaries and converts to a
-    results.csv file in the dev_area
+    GENERAL PURPOSE - Reads a list of dictionaries and CREATES a .csv file with
+    the defined name and path.
 
     Args:
         dict(list(of dictionaries)): A list of dictionaries, each of which must
@@ -58,9 +58,31 @@ def DicttoCSV(dict,resultsPath):
         dictionary in the list.
     """
     keys = dict[0].keys()
-    with open(resultsPath, 'w') as results:
+    with open(resultsPath, 'w', newline='') as results:
         dict_writer = csv.DictWriter(results, keys)
         dict_writer.writeheader()
+        dict_writer.writerows(dict)
+
+def updateDicttoCSV(dict,resultsPath):
+    """
+    GENERAL PURPOSE - Reads a list of dictionaries and UPDATES a .csv file with
+    the defined name and path.
+
+    Args:
+        dict(list(of dictionaries)): A list of dictionaries, each of which must
+        have keys that are the same as the first dictionary in the list.
+
+        resultsPath(string): Filepath and file name for the file to be created
+        in the fomrat "path/file.csv"
+
+    Returns:
+        Creates a .csv file in which the first row is the
+        dictionary keys, and each following row is the associated values for each
+        dictionary in the list.
+    """
+    keys = dict[0].keys()
+    with open(resultsPath, 'w', newline='') as results:
+        dict_writer = csv.DictWriter(results, keys)
         dict_writer.writerows(dict)
 
 def formatBqUrl(inputDict):
@@ -192,49 +214,55 @@ def BrowseQuotesFormatResults(rawResults):
     """
     
     formattedResultList = []
-    
-    for result in rawResults:
-        # Extract required data into a single dictionary for outbound leg.
-        formattedResult = {}
-        Quotes_list = result["Quotes"]
-        Places_list = result["Places"]
-        Carriers_list = result["Carriers"]
-        formattedResult['MinPrice'] = Quotes_list[0]['MinPrice']
-        formattedResult['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
-        formattedResult['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
-        formattedResult['Direct'] = Quotes_list[0]['Direct']
-        formattedResult['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds']
-        formattedResult['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
+    # Try to format results based on valid keys being present in the results
+    try:
+        for result in rawResults:
+            # Extract required data into a single dictionary for outbound leg.
+            formattedResult = {}
+            Quotes_list = result["Quotes"]
+            Places_list = result["Places"]
+            Carriers_list = result["Carriers"]
+            formattedResult['MinPrice'] = Quotes_list[0]['MinPrice']
+            formattedResult['Outbound_OriginID'] = Quotes_list[0]['OutboundLeg']['OriginId']
+            formattedResult['Outbound_DestinationID'] = Quotes_list[0]['OutboundLeg']['DestinationId']
+            formattedResult['Direct'] = Quotes_list[0]['Direct']
+            formattedResult['Outbound_CarrierID'] = Quotes_list[0]['OutboundLeg']['CarrierIds']
+            formattedResult['Outbound_Date'] = Quotes_list[0]['OutboundLeg']['DepartureDate']
 
-        for place in Places_list:
-            if place['PlaceId'] == formattedResult['Outbound_OriginID']:
-                formattedResult['Outbound_OriginPlace'] = place['Name']
-            elif place['PlaceId'] == formattedResult['Outbound_DestinationID']:
-                formattedResult['Outbound_DestinationPlace'] = place['Name']
+            for place in Places_list:
+                if place['PlaceId'] == formattedResult['Outbound_OriginID']:
+                    formattedResult['Outbound_OriginPlace'] = place['Name']
+                elif place['PlaceId'] == formattedResult['Outbound_DestinationID']:
+                    formattedResult['Outbound_DestinationPlace'] = place['Name']
 
-        # Try to format inbound leg parameters, if present
-        formattedResult['Inbound_CarrierID'] = None
-        formattedResult['Inbound_Date'] = None
-        try:
-            formattedResult['Inbound_CarrierID'] = Quotes_list[0]['InboundLeg']['CarrierIds']
-            formattedResult['Inbound_Date'] = Quotes_list[0]['InboundLeg']['DepartureDate']
-        except:
-            pass
-
-        # There may be multiple carriers so requires a lists
-        formattedResult['Outbound_CarrierNames'] = []
-        formattedResult['Inbound_CarrierNames'] = []
-        for carrier in Carriers_list:
-            if carrier['CarrierId'] in formattedResult['Outbound_CarrierID']:
-                formattedResult['Outbound_CarrierNames'].append(carrier['Name'])
+            # Try to format inbound leg parameters, if present
+            formattedResult['Inbound_CarrierID'] = None
+            formattedResult['Inbound_Date'] = None
             try:
-                if carrier['CarrierId'] in formattedResult['Inbound_CarrierID']:
-                    formattedResult['Inbound_CarrierNames'].append(carrier['Name'])
+                formattedResult['Inbound_CarrierID'] = Quotes_list[0]['InboundLeg']['CarrierIds']
+                formattedResult['Inbound_Date'] = Quotes_list[0]['InboundLeg']['DepartureDate']
             except:
                 pass
+        
 
-        # Append to the results list
-        formattedResultList.append(formattedResult)
+            # There may be multiple carriers so requires a lists
+            formattedResult['Outbound_CarrierNames'] = []
+            formattedResult['Inbound_CarrierNames'] = []
+            for carrier in Carriers_list:
+                if carrier['CarrierId'] in formattedResult['Outbound_CarrierID']:
+                    formattedResult['Outbound_CarrierNames'].append(carrier['Name'])
+                try:
+                    if carrier['CarrierId'] in formattedResult['Inbound_CarrierID']:
+                        formattedResult['Inbound_CarrierNames'].append(carrier['Name'])
+                except:
+                    pass
+
+            # Append to the results list
+            formattedResultList.append(formattedResult)
+    
+    except:
+        # TODO - Would be useful to show that results were requested but not received
+        pass
     
     return formattedResultList
 
@@ -296,12 +324,11 @@ if __name__ == "__main__":
     
     # Define the path to the testcase folder and list of test cases
     
-    testcasefolder = "./testing/browsequotestests/testcases/"
+    testcasefolder = "./testing/ss_tests/testcases/"
     
-    test_cases = ["quoteinput_1.csv",
-                "quoteinput_10.csv",
-                "quoteinput_50.csv",
-                "quoteinput_365.csv"]
+    
+    test_cases = ["./testing/ss_tests/testcases/quoteinput_1.csv",
+                "./testing/ss_tests/testcases/quoteinput_10.csv"]
 
     # Make a results directory with the time and date 
     
@@ -312,7 +339,9 @@ if __name__ == "__main__":
 
         inputDicts = CSVtoDict(testCase)
         resultsJson = BrowseQuotes(inputDicts)
+        print(resultsJson)
         resultsFormatted = BrowseQuotesFormatResults(resultsJson)
+        print(resultsFormatted)
 
         # Write responses to file
         resultsPath = "./dev_area/results_" + str(test_number) + ".csv"

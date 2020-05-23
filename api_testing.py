@@ -4,12 +4,13 @@ import ss_api_functions
 import datetime
 import shutil
 import time
+import logging
 
 # Define the parameters for the test
 testCasePath = "./testing/ss_tests/testcases/" # Location of test case files
 resultsTopFolder = "./testing/ss_tests/testruns/" # Location of results folder
-numTestRuns = 16 # Number of times to repeat the tests
-runInterval = 600 # Wait time between test runs in seconds
+numTestRuns = 100 # Number of times to repeat the tests
+runInterval = 1 # Wait time between test runs in seconds
 endPointList =[ss_api_functions.BrowseQuotes] # The API functions to call
 # Results folder file size limit - TODO
 
@@ -23,8 +24,9 @@ os.mkdir(copyTestCasesPath)
 # Copy all testcases into results folder to preserve history and build test case list
 testCases = []
 for fileName in os.listdir(testCasePath):
-    shutil.copy(testCasePath + fileName, copyTestCasesPath)
-    testCases.append(fileName)
+    if fileName.endswith('.csv'):
+        shutil.copy(testCasePath + fileName, copyTestCasesPath)
+        testCases.append(fileName)
 
 # Generate some useful test metadata and display to the user
 numEP = len(endPointList) # Number of endpoints being tested
@@ -35,6 +37,11 @@ All test cases will be run {} number of times with a {} second \
 interval between them'.format(numEP,numTestCases,numTestRuns,runInterval))
 
 # Make the results file and log the start of the start time - TODO
+ResultsSummaryName = "ResultsSummary.csv"
+ResultsSummaryPath = resultsFolderPath + ResultsSummaryName
+InitialDict = [{"testRun":"","testCaseName":"", "startTime":"", "endTime":"", "elapsedTime":"", "querySuccessful":"", "errormessage":""}]
+ss_api_functions.DicttoCSV(InitialDict, ResultsSummaryPath)
+
 
 # For each test run
 runNo = 0
