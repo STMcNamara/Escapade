@@ -56,27 +56,46 @@ for testRun in range(numTestRuns):
         # For each test case
         testNo = 0
         for testCase in testCases:
+            testCaseData = {"testRun":str(runNo)}
             testNo += 1
             testCasePath = copyTestCasesPath + testCase
             print('Commencing test case {} ({} of {})'.format(testCase, testNo, numTestCases))
 
             # Try to call the function and write the results
             try:
+                # Log the start time before API call
+                startTime = datetime.datetime.now()
+                
                 # Make the API call
                 inputDicts = ss_api_functions.CSVtoDict(testCasePath)
                 resultsJson = endPoint(inputDicts)
+                
+                # Log the finish time after the API call
+                endTime = datetime.datetime.now()
+                apiElapsedTime = endTime - startTime
+
+                # Format the results for storage
                 resultsFormatted = ss_api_functions.BrowseQuotesFormatResults(resultsJson)
 
                 # Write the responses to file
                 ResultsFileName = "resultsrun_" + str(runNo) + "_" + testCase
                 ResultsFilePath = resultsFolderPath + ResultsFileName 
-                ss_api_functions.DicttoCSV(resultsFormatted, ResultsFilePath)            
+                ss_api_functions.DicttoCSV(resultsFormatted, ResultsFilePath)
+
+                # Populate the testcase summary information dictionary
+                testCaseData.update({"startTime":str(startTime), "endTime":str(endTime), 
+                                    "elapsedTime":str(apiElapsedTime), "testCaseName":str(testCase),
+                                    "querySuccessful":True})             
             
             except Exception as e: 
                 print(e)
                 print('Failed to call and process API, skipping to next test case')
 
-    print('Wating {} seconds before commencing next test run.'.format(runInterval))
+            # Write the results to the summary file
+            print([testCaseData])
+            ss_api_functions.updateDicttoCSV([testCaseData], ResultsSummaryPath)
+
+    print('Waiting {} seconds before commencing next test run.'.format(runInterval))
     time.sleep(runInterval)
 
     # For each testcase

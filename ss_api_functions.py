@@ -81,7 +81,7 @@ def updateDicttoCSV(dict,resultsPath):
         dictionary in the list.
     """
     keys = dict[0].keys()
-    with open(resultsPath, 'w', newline='') as results:
+    with open(resultsPath, 'a', newline='') as results:
         dict_writer = csv.DictWriter(results, keys)
         dict_writer.writerows(dict)
 
