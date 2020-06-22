@@ -107,16 +107,18 @@ def search_bq():
         # Check search query values are valid - Raises error if not
         validFlightSearchQuery(queryList, ss_places)
 
-        # Call the Browse Quotes API endpoint and retreive raw results
-        results_json = BrowseQuotes(queryList)
-        
-        # Store the query and raw results in the database
+        # Store the query  in the database before calling (to record timestamp)
         if sessionActive():
             user_id = session["user_id"]
         else:
             user_id = ""
         
-        search_id = db_functions.logBQQuery(db, user_id, queryList)        
+        search_id = db_functions.logBQQuery(db, user_id, queryList)  
+
+        # Call the Browse Quotes API endpoint and retreive raw results
+        results_json = BrowseQuotes(queryList)
+        
+        # Store the result in the database
         db_functions.logBQResults(db, user_id, search_id, results_json) 
         
         # Format the results for interpretation be the return form
@@ -258,16 +260,18 @@ def search_history():
             # Check search query values are valid - Raises error if not
             validFlightSearchQuery(queryList, ss_places)
 
-            # Call the Browse Quotes API endpoint and retreive raw results
-            results_json = BrowseQuotes(queryList)
-
-            # Store the raw results in the database
+            # Store the query  in the database before calling (to record timestamp)
             if sessionActive():
                 user_id = session["user_id"]
             else:
                 user_id = ""
+            
+            search_id = db_functions.logBQQuery(db, user_id, queryList)  
 
-            search_id = db_functions.logBQQuery(db, user_id, queryList)        
+            # Call the Browse Quotes API endpoint and retreive raw results
+            results_json = BrowseQuotes(queryList)
+            
+            # Store the result in the database
             db_functions.logBQResults(db, user_id, search_id, results_json) 
 
             # Format the results for interpretation be the return form
