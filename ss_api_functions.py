@@ -213,10 +213,10 @@ def BrowseQuotesFormatResults(rawResults):
     TODO - - Need an exception / behaviour if no result returned. 
     """
     
-    formattedResultList = []
-    # Try to format results based on valid keys being present in the results
-    try:
-        for result in rawResults:
+    formattedResultList = []    
+    for result in rawResults:
+        # Try to format results based on valid keys being present in the results
+        try:
             # Extract required data into a single dictionary for outbound leg.
             formattedResult = {}
             Quotes_list = result["Quotes"]
@@ -257,13 +257,16 @@ def BrowseQuotesFormatResults(rawResults):
                 except:
                     pass
 
-            # Append to the results list
+            # Append either the result to the results list
             formattedResultList.append(formattedResult)
+
+        except:
+            # TODO - Populate with basic values and show no results provided
+            # This isn't easy as failed result provides no detail abou the query
+            pass
     
-    except:
-        # TODO - Would be useful to show that results were requested but not received
-        pass
-    
+
+
     return formattedResultList
 
 
